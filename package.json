@@ -1,0 +1,43 @@
+{
+  "name": "eilmer-mvvm",
+  "version": "1.0.0",
+  "description": "Eilmer MVVM",
+  "module": "es/index.js",
+  "watch": {
+    "build:esm": {
+      "patterns": ["src"]
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:esm": "BABEL_ENV=esm-dir babel src --out-dir es && tsc --outDir es",
+    "watch": "npm-watch"
+  },
+  "author": "Darren Scott",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.17.10",
+    "@babel/plugin-proposal-private-methods": "^7.16.11",
+    "@babel/preset-env": "^7.17.10",
+    "@babel/preset-react": "^7.16.7",
+    "jsdoc": "^3.6.10",
+    "npm-watch": "^0.11.0",
+    "typescript": "^4.6.4"
+  },
+  "peerDependencies": {
+    "react": "^18.1.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "exports": {
+    "./react": "./dist/react/index.js",
+    ".": "./dist/index.js"
+  },
+  "dependencies": {
+    "fast-deep-equal": "^3.1.3"
+  }
+}
