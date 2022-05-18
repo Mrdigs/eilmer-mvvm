@@ -1,4 +1,5 @@
 import Binding from './Binding'
+import CommandBinding from '../../commands/classes/CommandBinding'
 
 class Binder {
 
@@ -16,11 +17,19 @@ class Binder {
    *
    * @return {Binding}
    */
-  bindProperty(propertyName, converter, subscriber) {
+  bindProperty(propertyName, converter = null, subscriber = null) {
     return new Binding(this.#viewModel, propertyName, converter, subscriber)
   }
 
-  // TODO: Command
+  /**
+   *
+   * @return {CommandBinding}
+   */
+  bindCommand(commandName, converter = null, subscriber = null) {
+    return new CommandBinding(this.#viewModel, commandName, converter, subscriber)
+  }
+
+  // TODO: Actions (and Events?)
 }
 
 export default Binder
