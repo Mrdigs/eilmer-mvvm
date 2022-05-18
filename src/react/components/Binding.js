@@ -17,7 +17,7 @@ function Binding({ vm, command, canExecute, cannotExecute, converter, children, 
     } else if (Array.isArray(propertyName)) {
       const [ property, converter ] = propertyName
       binding = binder.useBinding(property, converter)
-    } else {
+    } else if (typeof propertyName === 'object') {
       const { property, converter } = propertyName
       binding = binder.useBinding(property, converter)
     }
@@ -27,11 +27,22 @@ function Binding({ vm, command, canExecute, cannotExecute, converter, children, 
     binding.getContext().componentProperty = childProp
   })
 
-  let eventConverter = toConverter
+  let eventConverter = toConverter, commandBinding
   // TODO: As this now triggers a re-render, it's a good idea
   // to move it into the child component I think...
   // TODO: Allow the command to be an object like the props above
-  const commandBinding = command && binder.useCommand(command, converter)
+  if (command) {
+    if (typeof command === 'string') {
+      // TODO: I *think* I only need fromConverter here....
+      commandBinding = binder.useCommand(command, fromConverter)
+      // commandBinding = binder.useCommand(command, converter)
+    } else if (Array.isArray(command)) {
+      commandBinding = binder.useCommand(command[0], command[1])
+    } else if (typeof command === 'object') {
+      commandBinding = binder.useCommand(command.command, command.converter)
+    }
+  }
+
   const defaultEvent = commandBinding ? 'onClick' : 'onChange'
 
   let eventType = events[defaultEvent] !== false ? defaultEvent : null
@@ -41,7 +52,7 @@ function Binding({ vm, command, canExecute, cannotExecute, converter, children, 
   }, false)
 
   if (commandBinding) {
-    const canExecuteValue = commandBinding.canExecute()
+    const canExecuteValue = commandBinding.canExecute
     if (eventType) {
       eventBinding = null
       eventConverter = null
@@ -51,9 +62,22 @@ function Binding({ vm, command, canExecute, cannotExecute, converter, children, 
     }
     if (typeof canExecute === 'string') {
       childProps[canExecute] = canExecuteValue
-    }
-    if (typeof cannotExecute === 'string') {
-      childProps[cannotExecute] = !canExecuteValue
+    } else if (Array.isArray(canExecute)) {
+      if (typeof canExecute[0] === 'string') {
+        if (canExecute[1] instanceof Converter) {
+          childProps[canExecute[0]] = canExecute[1].convertFrom(canExecuteValue)
+        } else {
+          childProps[canExecute[0]] = canExecuteValue
+        }
+      }
+    } else if (typeof canExecute === 'object') {
+      if (typeof canExecute.property ==='string') {
+        if (canExecute.converter instanceof Converter) {
+          childProps[canExecute.property] = canExecute.converter.convertFrom(canExecuteValue)
+        } else {
+          childProps[canExecute.property] = canExecuteValue
+        }
+      }
     }
   }
 
@@ -145,7 +169,21 @@ function useBinder(vm) {
 function parseProps(props) {
   return Object.entries(props).reduce((parsed, [prop, value]) => {
     if (prop.substr(0, 2) === 'on') {
-      parsed.events[prop] = value
+      if (typeof value === 'string') {
+        parsed.events[prop] = value
+      /*
+      // Actually I don't think I do want to, do I?
+      // Or do I? Keep it here but commented in case
+      } else if (Array.isArray(value)) {
+        if (typeof value[0] === 'string') {
+          parsed.events[prop] = value
+        }
+      } else if (typeof value === 'object') {
+        if (typeof value.property === 'string') {
+          parsed.events[prop] = value
+        }
+      */
+      }
     } else if (typeof value === 'string') {
       parsed.properties[prop] = value
     } else if (Array.isArray(value)) {
