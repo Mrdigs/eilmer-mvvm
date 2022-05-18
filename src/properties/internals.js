@@ -30,11 +30,24 @@ class PropertyAccessor {
   }
 }
 
-export function addPropertyChangeListener(object, property, listener) {
+export function getTargetAndPropertyName(object, propertyName) {
+  let target = object, targetPropertyName = propertyName
+  if (typeof propertyName === 'string' && propertyName.includes('.')) {
+    const parts = propertyName.split('.'), length = parts.length - 1
+    for (var i = 0; i < length; i++) {
+      if (parts[i].length) target = target[parts[i]]
+    }
+    targetPropertyName = parts[length]
+  }
+  return [ target, targetPropertyName ]
+}
+
+export function addPropertyChangeListener(target, propertyName, listener) {
   if (typeof listener !== 'function') {
     throw new TypeError('Property change listeners must be functions')
   }
 
+  const [ object, property ] = getTargetAndPropertyName(target, propertyName)
   const defaultDescriptor = { enumerable: false, configurable: true }
   const descriptor = getPropertyDescriptor(object, property) || defaultDescriptor
 

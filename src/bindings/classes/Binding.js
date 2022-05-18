@@ -1,5 +1,6 @@
 import { Converter, ConverterException } from '../../converters'
 import { addPropertyChangeListener, removePropertyChangeListener } from '../../properties'
+import { getTargetAndPropertyName } from '../../properties/internals'
 
 import BindingContext from './BindingContext'
 
@@ -58,12 +59,13 @@ class Binding {
     } else if (typeof propertyName !== 'string') {
       throw new TypeError('propertyName must be a string')
     } else {
+      const [ object, property ] = getTargetAndPropertyName(viewModel, propertyName)
       this.#context = new BindingContext(viewModel, propertyName)
       if (converter instanceof Converter) {
         this.#converter = converter
       }
-      this.#viewModel = viewModel
-      this.#propertyName = propertyName
+      this.#viewModel = object
+      this.#propertyName = property
       // TODO: Hmmm, I like sealing it, but it makes it
       // non extensible by a subclass.....
       // Object.seal(this)
@@ -102,6 +104,7 @@ class Binding {
       addPropertyChangeListener.apply(null, args)
       this.#subscriber = subscriber
       this.#bound = true
+      return this.unbind.bind(this)
     } else {
       throw new Error('Binding is already bound to a subscriber')
     }
