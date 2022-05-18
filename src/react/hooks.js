@@ -60,8 +60,7 @@ export function useBinding(instance, property, converter = null) {
           binding: new ReactBinding(instance, property, converter)
         })
       }
-      state.binding.bind(() => setState(state => ({ ...state })))
-      return state.binding.unbind.bind(state.binding)
+      return state.binding.bind(() => setState(state => ({ ...state })))
     }, [instance])
 
     return state.binding
