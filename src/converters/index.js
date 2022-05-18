@@ -1,20 +1,9 @@
 import Converter from './classes/Converter'
 import ConverterBase from './classes/ConverterBase'
 import ConverterException from './classes/ConverterException'
+import DateTimeConverter from './classes/DateTimeConverter'
 
-export const dateConverter = new Converter((date, context) => {
-
-  return date ? date.toISOString().slice(0, 10) : date
-
-}, (string, context) => {
-
-  const date = new Date(string)
-  if (date.toString() === 'Invalid Date') {
-    throw new ConverterException('Cannot parse date', context.propertyName, string)
-  }
-  return date
-
-})
+export const dateConverter = DateTimeConverter.isoDateConverter
 
 export const numberConverter = new Converter((number, context) => {
   if (typeof number === 'number') {
@@ -33,7 +22,8 @@ export const numberConverter = new Converter((number, context) => {
 export {
   Converter,
   ConverterBase,
-  ConverterException
+  ConverterException,
+  DateTimeConverter
 }
 
 const Converters = {
