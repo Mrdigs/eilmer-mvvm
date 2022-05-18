@@ -13,7 +13,7 @@
   "scripts": {
     "build:esm": "BABEL_ENV=esm-dir babel src --out-dir es && tsc --outDir es",
     "watch": "npm-watch",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "author": "Darren Scott",
   "license": "ISC",
