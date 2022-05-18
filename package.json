@@ -5,13 +5,15 @@
   "module": "es/index.js",
   "watch": {
     "build:esm": {
-      "patterns": ["src"]
+      "patterns": [
+        "src"
+      ]
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build:esm": "BABEL_ENV=esm-dir babel src --out-dir es && tsc --outDir es",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "test": "jest"
   },
   "author": "Darren Scott",
   "license": "ISC",
@@ -21,6 +23,7 @@
     "@babel/plugin-proposal-private-methods": "^7.16.11",
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.16.7",
+    "jest": "^28.1.0",
     "jsdoc": "^3.6.10",
     "npm-watch": "^0.11.0",
     "typescript": "^4.6.4"
