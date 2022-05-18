@@ -15,28 +15,34 @@ const DATE_TIME_FORMATS = {
   timeZoneName: ["short", "long"]
 }
 
-test('DateTimeConverter correctly converts dates', () => {
+describe('DateTimeConverter supports all format options', () => {
   const date = new Date()
   DATE_STYLES.forEach((style) => {
-    const options = { dateStyle: style }
-    const converter = new DateTimeConverter('de', options)
-    const converted = converter.convertTo(converter.convertFrom(date))
-    expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+    test(`dateStyle:'${style}'`, () => {
+      const options = { dateStyle: style }
+      const converter = new DateTimeConverter('de', options)
+      const converted = converter.convertTo(converter.convertFrom(date))
+      expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+    })
   })
   TIME_STYLES.forEach((style) => {
-    const options = { dateStyle: 'long', timeStyle: style }
-    const converter = new DateTimeConverter('fr', options)
-    const converted = converter.convertTo(converter.convertFrom(date))
-    expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+    test(`timeStyle:'${style}'`, () => {
+      const options = { dateStyle: 'long', timeStyle: style }
+      const converter = new DateTimeConverter('fr', options)
+      const converted = converter.convertTo(converter.convertFrom(date))
+      expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+    })
   })
   Object.entries(DATE_TIME_FORMATS).forEach(([option, values]) => {
     const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
     Object.assign(options, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
     values.forEach((value) => {
-      options[option] = value
-      const converter = new DateTimeConverter('fr', options)
-      const converted = converter.convertTo(converter.convertFrom(date))
-      expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+      test(`${option}:'${value}'`, () => {
+        options[option] = value
+        const converter = new DateTimeConverter('fr', options)
+        const converted = converter.convertTo(converter.convertFrom(date))
+        expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+      })
     })
   })
 })
