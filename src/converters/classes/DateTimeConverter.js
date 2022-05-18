@@ -115,28 +115,39 @@ class DateTimeConverter extends Converter {
   }
 
   convertFrom(viewModelValue, bindingContext) {
-    return this.#formatter.format(viewModelValue)
+    try {
+      return this.#formatter.format(viewModelValue)
+    } catch (err) {
+      throw new ConverterException(err.message)
+    }
   }
 
   convertTo(viewValue, bindingContext) {
     const date = new Date(2022, 0, 1, 0, 0, 0)
-    const regex = new RegExp('^' + this.#formatParts.map(({ type, value }) => value).join('') + '$')
-    const parsed = regex.exec(viewValue).slice(1, this.#formatParts.length + 1)
-    if (parsed.length === this.#formatParts.length) {
-      this.#formatParts.forEach((part, idx) => {
-        const mapping = PARTS_MAPPING[part.type]
-        if (mapping) {
-          const format = this.#formatOptions[part.type] || 'default'
-          if (mapping[format] && mapping[format][2]) {
-            const setFunction = mapping[format][2].bind(date)
-            const setValue = mapping[format][1](parsed[idx], this.#formatMonthNames)
-            setFunction(setValue)
+    try {
+      const regex = new RegExp('^' + this.#formatParts.map(({ type, value }) => value).join('') + '$')
+      const parsed = regex.exec(viewValue).slice(1, this.#formatParts.length + 1)
+      if (parsed.length === this.#formatParts.length) {
+        this.#formatParts.forEach((part, idx) => {
+          const mapping = PARTS_MAPPING[part.type]
+          if (mapping) {
+            const format = this.#formatOptions[part.type] || 'default'
+            if (mapping[format] && mapping[format][2]) {
+              const setFunction = mapping[format][2].bind(date)
+              const setValue = mapping[format][1](parsed[idx], this.#formatMonthNames)
+              setFunction(setValue)
+            }
           }
-        }
-      })
+        })
+      }
+    } catch (err) {
+      throw new ConverterException(err.message)
     }
     if (this.#formatter.format(date) !== viewValue) {
       throw new ConverterException('Cannot parse date "' + viewValue + '"')
+    }
+    if (this.#formatOptions['year'] === 'short') {
+      console.warn('DateTimeConverter: Using "short" year format option is not advised for 2-way bindings')
     }
     return date
   }
