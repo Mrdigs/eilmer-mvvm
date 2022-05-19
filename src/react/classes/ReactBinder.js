@@ -1,5 +1,5 @@
 import { Binder } from '../../bindings'
-import { bindProperty, bindBinding, bindCommand } from '../internals'
+import { bindProperty, bindBinding, bindCommand, bindEvent } from '../internals'
 
 class ReactBinder extends Binder {
 
@@ -16,9 +16,14 @@ class ReactBinder extends Binder {
   }
 
   useCommand(command, converter) {
+    // TODO: Change to commandName, and elsewhere
     return bindCommand(this.viewModel, command, converter)
   }
 
+  // TODO: Do I want to allow a converter here?
+  useEvent(eventName) {
+    return bindEvent(this.viewModel, eventName)
+  }
 }
 
 export default ReactBinder

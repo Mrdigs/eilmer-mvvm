@@ -1,8 +1,6 @@
 import Event from './classes/Event'
+import Events from './classes/Events'
+import EventBinding from './classes/EventBinding'
 
-const Events = {
-  Event
-}
-
-export { Event }
+export { Event, EventBinding }
 export default Events

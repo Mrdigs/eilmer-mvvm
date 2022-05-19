@@ -1,6 +1,14 @@
 export default class Event {
 
   #listeners = []
+  #defaultHandler = null
+
+  constructor(defaultHandler) {
+    if (defaultHandler && typeof defaultHandler !== 'function') {
+      throw new Error('Event handlers must be functions')
+    }
+    this.#defaultHandler = defaultHandler
+  }
 
   subscribe(listener) {
     if (typeof listener !== 'function') {
@@ -15,6 +23,7 @@ export default class Event {
   }
 
   invoke(...args) {
+    if (this.#defaultHandler) this.#defaultHandler(...args)
     this.#listeners.forEach(listener => listener(...args))
   }
 }

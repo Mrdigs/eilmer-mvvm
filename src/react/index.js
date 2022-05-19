@@ -2,7 +2,7 @@ import React from 'react'
 
 import ViewModel from './classes/ViewModel'
 import { Binder, Binding } from './components'
-import { useInstanceOf, useProperty, useBinding, useProperties, useCommand, useViewModel } from './hooks'
+import { useInstanceOf, useProperty, useBinding, useProperties, useCommand, useViewModel, useEvent } from './hooks'
 import ReactBindingContext from './classes/ReactBindingContext'
 import ReactBindingConverter from './classes/ReactBindingConverter'
 
@@ -34,7 +34,7 @@ LocatorProvider.use = function(name) {
 }
 */
 
-export { Binder, Binding, useInstanceOf, useProperty, useBinding, useProperties, useCommand, useViewModel }
+export { Binder, Binding, useInstanceOf, useProperty, useBinding, useProperties, useCommand, useViewModel, useEvent }
 
 // TODO WHY NOT JUST EXPORT FROM?
 export { ReactBindingContext }

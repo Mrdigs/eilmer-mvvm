@@ -4,6 +4,7 @@ import equal from 'fast-deep-equal'
 import { Converter, ConverterException } from '../converters'
 import { addPropertyChangeListener, removePropertyChangeListener } from '../properties'
 import { CommandBinding, executeCommand } from '../commands'
+import { EventBinding } from '../events'
 
 import ReactBinding from './classes/ReactBinding'
 import ViewModel from './classes/ViewModel'
@@ -93,6 +94,35 @@ export function useCommand(instance, command, converter = null) {
   } else {
     const bindCommand = instance.useCommand.bind(instance)
     return bindCommand(command, converter)
+  }
+}
+
+// TODO: Do I want to allow a converter here
+// TODO: Do I also want to allow a listener to be registered?
+export function useEvent(instance, eventName) {
+  if (!(instance instanceof ViewModel)) {
+
+    const oldInstance = reactRef(instance)
+    const [ state, setState ] = reactState(() => ({
+      binding: new EventBinding(instance, eventName)
+    }))
+
+    reactEffect(() => {
+      if (instance !== oldInstance.current) {
+        oldInstance.current = instance
+        setState({
+          binding: new EventBinding(instance, eventName)
+        })
+      }
+      state.binding.bind(() => setState(state => ({ ...state })))
+      return state.binding.unbind.bind(state.binding)
+    }, [instance])
+
+    return state.binding
+
+  } else {
+    // TODO: Needs implementing
+    throw new Error('Not implemented yet')
   }
 }
 
