@@ -83,7 +83,6 @@ class DateTimeConverter extends Converter {
   #formatOptions
   #formatMonthNames
   #formatDayPeriods
-  #formatNumbers
 
   constructor(locale, options) {
     if (options?.timeZone) {
@@ -98,12 +97,14 @@ class DateTimeConverter extends Converter {
       if (TIME_STYLES[options?.timeStyle]) {
         Object.assign(this.#formatOptions, TIME_STYLES[options.timeStyle])
       }
-      this.#formatNumbers = getNumbersForLocale(this.#formatOptions.locale)
+      if (this.#formatOptions.numberingSystem !== 'latn') {
+        this.#formatOptions.numbers = getNumbersForLocale(this.#formatOptions.locale)
+      }
       this.#formatParts = this.#formatter.formatToParts(new Date('2001-01-01')).map(part => {
         const mapping = PARTS_MAPPING[part.type]
         if (mapping) {
           const format = this.#formatOptions[part.type] || 'default'
-          part.value = formatString(this.#formatNumbers, mapping[format][0], part.value)
+          part.value = formatString(this.#formatOptions, mapping[format][0], part.value)
           return part
         } else {
           throw new Error('No mapping available for ' + part.type)
@@ -153,7 +154,7 @@ class DateTimeConverter extends Converter {
             if (part.type !== 'dayPeriod') {
               if (mapping[format] && mapping[format][2]) {
                 const setFunction = mapping[format][2].bind(date)
-                const value = parseValue(this.#formatNumbers, format, parsed[idx])
+                const value = parseValue(this.#formatOptions, format, parsed[idx])
                 const setValue = mapping[format][1](value, this.#formatMonthNames)
                 setFunction(setValue)
               }
@@ -185,25 +186,25 @@ function getNumbersForLocale(locale) {
   return [...formatter.format(9876543210)].reverse()
 }
 
-function parseValue(numbers, type, value) {
-  if (['numeric', '2-digit'].includes(type)) {
+function parseValue(options, type, value) {
+  if (options.numbers && ['numeric', '2-digit'].includes(type)) {
     const parsed = new Array(value.length)
     for (var i = 0; i < value.length; i++) {
-      parsed.push(numbers.indexOf(value[i]))
+      parsed.push(options.numbers.indexOf(value[i]))
     }
     return parsed.join('')
   }
   return value
 }
 
-function formatString(numbers, string, ...args) {
+function formatString(options, string, ...args) {
   let formatted = string
   for (let arg in args) {
     let value = args[arg].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
     formatted = formatted.replace("{" + arg + "}", value)
   }
-  if (formatted.includes('[0-9]')) {
-    const replacement = `[${numbers.join('')}]`
+  if (options.numbers && formatted.includes('[0-9]')) {
+    const replacement = `[${options.numbers.join('')}]`
     formatted = formatted.replace(/\[0-9\]/g, replacement)
   }
   return formatted
