@@ -9,7 +9,7 @@ export default class CommandBinding extends Binding {
   #commandName = undefined
   #converter = undefined
 
-  constructor(viewModel, commandName, converter, subscriber) {
+  constructor(viewModel, commandName, converter = null, subscriber = null) {
     const command = viewModel[commandName]
     if (!(command instanceof Command || typeof command === 'function')) {
       throw new Error(`Bound command ${commandName} should be a function or instance of Command`)
