@@ -26,4 +26,18 @@ describe('Binding tests', () => {
     binding.setValue('female')
     expect(viewModel.sex).toBe('FEMALE')
   })
+  test('Binding deconstructs into value and setter function', () => {
+    const [ sex, setSex ] = new Binding(viewModel, 'sex')
+    expect(sex).toBe('FEMALE')
+    expect(typeof setSex).toBe('function')
+    setSex('MALE')
+    expect(viewModel.sex).toBe('MALE')
+  })
+  test('Only one listener can be subscribed at once', () => {
+    const binding = new Binding(viewModel.name, 'lastName')
+    const unbind = binding.bind(() => {})
+    expect(() => binding.bind(() => {})).toThrow()
+    unbind()
+    expect(() => binding.bind(() => {})).not.toThrow()
+  })
 })
