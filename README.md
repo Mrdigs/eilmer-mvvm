@@ -1,8 +1,10 @@
 # Eilmer MVVM
 
-```javascript
-import { useInstanceOf, useEvent, Binder } from 'eilmer-mvvm/react'
+### The Model
 
+Our Model represents a person who can have a first and last name. The text fields in the View will be initialized with these values, and the Model will be updated to reflect their changes when they press the "save" button.
+
+```javascript
 class PersonModel {
   firstName
   lastName
@@ -12,7 +14,14 @@ class PersonModel {
     this.lastName = lastName
   }
 }
+```
+### The ViewModel
 
+The ViewModel represents the state of the View. It is initialized with a PersonModel and has three main features: a firstName and lastName property that initially come from the Model and which are to be updated by the user via text boxes, a "save" command (which is a function) to propagate the changes back to the Model when the user presses the "save" button, and an "onSaved" event (which is also a function) that allows the ViewModel to communicate that the the user's changes were successfully saved.
+
+There are several ways this ViewModel could have been written, but I have chosen to keep it free of any Eilmer classes to demonstrate how any plain old object can be used as a ViewModel.
+
+```javascript
 class PersonViewModel {
   #personModel
   firstName
@@ -39,6 +48,15 @@ class PersonViewModel {
     this.onSaved()
   }
 }
+```
+### The View
+
+The View represents the UI, which is free of any logic and simply hooks into the ViewModel to allow it to be used to manage the View's state.
+
+Again, this could have been written in several different ways, but I chose the most concise and performant solution as a demonstration.
+
+```javascript
+import { useInstanceOf, useEvent, Binder } from 'eilmer-mvvm/react'
 
 function PersonView({ firstName = 'John', lastName = 'Doe' }) {
   const personModel = useInstanceOf(PersonModel, firstName, lastName)
