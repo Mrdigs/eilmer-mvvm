@@ -3,7 +3,7 @@ export default class Event {
   #listeners = []
   #defaultHandler = null
 
-  constructor(defaultHandler) {
+  constructor(defaultHandler = null) {
     if (defaultHandler && typeof defaultHandler !== 'function') {
       throw new Error('Event handlers must be functions')
     }
