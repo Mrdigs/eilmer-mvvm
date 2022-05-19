@@ -1,4 +1,5 @@
 import PropertyAccessor from './PropertyAccessor'
+import { Event } from '../../events'
 
 export default class Properties {
 
@@ -101,6 +102,12 @@ function notifyPropertyChangedInternal(target, propertyName, regardless) {
         listener(value)
       }
     })
+    // TODO: *STILL* UNSURE ABOUT THIS, BUT STILL
+    if (typeof object.onPropertyChange === 'function') {
+      object.onPropertyChange(property, value)
+    } else if (object.onPropertyChange instanceof Event) {
+      object.onPropertyChange.invoke(property, value)
+    }
   }
 }
 

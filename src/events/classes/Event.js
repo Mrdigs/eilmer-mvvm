@@ -22,6 +22,7 @@ export default class Event {
     this.#listeners = this.#listeners.filter(l => l !== listener)
   }
 
+  // TODO: This should probably be trigger()
   invoke(...args) {
     if (this.#defaultHandler) this.#defaultHandler(...args)
     this.#listeners.forEach(listener => listener(...args))
