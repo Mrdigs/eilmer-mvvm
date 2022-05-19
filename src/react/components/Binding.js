@@ -3,7 +3,7 @@ import React from 'react'
 import Binder, { useBinderFor } from './Binder'
 import { Converter, ConverterBase, ConverterException } from '../../converters'
 
-function Binding({ vm, command, canExecute, cannotExecute, converter, children, ...props }) {
+function Binding({ vm, command, canExecute, converter, children, ...props }) {
   const binder = useBinder(vm)
   const { fromConverter, toConverter } = splitConverter(converter)
   const { properties, events } = parseProps(props)
@@ -52,7 +52,8 @@ function Binding({ vm, command, canExecute, cannotExecute, converter, children, 
   }, false)
 
   if (commandBinding) {
-    const canExecuteValue = commandBinding.canExecute
+    let canExecuteValue = commandBinding.canExecute()
+    let canExecuteProperty, canExecuteConverter
     if (eventType) {
       eventBinding = null
       eventConverter = null
@@ -61,22 +62,33 @@ function Binding({ vm, command, canExecute, cannotExecute, converter, children, 
       }
     }
     if (typeof canExecute === 'string') {
-      childProps[canExecute] = canExecuteValue
+      canExecuteProperty = canExecute
     } else if (Array.isArray(canExecute)) {
       if (typeof canExecute[0] === 'string') {
+        canExecuteProperty = canExecute[0]
         if (canExecute[1] instanceof Converter) {
-          childProps[canExecute[0]] = canExecute[1].convertFrom(canExecuteValue)
-        } else {
-          childProps[canExecute[0]] = canExecuteValue
+          canExecuteConverter = canExecute[1]
         }
       }
     } else if (typeof canExecute === 'object') {
       if (typeof canExecute.property ==='string') {
+        canExecuteProperty = canExecute.property
         if (canExecute.converter instanceof Converter) {
-          childProps[canExecute.property] = canExecute.converter.convertFrom(canExecuteValue)
-        } else {
-          childProps[canExecute.property] = canExecuteValue
+          canExecuteConverter = canExecute.converter
         }
+      }
+    }
+    if (canExecuteProperty) {
+      // TODO: swap property props definitions round so they can
+      // work like this, too: e.g firstName="value" rather than value="firstName"
+      if (canExecuteProperty[0] === '!') {
+        canExecuteProperty = canExecuteProperty.substr(1)
+        canExecuteValue = !canExecuteValue
+      }
+      if (canExecuteConverter instanceof Converter) {
+        childProps[canExecuteProperty] = canExecuteConverter.convertFrom(canExecuteValue)
+      } else {
+        childProps[canExecuteProperty] = canExecuteValue
       }
     }
   }
