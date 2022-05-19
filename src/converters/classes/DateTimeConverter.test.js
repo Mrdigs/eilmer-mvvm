@@ -15,33 +15,49 @@ const DATE_TIME_FORMATS = {
   timeZoneName: ["short", "long"]
 }
 
+describe('DateTimeConverter supports Arabic and other numerical systems', () => {
+  const date = new Date('2001-01-01 17:00:00')
+  const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+  Object.assign(options, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const converter = new DateTimeConverter('ar-JO', options)
+  const converted = converter.convertFrom(date)
+  test(`locale:'ar-JO': '${converted}'`, () => {
+    const reconverted = converter.convertTo(converted)
+    expect(converter.convertFrom(date)).toBe(converter.convertFrom(reconverted))
+  })
+})
+
 describe('DateTimeConverter supports all format options', () => {
-  const date = new Date()
+  // const date = new Date()
+  const date = new Date('2001-01-01 17:00:00')
   DATE_STYLES.forEach((style) => {
-    test(`dateStyle:'${style}'`, () => {
-      const options = { dateStyle: style }
-      const converter = new DateTimeConverter('de', options)
-      const converted = converter.convertTo(converter.convertFrom(date))
-      expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+    const options = { dateStyle: style }
+    const converter = new DateTimeConverter('de', options)
+    const converted = converter.convertFrom(date)
+    test(`dateStyle:'${style}': '${converted}'`, () => {
+      const reconverted = converter.convertTo(converted)
+      expect(converter.convertFrom(date)).toBe(converter.convertFrom(reconverted))
     })
   })
   TIME_STYLES.forEach((style) => {
-    test(`timeStyle:'${style}'`, () => {
-      const options = { dateStyle: 'long', timeStyle: style }
-      const converter = new DateTimeConverter('fr', options)
-      const converted = converter.convertTo(converter.convertFrom(date))
-      expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+    const options = { dateStyle: 'long', timeStyle: style }
+    const converter = new DateTimeConverter('fr', options)
+    const converted = converter.convertFrom(date)
+    test(`timeStyle:'${style}': '${converted}'`, () => {
+      const reconverted = converter.convertTo(converted)
+      expect(converter.convertFrom(date)).toBe(converter.convertFrom(reconverted))
     })
   })
   Object.entries(DATE_TIME_FORMATS).forEach(([option, values]) => {
     const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
     Object.assign(options, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
     values.forEach((value) => {
-      test(`${option}:'${value}'`, () => {
-        options[option] = value
-        const converter = new DateTimeConverter('fr', options)
-        const converted = converter.convertTo(converter.convertFrom(date))
-        expect(converter.convertFrom(date)).toBe(converter.convertFrom(converted))
+      options[option] = value
+      const converter = new DateTimeConverter('en', options)
+      const converted = converter.convertFrom(date)
+      test(`${option}:'${value}': '${converted}'`, () => {
+        const reconverted = converter.convertTo(converted)
+        expect(converter.convertFrom(date)).toBe(converter.convertFrom(reconverted))
       })
     })
   })

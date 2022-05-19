@@ -40,6 +40,9 @@ const PARTS_MAPPING = {
   timeZoneName: {
     long: ['(.*)', null, null],
     short: ['(.*)', null, null]
+  },
+  dayPeriod: {
+    default: ['([^ ]*)', null, null]
   }
 }
 
@@ -79,25 +82,28 @@ class DateTimeConverter extends Converter {
   #formatParts
   #formatOptions
   #formatMonthNames
+  #formatDayPeriods
+  #formatNumbers
 
   constructor(locale, options) {
-    if (options.timeZone) {
+    if (options?.timeZone) {
       throw new Error('Timezones are not supported in DateTimeConverter')
     } else {
       super()
       this.#formatter = new Intl.DateTimeFormat(locale, options)
       this.#formatOptions = this.#formatter.resolvedOptions()
-      if (DATE_STYLES[options.dateStyle]) {
+      if (DATE_STYLES[options?.dateStyle]) {
         Object.assign(this.#formatOptions, DATE_STYLES[options.dateStyle])
       }
-      if (TIME_STYLES[options.timeStyle]) {
+      if (TIME_STYLES[options?.timeStyle]) {
         Object.assign(this.#formatOptions, TIME_STYLES[options.timeStyle])
       }
+      this.#formatNumbers = getNumbersForLocale(this.#formatOptions.locale)
       this.#formatParts = this.#formatter.formatToParts(new Date('2001-01-01')).map(part => {
         const mapping = PARTS_MAPPING[part.type]
         if (mapping) {
           const format = this.#formatOptions[part.type] || 'default'
-          part.value = formatString(mapping[format][0], part.value)
+          part.value = formatString(this.#formatNumbers, mapping[format][0], part.value)
           return part
         } else {
           throw new Error('No mapping available for ' + part.type)
@@ -109,6 +115,17 @@ class DateTimeConverter extends Converter {
         const formatter = new Intl.DateTimeFormat(locale, {month:format})
         for (var month = 0; month < 12; month++) {
           this.#formatMonthNames.push(formatter.format(new Date(2022, month, 1)))
+        }
+      }
+      if (this.#formatOptions['hour12']) {
+        const am = this.#formatter.formatToParts(new Date('2001-01-01 06:00:00')).find(part => {
+          return part.type === 'dayPeriod'
+        })
+        const pm = this.#formatter.formatToParts(new Date('2001-01-01 18:00:00')).find(part => {
+          return part.type === 'dayPeriod'
+        })
+        this.#formatDayPeriods = {
+          am: am.value, pm: pm.value
         }
       }
     }
@@ -128,17 +145,24 @@ class DateTimeConverter extends Converter {
       const regex = new RegExp('^' + this.#formatParts.map(({ type, value }) => value).join('') + '$')
       const parsed = regex.exec(viewValue).slice(1, this.#formatParts.length + 1)
       if (parsed.length === this.#formatParts.length) {
+        let dayPeriodAdjustment = 0
         this.#formatParts.forEach((part, idx) => {
           const mapping = PARTS_MAPPING[part.type]
           if (mapping) {
             const format = this.#formatOptions[part.type] || 'default'
-            if (mapping[format] && mapping[format][2]) {
-              const setFunction = mapping[format][2].bind(date)
-              const setValue = mapping[format][1](parsed[idx], this.#formatMonthNames)
-              setFunction(setValue)
+            if (part.type !== 'dayPeriod') {
+              if (mapping[format] && mapping[format][2]) {
+                const setFunction = mapping[format][2].bind(date)
+                const value = parseValue(this.#formatNumbers, format, parsed[idx])
+                const setValue = mapping[format][1](value, this.#formatMonthNames)
+                setFunction(setValue)
+              }
+            } else if (this.#formatDayPeriods.pm === parsed[idx]) {
+              dayPeriodAdjustment = 12
             }
           }
         })
+        date.setHours(date.getHours() + dayPeriodAdjustment)
       }
     } catch (err) {
       throw new ConverterException(err.message)
@@ -156,11 +180,31 @@ class DateTimeConverter extends Converter {
 
 DateTimeConverter.isoDateConverter = new DateTimeConverter('en-CA', { dateStyle: 'short' })
 
-function formatString(string, ...args) {
+function getNumbersForLocale(locale) {
+  const formatter = new Intl.NumberFormat(locale, {useGrouping: false})
+  return [...formatter.format(9876543210)].reverse()
+}
+
+function parseValue(numbers, type, value) {
+  if (['numeric', '2-digit'].includes(type)) {
+    const parsed = new Array(value.length)
+    for (var i = 0; i < value.length; i++) {
+      parsed.push(numbers.indexOf(value[i]))
+    }
+    return parsed.join('')
+  }
+  return value
+}
+
+function formatString(numbers, string, ...args) {
   let formatted = string
   for (let arg in args) {
     let value = args[arg].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
     formatted = formatted.replace("{" + arg + "}", value)
+  }
+  if (formatted.includes('[0-9]')) {
+    const replacement = `[${numbers.join('')}]`
+    formatted = formatted.replace(/\[0-9\]/g, replacement)
   }
   return formatted
 }
