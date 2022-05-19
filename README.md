@@ -2,6 +2,7 @@
 
 ```javascript
 import { useInstanceOf, useEvent, Binder } from 'eilmer-mvvm/react'
+
 class PersonModel {
   firstName
   lastName
