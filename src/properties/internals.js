@@ -30,7 +30,7 @@ class PropertyAccessor {
   }
 }
 
-export function getTargetAndPropertyName(object, propertyName) {
+function getTargetAndPropertyName(object, propertyName) {
   let target = object, targetPropertyName = propertyName
   if (typeof propertyName === 'string' && propertyName.includes('.')) {
     const parts = propertyName.split('.'), length = parts.length - 1
@@ -117,11 +117,23 @@ export function removePropertyChangeListener(object, property, listener) {
   }
 }
 
-export function notifyPropertyChanged(object, property) {
+export function notifyPropertyChanged(target, propertyName) {
+  const [ object, property ] = getTargetAndPropertyName(target, propertyName)
   notifyPropertyChangedInternal(object, property, true)
 }
 
-function notifyPropertyChangedInternal(object, property, regardless) {
+export function getPropertyValue(target, propertyName) {
+  const [ object, property ] = getTargetAndPropertyName(target, propertyName)
+  return object[property]
+}
+
+export function setPropertyValue(target, propertyName, value) {
+  const [ object, property ] = getTargetAndPropertyName(target, propertyName)
+  object[property] = value
+}
+
+function notifyPropertyChangedInternal(target, propertyName, regardless) {
+  const [ object, property ] = getTargetAndPropertyName(target, propertyName)
   // If the descriptor doesn't exist then we shouldn't error
   const descriptor = Object.getOwnPropertyDescriptor(object, property)
   if (descriptor?.set?.listeners) {

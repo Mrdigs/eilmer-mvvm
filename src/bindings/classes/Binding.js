@@ -1,6 +1,6 @@
 import { Converter, ConverterException } from '../../converters'
 import { addPropertyChangeListener, removePropertyChangeListener } from '../../properties'
-import { getTargetAndPropertyName } from '../../properties/internals'
+import { getPropertyValue, setPropertyValue } from '../../properties'
 
 import BindingContext from './BindingContext'
 
@@ -15,6 +15,9 @@ import BindingContext from './BindingContext'
  * with built-in object types: new Binding(new Array(), 'length') will trigger
  * an error, for example (the {@link Observable} class can be utilized for
  * this kind of use case).
+ *
+ * TODO: Note that new Binding(Object.create(new Array()), 'length') *will*
+ * work!
  *
  * @example
  * const object = { count: 0 }
@@ -59,13 +62,13 @@ class Binding {
     } else if (typeof propertyName !== 'string') {
       throw new TypeError('propertyName must be a string')
     } else {
-      const [ object, property ] = getTargetAndPropertyName(viewModel, propertyName)
+      // const [ object, property ] = getTargetAndPropertyName(viewModel, propertyName)
       this.#context = new BindingContext(viewModel, propertyName)
       if (converter instanceof Converter) {
         this.#converter = converter
       }
-      this.#viewModel = object
-      this.#propertyName = property
+      this.#viewModel = viewModel
+      this.#propertyName = propertyName
       // TODO: Hmmm, I like sealing it, but it makes it
       // non extensible by a subclass.....
       // Object.seal(this)
@@ -135,7 +138,7 @@ class Binding {
     if (this.#converter) {
       try {
         const converted = this.#converter.convertTo(value, this.getContext())
-        this.#viewModel[this.#propertyName] = converted
+        setPropertyValue(this.#viewModel, this.#propertyName, converted)
       } catch (exception) {
         if (exception instanceof ConverterException) {
           console.warn('Unhandled', exception.toString())
@@ -144,7 +147,7 @@ class Binding {
         }
       }
     } else {
-      this.#viewModel[this.#propertyName] = value
+      setPropertyValue(this.#viewModel, this.#propertyName, value)
     }
   }
 
@@ -156,7 +159,7 @@ class Binding {
    * @returns The current property value.
    */
   getValue() {
-    const value = this.#viewModel[this.#propertyName]
+    const value = getPropertyValue(this.#viewModel, this.#propertyName)
     if (this.#converter) {
       return this.#converter.convertFrom(value, this.getContext())
     }
