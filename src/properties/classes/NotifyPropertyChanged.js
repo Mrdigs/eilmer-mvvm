@@ -1,4 +1,4 @@
-import * as Properties from '../internals'
+import Properties from './Properties'
 
 /**
  *

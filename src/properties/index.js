@@ -6,13 +6,24 @@
   (like in Java) class.
 
 */
+import Properties from './classes/Properties'
 import NotifyPropertyChanged from './classes/NotifyPropertyChanged'
-import { addPropertyChangeListener, removePropertyChangeListener, notifyPropertyChanged } from './internals'
-import { getPropertyValue, setPropertyValue } from './internals'
 
-export { NotifyPropertyChanged }
-export { addPropertyChangeListener, removePropertyChangeListener, notifyPropertyChanged }
-export { getPropertyValue, setPropertyValue }
+const getPropertyValue = Properties.getPropertyValue
+const setPropertyValue = Properties.setPropertyValue
+const addPropertyChangeListener = Properties.addPropertyChangeListener
+const removePropertyChangeListener = Properties.removePropertyChangeListener
+const notifyPropertyChanged = Properties.notifyPropertyChanged
+
+export {
+  Properties,
+  NotifyPropertyChanged,
+  getPropertyValue,
+  setPropertyValue,
+  addPropertyChangeListener,
+  removePropertyChangeListener,
+  notifyPropertyChanged
+}
 
 export default {
   NotifyPropertyChanged,
