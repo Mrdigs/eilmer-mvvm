@@ -62,7 +62,6 @@ class Binding {
     } else if (typeof propertyName !== 'string') {
       throw new TypeError('propertyName must be a string')
     } else {
-      // const [ object, property ] = getTargetAndPropertyName(viewModel, propertyName)
       this.#context = new BindingContext(viewModel, propertyName)
       if (converter instanceof Converter) {
         this.#converter = converter
