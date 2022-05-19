@@ -1,3 +1,8 @@
+// ALSO MAKE IT ALL A CLASS WITH STATIC METHODS
+
+// AND PERHAPS IT CAN BE EXTENDED WITH AN ALLOW
+// PATHS BOOL IN THE CONSTRUCTOR?
+
 class PropertyAccessor {
 
   // TODO: Be careful, don't want a memory leak via reference to the value
@@ -5,11 +10,10 @@ class PropertyAccessor {
   // removed. But still, this will do for now.
 
 
-  constructor(object, propertyName, propertyDescriptor) {
+  constructor(object, propertyDescriptor) {
     this._getter = propertyDescriptor.get?.bind(object)
     this._setter = propertyDescriptor.set?.bind(object)
     this._value = propertyDescriptor.value
-    this._propertyName = propertyName
   }
 
   set(value) {
@@ -36,8 +40,13 @@ function getTargetAndPropertyName(object, propertyName) {
     const parts = propertyName.split('.'), length = parts.length - 1
     for (var i = 0; i < length; i++) {
       if (parts[i].length) target = target[parts[i]]
+      if (typeof target === 'undefined') {
+        throw new Error('Cannot bind to a property of an undefined object')
+      }
     }
     targetPropertyName = parts[length]
+  } else if (typeof target === 'undefined') {
+    throw new Error('Cannot bind to a property of an undefined object')    
   }
   return [ target, targetPropertyName ]
 }
@@ -51,21 +60,13 @@ export function addPropertyChangeListener(target, propertyName, listener) {
   const defaultDescriptor = { enumerable: false, configurable: true }
   const descriptor = getPropertyDescriptor(object, property) || defaultDescriptor
 
-  /*
-  const prototype = Object.getPrototypeOf(object)
-  const protoTypeDescriptor = prototype ? Object.getOwnPropertyDescriptor(prototype, property) : null
-  const objectDescriptor = Object.getOwnPropertyDescriptor(object, property)
-  const descriptor = objectDescriptor || protoTypeDescriptor || defaultDescriptor
-  */
-
   // SHOULD I ALWAYS USE OBJECT CREATE IN, SAY, BINDER?
   // WHICH WOULD THEN POTENTIALLY ALLOW ME TO JUST BIND TO ANYTHING?
   // I CAN POTENTIALLY EVEN DO AWAY WITH OBSERVABLE ENTIRELY - OR AT
   // LEAST, CHANGE IT TO WORK IN THAT WAY....
-  // console.log('For', object, property,':',descriptor)
 
   if (!descriptor.set?.listeners) {
-    const accessor = new PropertyAccessor(object, property, descriptor)
+    const accessor = new PropertyAccessor(object, descriptor)
     descriptor.get = accessor.get.bind(accessor)
     descriptor.set = ((v, notify) => {
       const old = accessor.get(), result = accessor.set(v)
