@@ -1,4 +1,4 @@
-import { Binder } from '../../bindings'
+import Binder from '../../bindings/classes/Binder'
 import { bindProperty, bindBinding, bindCommand, bindEvent } from '../internals'
 
 class ReactBinder extends Binder {

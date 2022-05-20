@@ -4,7 +4,7 @@ import equal from 'fast-deep-equal'
 import { Converter, ConverterException } from '../converters'
 import { addPropertyChangeListener, removePropertyChangeListener } from '../properties'
 import { CommandBinding, executeCommand } from '../commands'
-import { EventBinding } from '../events'
+import EventBinding from '../events/classes/EventBinding'
 
 import ReactBinding from './classes/ReactBinding'
 import ViewModel from './classes/ViewModel'

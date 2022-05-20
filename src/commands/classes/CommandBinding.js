@@ -1,5 +1,5 @@
 import Command from './Command'
-import { Binding } from '../../bindings'
+import Binding from '../../bindings/classes/Binding'
 import { executeCommand } from '../internals'
 
 export default class CommandBinding extends Binding {
