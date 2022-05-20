@@ -7,19 +7,19 @@ export default class ViewModel {
   // TODO: Can I add a constructor that prevents this
   // class from being directly instantiated?
 
-  useProperty(property, converter = null) {
+  useProperty(propertyName, converter = null) {
     throw new NotImplementedException()
   }
 
-  useBinding(property, converter = null) {
+  useBinding(propertyName, converter = null) {
     throw new NotImplementedException()
   }
 
-  useCommand(command, converter = null, ...args) {
+  useCommand(commandName, converter = null, ...args) {
     throw new NotImplementedException()
   }
 
-  dispatchCommand(command, ...args) {
+  dispatchCommand(commandName, ...args) {
     throw new NotImplementedException()
   }
 

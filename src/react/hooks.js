@@ -47,18 +47,18 @@ const reactRef = React.useRef
 const reactState = React.useState
 const reactEffect = React.useEffect
 
-export function useBinding(instance, property, converter = null) {
+export function useBinding(instance, propertyName, converter = null) {
   if (!(instance instanceof ViewModel)) {
     const oldInstance = reactRef(instance)
     const [ state, setState ] = reactState(() => ({
-      binding: new ReactBinding(instance, property, converter)
+      binding: new ReactBinding(instance, propertyName, converter)
     }))
 
     reactEffect(() => {
       if (instance !== oldInstance.current) {
         oldInstance.current = instance
         setState({
-          binding: new ReactBinding(instance, property, converter)
+          binding: new ReactBinding(instance, propertyName, converter)
         })
       }
       return state.binding.bind(() => setState(state => ({ ...state })))
@@ -67,23 +67,23 @@ export function useBinding(instance, property, converter = null) {
     return state.binding
   } else {
     const bindBinding = instance.useBinding.bind(instance)
-    return bindBinding(property, converter)
+    return bindBinding(propertyName, converter)
   }
 }
 
-export function useCommand(instance, command, converter = null) {
+export function useCommand(instance, commandName, converter = null) {
   if (!(instance instanceof ViewModel)) {
 
     const oldInstance = reactRef(instance)
     const [ state, setState ] = reactState(() => ({
-      binding: new CommandBinding(instance, command, converter)
+      binding: new CommandBinding(instance, commandName, converter)
     }))
 
     reactEffect(() => {
       if (instance !== oldInstance.current) {
         oldInstance.current = instance
         setState({
-          binding: new CommandBinding(instance, command, converter)
+          binding: new CommandBinding(instance, commandName, converter)
         })
       }
       state.binding.bind(() => setState(state => ({ ...state })))
@@ -93,7 +93,7 @@ export function useCommand(instance, command, converter = null) {
     return state.binding
   } else {
     const bindCommand = instance.useCommand.bind(instance)
-    return bindCommand(command, converter)
+    return bindCommand(commandName, converter)
   }
 }
 
@@ -132,14 +132,14 @@ export function useEvent(instance, eventName, listener = null) {
 // TODO: MAYBE I SHOULD JUST SCRAP THIS AND RENAME USEBINDING TO USE
 // PROPERTY.
 
-export function useProperty(instance, property, converter = null) {
-  const [ value ] = useBinding(instance, property, converter)
+export function useProperty(instance, propertyName, converter = null) {
+  const [ value ] = useBinding(instance, propertyName, converter)
   return value
 }
 
 export function useProperties(instance, properties) {
   const bindProperty = useProperty.bind(null, instance)
-  return properties.map((property) => {
-    return bindProperty(property)
+  return properties.map((propertyName) => {
+    return bindProperty(propertyName)
   })
 }
