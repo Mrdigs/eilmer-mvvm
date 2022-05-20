@@ -179,7 +179,33 @@ class DateTimeConverter extends Converter {
 
 }
 
-DateTimeConverter.isoDateConverter = new DateTimeConverter('en-CA', { dateStyle: 'short' })
+class IsoDateConverter extends Converter {
+
+  includeTime = false
+
+  constructor(includeTime) {
+    super()
+    this.includeTime = includeTime
+  }
+
+  convertFrom(viewModelValue, bindingContext) {
+    if (viewModelValue) {
+      const string = viewModelValue.toISOString()
+      return this.includeTime ? string : string.slice(0, 10)
+    } else {
+      return viewModelValue
+    }
+  }
+
+  convertTo(viewValue, bindingContext) {
+    const date = new Date(viewValue)
+    if (date.toString() === 'Invalid Date') {
+      throw new ConverterException('Cannot parse date', context.propertyName, viewValue)
+    }
+    return date
+  }
+
+}
 
 function getNumbersForLocale(locale) {
   const formatter = new Intl.NumberFormat(locale, {useGrouping: false})
@@ -209,5 +235,8 @@ function formatString(options, string, ...args) {
   }
   return formatted
 }
+
+DateTimeConverter.isoDateConverter = new IsoDateConverter(false)
+DateTimeConverter.isoDateTimeConverter = new IsoDateConverter(true)
 
 export default DateTimeConverter
