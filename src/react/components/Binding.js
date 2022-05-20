@@ -3,6 +3,12 @@ import React from 'react'
 import Binder, { useBinderFor } from './Binder'
 import { Converter, ConverterBase, ConverterException } from '../../converters'
 
+function EventBinding({ vm, event, children, ...props }) {
+    /*
+    Need to decide how this is going to work?
+    */
+}
+
 function Binding({ vm, command, canExecute, converter, children, ...props }) {
   const binder = useBinder(vm)
   const { fromConverter, toConverter } = splitConverter(converter)
@@ -10,43 +16,26 @@ function Binding({ vm, command, canExecute, converter, children, ...props }) {
   const childProps = {}
 
   let eventProperty, eventBinding = null
-  Object.entries(properties).forEach((each) => {
-    let binding = null, propertyName = each[0], childProp = each[1]
-    if (typeof childProp === 'string') {
-      binding = binder.useBinding(propertyName, fromConverter)
-    } else if (Array.isArray(childProp)) {
-      const [ property, converter ] = childProp
-      binding = binder.useBinding(propertyName, converter)
-      childProp = property
-    } else if (typeof childProp === 'object') {
-      const { property, converter } = childProp
-      binding = binder.useBinding(propertyName, converter)
-      childProp = property
+  Object.entries(properties).forEach(([ propertyName, value ]) => {
+    const [ childProp, converter ] = deconstructProperty(value)
+    if (childProp) {
+      const binding = binder.useBinding(propertyName, converter || fromConverter)
+      eventBinding = eventBinding || binding
+      eventProperty = eventProperty || childProp
+      childProps[childProp] = binding.getValue()
+      binding.getContext().componentProperty = childProp
     }
-    eventBinding = eventBinding || binding
-    eventProperty = eventProperty || childProp
-    childProps[childProp] = binding.getValue()
-    binding.getContext().componentProperty = childProp
   })
 
   let eventConverter = toConverter, commandBinding
   // TODO: As this now triggers a re-render, it's a good idea
   // to move it into the child component I think...
-  // TODO: Allow the command to be an object like the props above
   if (command) {
-    if (typeof command === 'string') {
-      // TODO: I *think* I only need fromConverter here....
-      commandBinding = binder.useCommand(command, fromConverter)
-      // commandBinding = binder.useCommand(command, converter)
-    } else if (Array.isArray(command)) {
-      commandBinding = binder.useCommand(command[0], command[1])
-    } else if (typeof command === 'object') {
-      commandBinding = binder.useCommand(command.command, command.converter)
-    }
+    const [ commandName, converter ] = deconstructProperty(command, 'command')
+    commandBinding = binder.useCommand(command, converter || fromConverter)
   }
 
   const defaultEvent = commandBinding ? 'onClick' : 'onChange'
-
   let eventType = events[defaultEvent] !== false ? defaultEvent : null
   Object.entries(events).reduce((handled, [event, handle]) => {
     if (handle) eventType = event
@@ -55,34 +44,8 @@ function Binding({ vm, command, canExecute, converter, children, ...props }) {
 
   if (commandBinding) {
     let canExecuteValue = commandBinding.canExecute()
-    let canExecuteProperty, canExecuteConverter
-    if (eventType) {
-      eventBinding = null
-      eventConverter = null
-      childProps[eventType] = (e) => {
-        commandBinding.execute(e.target[eventProperty])
-      }
-    }
-    if (typeof canExecute === 'string') {
-      canExecuteProperty = canExecute
-    } else if (Array.isArray(canExecute)) {
-      if (typeof canExecute[0] === 'string') {
-        canExecuteProperty = canExecute[0]
-        if (canExecute[1] instanceof Converter) {
-          canExecuteConverter = canExecute[1]
-        }
-      }
-    } else if (typeof canExecute === 'object') {
-      if (typeof canExecute.property ==='string') {
-        canExecuteProperty = canExecute.property
-        if (canExecute.converter instanceof Converter) {
-          canExecuteConverter = canExecute.converter
-        }
-      }
-    }
+    let [ canExecuteProperty, canExecuteConverter ] = deconstructProperty(canExecute)
     if (canExecuteProperty) {
-      // TODO: swap property props definitions round so they can
-      // work like this, too: e.g firstName="value" rather than value="firstName"
       if (canExecuteProperty[0] === '!') {
         canExecuteProperty = canExecuteProperty.substr(1)
         canExecuteValue = !canExecuteValue
@@ -93,12 +56,17 @@ function Binding({ vm, command, canExecute, converter, children, ...props }) {
         childProps[canExecuteProperty] = canExecuteValue
       }
     }
+    if (eventType) {
+      eventBinding = null
+      eventConverter = null
+      childProps[eventType] = (e) => {
+        commandBinding.execute(e.target[eventProperty])
+      }
+    }
   }
 
   const childrenProps = {
-    eventType,
-    eventBinding,
-    eventConverter,
+    eventType, eventBinding, eventConverter
   }
 
   if (Array.isArray(children)) {
@@ -203,6 +171,17 @@ function parseProps(props) {
     properties: {},
     events: {}
   })
+}
+
+function deconstructProperty(propertyValue, propertyProp = 'property') {
+  if (typeof propertyValue === 'string') {
+    return [ propertyValue ]
+  } else if (Array.isArray(propertyValue)) {
+    return [ propertyValue[0], propertyValue[1] ]
+  } else if (typeof propertyValue === 'object') {
+    return [ propertyValue[propertyProp], propertyValue.converter ]
+  }
+  return []
 }
 
 function splitConverter(converter) {
