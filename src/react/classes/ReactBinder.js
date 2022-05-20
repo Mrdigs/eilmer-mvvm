@@ -15,14 +15,12 @@ class ReactBinder extends Binder {
     return bindBinding(this.viewModel, propertyName, converter)
   }
 
-  useCommand(command, converter) {
-    // TODO: Change to commandName, and elsewhere
-    return bindCommand(this.viewModel, command, converter)
+  useCommand(commandName, converter) {
+    return bindCommand(this.viewModel, commandName, converter)
   }
 
-  // TODO: Do I want to allow a converter here?
-  useEvent(eventName) {
-    return bindEvent(this.viewModel, eventName)
+  useEvent(eventName, listener) {
+    return bindEvent(this.viewModel, eventName, listener)
   }
 }
 

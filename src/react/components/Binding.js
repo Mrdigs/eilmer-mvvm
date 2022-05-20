@@ -3,55 +3,51 @@ import React from 'react'
 import Binder, { useBinderFor } from './Binder'
 import { Converter, ConverterBase, ConverterException } from '../../converters'
 
-function Binding({ vm, command, canExecute, converter, children, ...props }) {
-  const binder = useBinder(vm)
-  const { fromConverter, toConverter } = splitConverter(converter)
-  const { properties, events } = parseProps(props)
-  const childProps = {}
-
-  // eventProperty is the property of the *child* whose value is to be
-  // set on the vm, which is the 1st property binding found in the args
-  let eventProperty, eventBinding = null
-  Object.entries(properties).forEach(([ childProp, value ]) => {
-    const [ propertyName, converter ] = deconstructProperty(value)
-    if (propertyName && childProp) {
-      const binding = binder.useBinding(propertyName, converter || fromConverter)
-      eventBinding = eventBinding || binding
-      eventProperty = eventProperty || childProp
-      childProps[childProp] = binding.getValue()
-      binding.getContext().componentProperty = childProp
-    }
-  })
-
-  let specifiedEvent
-  Object.entries(events).find(([event, handle]) => {
-    if (handle) specifiedEvent = event
-    return handle
-  })
-
-  // TODO: As this now triggers a re-render, it's a good idea
-  // to move it into the child component I think...
-  if (command) {
-    const commandEvent = specifiedEvent || 'onClick'
-    const [ commandName, converter ] = deconstructProperty(command, 'command')
-    const commandBinding = binder.useCommand(command, converter || fromConverter)
-    // So here: there is an assumption that this is a DOM event
-    // and it *might* not be....
-    childProps[commandEvent] = (e) => {
-      commandBinding.execute(e.target[eventProperty])
-    }
-  } else {
-    const bindingEvent = specifiedEvent || 'onChange'
-    if (events[bindingEvent] !== false) {
-      childProps.eventType = bindingEvent
-      childProps.eventConverter = toConverter
-      childProps.eventBinding = eventBinding
-    }
-  }
-
+function Binding({ vm, command, converter, children, ...props }) {
   if (Array.isArray(children)) {
     throw new Error('Binding accepts only one child Component')
   } else {
+    const binder = useBinder(vm)
+    const { fromConverter, toConverter } = splitConverter(converter)
+    const { properties, events } = parseProps(props)
+    const childProps = {}
+
+    // eventProperty is the property of the *child* whose value is to be
+    // set on the vm, which is the 1st property binding found in the args
+    let eventProperty, eventBinding = null
+    Object.entries(properties).forEach(([ childProp, value ]) => {
+      const [ propertyName, converter ] = deconstructProperty(value)
+      if (propertyName && childProp) {
+        const binding = binder.useBinding(propertyName, converter || fromConverter)
+        eventBinding = eventBinding || binding
+        eventProperty = eventProperty || childProp
+        childProps[childProp] = binding.getValue()
+        binding.getContext().componentProperty = childProp
+      }
+    })
+
+    let specifiedEvent
+    Object.entries(events).find(([event, handle]) => {
+      if (handle) specifiedEvent = event
+      return handle
+    })
+
+    if (command) {
+      const commandEvent = specifiedEvent || 'onClick'
+      const [ commandName, converter ] = deconstructProperty(command, 'command')
+      const commandBinding = binder.useCommand(command, converter || fromConverter)
+      const commandHandler = commandBinding.execute.bind(commandBinding)
+      const eventHandler = createEventHandler(eventProperty, commandHandler)
+      childProps[commandEvent] = eventHandler
+    } else {
+      const bindingEvent = specifiedEvent || 'onChange'
+      if (events[bindingEvent] !== false) {
+        childProps.eventType = bindingEvent
+        childProps.eventConverter = toConverter
+        childProps.eventBinding = eventBinding
+      }
+    }
+
     return (
       <BoundChild {...childProps}>
         {children}
@@ -66,7 +62,6 @@ function BoundChild(props) {
   const [ savedProps, setSavedProps ] = React.useState(defaultState)
   const { eventType, eventBinding, eventConverter, children, ...childProps } = savedProps.componentProps
   Object.assign(childProps, savedProps.converterProps)
-  childProps.ref = ref
 
   React.useEffect(() => {
     setSavedProps(savedProps => ({
@@ -80,12 +75,11 @@ function BoundChild(props) {
   // valid and up to date - rather like CanExecute in WPF
 
   if (eventBinding && eventType) {
-    // So here: there is an assumption that this is a DOM event
-    // and it *might* not be....
-    childProps[eventType] = (e) => {
-      const context = eventBinding.getContext()
-      const value = e.target[context.componentProperty]
+    const context = eventBinding.getContext()
+    const eventProperty = context.componentProperty
+    childProps[eventType] = createEventHandler(eventProperty, (value) => {
       if (eventConverter) {
+        // Maybe rename this, as it will only ever be an html element
         context.component = ref.current
         context.setComponentPropertiesHandler = (converterProps) => {
           setSavedProps(savedProps => ({
@@ -103,12 +97,13 @@ function BoundChild(props) {
       } else {
         eventBinding.setValue(value)
       }
-    }
+    })
   }
 
   if (typeof children === 'function') {
     return children(childProps)
   } else {
+    if (typeof children.type === 'string') childProps.ref = ref
     return React.cloneElement(children, childProps)
   }
 }
@@ -121,21 +116,9 @@ function useBinder(vm) {
 function parseProps(props) {
   return Object.entries(props).reduce((parsed, [prop, value]) => {
     if (prop.substr(0, 2) === 'on') {
-      // TODO: Shouldn't this be a boolean?
+      // TODO: Shouldn't this be a boolean? - TEST THIS *OUT*
       if (typeof value === 'string') {
         parsed.events[prop] = value
-      /*
-      // Actually I don't think I do want to, do I?
-      // Or do I? Keep it here but commented in case
-      } else if (Array.isArray(value)) {
-        if (typeof value[0] === 'string') {
-          parsed.events[prop] = value
-        }
-      } else if (typeof value === 'object') {
-        if (typeof value.property === 'string') {
-          parsed.events[prop] = value
-        }
-      */
       }
     } else if (typeof value === 'string') {
       parsed.properties[prop] = value
@@ -175,6 +158,16 @@ function splitConverter(converter) {
   return {
     fromConverter,
     toConverter
+  }
+}
+
+function createEventHandler(eventProperty, handler) {
+  return (eventOrValue) => {
+    if (eventOrValue.target instanceof window.HTMLElement) {
+      handler(eventOrValue.target[eventProperty])
+    } else {
+      handler(eventOrValue)
+    }
   }
 }
 

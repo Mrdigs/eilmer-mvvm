@@ -16,16 +16,18 @@ function Binder({ vm, children }) {
 }
 
 export function useBinderFor(vm) {
+  const oldVm = React.useRef(vm)
   const [ binder, setBinder ] = React.useState(() => (
     vm ? new ReactBinder(vm) : null
   ))
 
   React.useEffect(() => {
-    // TODO: is this going to cause a double initial render?
-    // Needs testing and a ref used if so....
-    setBinder(() => (
-      vm ? new ReactBinder(vm) : null
-    ))
+    if (oldVm.current !== vm) {
+      oldVm.current = vm
+      setBinder(() => (
+        vm ? new ReactBinder(vm) : null
+      ))
+    }
   }, [vm])
 
   return binder

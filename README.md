@@ -11,87 +11,85 @@ The following code gives a good overview of the capabilities of Eilmer. Full doc
 
 ### The Model
 ```javascript
-  class PersonModel {
-    firstName
-    lastName
+class PersonModel {
+  firstName
+  lastName
 
-    constructor(firstName, lastName) {
-      this.firstName = firstName
-      this.lastName = lastName
-    }
-
-    hasName(firstName, lastName) {
-      return firstName === this.firstName && lastName === this.lastName
-    }
-
-    async setName(firstName, lastName) {
-      this.firstName = firstName
-      this.lastName = lastName
-      // await some REST API call, etc
-    }
+  constructor(firstName, lastName) {
+    this.firstName = firstName
+    this.lastName = lastName
   }
+
+  hasName(firstName, lastName) {
+    return firstName === this.firstName && lastName === this.lastName
+  }
+
+  async setName(firstName, lastName) {
+    this.firstName = firstName
+    this.lastName = lastName
+    // await some REST API call, etc
+  }
+}
 ```
 ### The View Model
 ```javascript
-  class PersonViewModel {
-    #personModel
-    firstName
-    lastName
+class PersonViewModel {
+  #personModel
+  firstName
+  lastName
 
-    constructor(personModel) {
-      this.#personModel = personModel
-      this.firstName = this.#personModel.firstName
-      this.lastName = this.#personModel.lastName
-      this.save.canExecute = false
-    }
-
-    onPropertyChange() {
-      this.save.canExecute = (
-        !this.#personModel.hasName(this.firstName, this.lastName)
-        && this.firstName && this.lastName
-      )
-    }
-
-    onSaved() {
-      this.save.canExecute = false
-    }
-
-    async save() {
-      this.#personModel.setName(this.firstName, this.lastName)
-      this.onSaved()
-    }
+  constructor(personModel) {
+    this.#personModel = personModel
+    this.firstName = this.#personModel.firstName
+    this.lastName = this.#personModel.lastName
+    this.save.canExecute = false
   }
+
+  onPropertyChange() {
+    this.save.canExecute = (
+      !this.#personModel.hasName(this.firstName, this.lastName)
+      && this.firstName && this.lastName
+    )
+  }
+
+  onSaved() {
+    this.save.canExecute = false
+  }
+
+  async save() {
+    this.#personModel.setName(this.firstName, this.lastName)
+    this.onSaved()
+  }
+}
 ```
 ### The View
 ```javascript
 import { Binder, useEvent } from 'eilmer/react'
 import { notConverter } from 'eilmer/converters'
 
-  const personModel = new PersonModel('', '')
-  const personViewModel = new PersonViewModel(personModel)
+const personModel = new PersonModel('', '')
+const personViewModel = new PersonViewModel(personModel)
 
-  function PersonView({ viewModel = personViewModel }) {
-    useEvent(viewModel, 'onSaved', () => {
-      alert('Successfully saved!')
-      return true
-    })
+function PersonView({ viewModel = personViewModel }) {
+  useEvent(viewModel, 'onSaved', () => {
+    alert('Successfully saved!')
+    return true
+  })
 
-    return <>
-      <div>
-        Model Value: {JSON.stringify(personModel)}
-      </div>
-      <div>
-        <Binder.Binding vm={viewModel} firstName="value">
-          <input/>
-        </Binder.Binding>
-        <Binder.Binding vm={viewModel} lastName="value">
-          <input/>
-        </Binder.Binding>
-        <Binder.Binding vm={viewModel} command="save" canExecute={['disabled', notConverter]}>
-          <button>Save</button>
-        </Binder.Binding>
-      </div>
-    </>
-  }
+  return <>
+    <div>
+      Model Value: {JSON.stringify(personModel)}
+    </div>
+    <Binder.Binding vm={viewModel} value="firstName">
+      <input/>
+    </Binder.Binding>
+    <Binder.Binding vm={viewModel} value="lastName">
+      <input/>
+    </Binder.Binding>
+    <Binder.Binding vm={viewModel} command="save" disabled={['save.canExecute', notConverter]}>
+      <button>Save</button>
+    </Binder.Binding>
+  </>
+}
 ```
 ![react+eilmer](https://user-images.githubusercontent.com/3416486/169589318-eeb26b08-0a17-44b6-ae53-a8939869bd45.png)
