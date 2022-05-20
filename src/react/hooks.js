@@ -98,8 +98,7 @@ export function useCommand(instance, command, converter = null) {
 }
 
 // TODO: Do I want to allow a converter here
-// TODO: Do I also want to allow a listener to be registered?
-export function useEvent(instance, eventName) {
+export function useEvent(instance, eventName, listener) {
   if (!(instance instanceof ViewModel)) {
 
     const oldInstance = reactRef(instance)
@@ -114,7 +113,11 @@ export function useEvent(instance, eventName) {
           binding: new EventBinding(instance, eventName)
         })
       }
-      state.binding.bind(() => setState(state => ({ ...state })))
+      state.binding.bind((...args) => {
+        if (typeof listener !== 'function' || listener(...args)) {
+          setState(state => ({ ...state }))
+        }
+      })
       return state.binding.unbind.bind(state.binding)
     }, [instance])
 
