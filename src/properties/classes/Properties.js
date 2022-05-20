@@ -59,8 +59,9 @@ export default class Properties {
     }
   }
 
-  static removePropertyChangeListener(object, property, listener) {
+  static removePropertyChangeListener(target, propertyName, listener) {
     if (typeof listener === 'function') {
+      const [ object, property ] = getTargetAndPropertyName(target, propertyName)
       const descriptor = Object.getOwnPropertyDescriptor(object, property)
       if (descriptor.set?.listeners) {
         const listeners = descriptor.set.listeners

@@ -3,22 +3,18 @@ import React from 'react'
 import Binder, { useBinderFor } from './Binder'
 import { Converter, ConverterBase, ConverterException } from '../../converters'
 
-function EventBinding({ vm, event, children, ...props }) {
-    /*
-    Need to decide how this is going to work?
-    */
-}
-
 function Binding({ vm, command, canExecute, converter, children, ...props }) {
   const binder = useBinder(vm)
   const { fromConverter, toConverter } = splitConverter(converter)
   const { properties, events } = parseProps(props)
   const childProps = {}
 
+  // eventProperty is the property of the *child* whose value is to be
+  // set on the vm, which is the 1st property binding found in the args
   let eventProperty, eventBinding = null
-  Object.entries(properties).forEach(([ propertyName, value ]) => {
-    const [ childProp, converter ] = deconstructProperty(value)
-    if (childProp) {
+  Object.entries(properties).forEach(([ childProp, value ]) => {
+    const [ propertyName, converter ] = deconstructProperty(value)
+    if (propertyName && childProp) {
       const binding = binder.useBinding(propertyName, converter || fromConverter)
       eventBinding = eventBinding || binding
       eventProperty = eventProperty || childProp
@@ -27,53 +23,37 @@ function Binding({ vm, command, canExecute, converter, children, ...props }) {
     }
   })
 
-  let eventConverter = toConverter, commandBinding
+  let specifiedEvent
+  Object.entries(events).find(([event, handle]) => {
+    if (handle) specifiedEvent = event
+    return handle
+  })
+
   // TODO: As this now triggers a re-render, it's a good idea
   // to move it into the child component I think...
   if (command) {
+    const commandEvent = specifiedEvent || 'onClick'
     const [ commandName, converter ] = deconstructProperty(command, 'command')
-    commandBinding = binder.useCommand(command, converter || fromConverter)
-  }
-
-  const defaultEvent = commandBinding ? 'onClick' : 'onChange'
-  let eventType = events[defaultEvent] !== false ? defaultEvent : null
-  Object.entries(events).reduce((handled, [event, handle]) => {
-    if (handle) eventType = event
-    return handled || handle
-  }, false)
-
-  if (commandBinding) {
-    let canExecuteValue = commandBinding.canExecute()
-    let [ canExecuteProperty, canExecuteConverter ] = deconstructProperty(canExecute)
-    if (canExecuteProperty) {
-      if (canExecuteProperty[0] === '!') {
-        canExecuteProperty = canExecuteProperty.substr(1)
-        canExecuteValue = !canExecuteValue
-      }
-      if (canExecuteConverter instanceof Converter) {
-        childProps[canExecuteProperty] = canExecuteConverter.convertFrom(canExecuteValue)
-      } else {
-        childProps[canExecuteProperty] = canExecuteValue
-      }
+    const commandBinding = binder.useCommand(command, converter || fromConverter)
+    // So here: there is an assumption that this is a DOM event
+    // and it *might* not be....
+    childProps[commandEvent] = (e) => {
+      commandBinding.execute(e.target[eventProperty])
     }
-    if (eventType) {
-      eventBinding = null
-      eventConverter = null
-      childProps[eventType] = (e) => {
-        commandBinding.execute(e.target[eventProperty])
-      }
+  } else {
+    const bindingEvent = specifiedEvent || 'onChange'
+    if (events[bindingEvent] !== false) {
+      childProps.eventType = bindingEvent
+      childProps.eventConverter = toConverter
+      childProps.eventBinding = eventBinding
     }
-  }
-
-  const childrenProps = {
-    eventType, eventBinding, eventConverter
   }
 
   if (Array.isArray(children)) {
     throw new Error('Binding accepts only one child Component')
   } else {
     return (
-      <BoundChild {...childrenProps} {...childProps}>
+      <BoundChild {...childProps}>
         {children}
       </BoundChild>
     )
@@ -99,7 +79,9 @@ function BoundChild(props) {
   // retreive information from it - such as whether all of the bindings are
   // valid and up to date - rather like CanExecute in WPF
 
-  if (eventBinding) {
+  if (eventBinding && eventType) {
+    // So here: there is an assumption that this is a DOM event
+    // and it *might* not be....
     childProps[eventType] = (e) => {
       const context = eventBinding.getContext()
       const value = e.target[context.componentProperty]
