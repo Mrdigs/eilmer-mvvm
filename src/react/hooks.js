@@ -98,7 +98,7 @@ export function useCommand(instance, command, converter = null) {
 }
 
 // TODO: Do I want to allow a converter here
-export function useEvent(instance, eventName, listener) {
+export function useEvent(instance, eventName, listener = null) {
   if (!(instance instanceof ViewModel)) {
 
     const oldInstance = reactRef(instance)
@@ -132,7 +132,7 @@ export function useEvent(instance, eventName, listener) {
 // TODO: MAYBE I SHOULD JUST SCRAP THIS AND RENAME USEBINDING TO USE
 // PROPERTY.
 
-export function useProperty(instance, property, converter) {
+export function useProperty(instance, property, converter = null) {
   const [ value ] = useBinding(instance, property, converter)
   return value
 }
