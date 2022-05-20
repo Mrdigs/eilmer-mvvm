@@ -1,9 +1,12 @@
 import Converter from './classes/Converter'
 import ConverterBase from './classes/ConverterBase'
 import ConverterException from './classes/ConverterException'
+// import InverseBooleanConverter from './classes/InverseBooleanConverter'
 import DateTimeConverter from './classes/DateTimeConverter'
 
 export const dateConverter = DateTimeConverter.isoDateConverter
+
+export const notConverter = new Converter((v) => !v, (v) => !v)
 
 export const numberConverter = new Converter((number, context) => {
   if (typeof number === 'number') {
@@ -28,7 +31,8 @@ export {
 
 const Converters = {
   dateConverter,
-  numberConverter
+  numberConverter,
+  notConverter
 }
 Object.freeze(Converters)
 export default Converters
