@@ -1,3 +1,4 @@
+![eilmer-github](https://user-images.githubusercontent.com/3416486/169549391-252a8846-7be9-4d27-9d60-70b250b28b2f.png)
 # Eilmer MVVM
 
 ### The Model
