@@ -8,6 +8,7 @@ function Binding({ vm, command, converter, children, ...props }) {
     throw new Error('Binding accepts only one child Component')
   } else {
     const binder = useBinder(vm)
+    const htmlChild = typeof children.type === 'string'
     const { fromConverter, toConverter } = splitConverter(converter)
     const { properties, events } = parseProps(props)
     const childProps = {}
@@ -33,15 +34,17 @@ function Binding({ vm, command, converter, children, ...props }) {
     })
 
     if (command) {
-      const commandEvent = specifiedEvent || 'onClick'
-      const [ commandName, converter ] = deconstructProperty(command, 'command')
-      const commandBinding = binder.useCommand(command, converter || fromConverter)
-      const commandHandler = commandBinding.execute.bind(commandBinding)
-      const eventHandler = createEventHandler(eventProperty, commandHandler)
-      childProps[commandEvent] = eventHandler
+      const commandEvent = specifiedEvent || (htmlChild ? 'onClick' : null)
+      if (commandEvent) {
+        const [ commandName, converter ] = deconstructProperty(command, 'command')
+        const commandBinding = binder.useCommand(command, converter || fromConverter)
+        const commandHandler = commandBinding.execute.bind(commandBinding)
+        const eventHandler = createEventHandler(eventProperty, commandHandler)
+        childProps[commandEvent] = eventHandler
+      }
     } else {
-      const bindingEvent = specifiedEvent || 'onChange'
-      if (events[bindingEvent] !== false) {
+      const bindingEvent = specifiedEvent || (htmlChild ? 'onChange' | null)
+      if (bindingEvent && events[bindingEvent] !== false) {
         childProps.eventType = bindingEvent
         childProps.eventConverter = toConverter
         childProps.eventBinding = eventBinding
@@ -116,8 +119,7 @@ function useBinder(vm) {
 function parseProps(props) {
   return Object.entries(props).reduce((parsed, [prop, value]) => {
     if (prop.substr(0, 2) === 'on') {
-      // TODO: Shouldn't this be a boolean? - TEST THIS *OUT*
-      if (typeof value === 'string') {
+      if (typeof value === 'boolean') {
         parsed.events[prop] = value
       }
     } else if (typeof value === 'string') {
