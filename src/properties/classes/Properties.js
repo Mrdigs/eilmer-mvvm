@@ -1,5 +1,5 @@
 import PropertyAccessor from './PropertyAccessor'
-import { Event } from '../../events'
+import Event from '../../events/classes/Event'
 
 export default class Properties {
 

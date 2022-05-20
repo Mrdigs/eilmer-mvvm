@@ -1,6 +1,5 @@
+import { Properties } from '../../properties'
 import { Converter, ConverterException } from '../../converters'
-import { addPropertyChangeListener, removePropertyChangeListener } from '../../properties'
-import { getPropertyValue, setPropertyValue } from '../../properties'
 
 import BindingContext from './BindingContext'
 
@@ -103,7 +102,7 @@ class Binding {
   bind(subscriber) {
     if (!this.#bound) {
       const args = [this.#viewModel, this.#propertyName, subscriber]
-      addPropertyChangeListener.apply(null, args)
+      Properties.addPropertyChangeListener.apply(null, args)
       this.#subscriber = subscriber
       this.#bound = true
       return this.unbind.bind(this)
@@ -120,7 +119,7 @@ class Binding {
   unbind() {
     if (this.#bound) {
       const args = [this.#viewModel, this.#propertyName, this.#subscriber]
-      removePropertyChangeListener.apply(null, args)
+      Properties.removePropertyChangeListener.apply(null, args)
       this.#subscriber = null
       this.#bound = false
     }
@@ -137,7 +136,7 @@ class Binding {
     if (this.#converter) {
       try {
         const converted = this.#converter.convertTo(value, this.getContext())
-        setPropertyValue(this.#viewModel, this.#propertyName, converted)
+        Properties.setPropertyValue(this.#viewModel, this.#propertyName, converted)
       } catch (exception) {
         if (exception instanceof ConverterException) {
           console.warn('Unhandled', exception.toString())
@@ -146,7 +145,7 @@ class Binding {
         }
       }
     } else {
-      setPropertyValue(this.#viewModel, this.#propertyName, value)
+      Properties.setPropertyValue(this.#viewModel, this.#propertyName, value)
     }
   }
 
@@ -158,7 +157,7 @@ class Binding {
    * @returns The current property value.
    */
   getValue() {
-    const value = getPropertyValue(this.#viewModel, this.#propertyName)
+    const value = Properties.getPropertyValue(this.#viewModel, this.#propertyName)
     if (this.#converter) {
       return this.#converter.convertFrom(value, this.getContext())
     }

@@ -11,9 +11,6 @@ class BindingContext {
    */
   attributes = undefined
 
-//  component = undefined
-//  componentProperty = undefined
-
   /**
    * @hideconstructor
    */
