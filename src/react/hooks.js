@@ -124,8 +124,8 @@ export function useEvent(instance, eventName, listener) {
     return state.binding
 
   } else {
-    // TODO: Needs implementing
-    throw new Error('Not implemented yet')
+    const bindEvent = instance.useEvent.bind(instance)
+    return bindEvent(eventName, listener)
   }
 }
 

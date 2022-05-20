@@ -2,7 +2,7 @@ import * as Internals from '../internals'
 import { NotImplementedException } from '../../exceptions'
 import Commands from '../../commands'
 
-export default class ViewModel { 
+export default class ViewModel {
 
   // TODO: Can I add a constructor that prevents this
   // class from being directly instantiated?
@@ -31,17 +31,21 @@ export default class ViewModel {
 
   static from(object) {
     return new (class extends ViewModel {
-      useProperty(property, converter = null) {
-        return Internals.bindProperty(object, property, converter)
+      useProperty(propertyName, converter = null) {
+        return Internals.bindProperty(object, propertyName, converter)
       }
-      useBinding(property, converter = null) {
-        return Internals.bindBinding(object, property, converter)
+      useBinding(propertyName, converter = null) {
+        return Internals.bindBinding(object, propertyName, converter)
       }
-      useCommand(command, converter = null, ...args) {
-        return Internals.bindCommand(object, command, converter, ...args)
+      useCommand(commandName, converter = null, ...args) {
+        return Internals.bindCommand(object, commandName, converter, ...args)
       }
-      dispatchCommand(command, ...args) {
-        return Internals.bindCommand(object, command, ...args)()
+      useEvent(eventName, listener = null) {
+        return bindEvent.bindEvent(object, eventName, listener)
+      }
+      // TODO: Is this relevant anymore?
+      dispatchCommand(commandName, ...args) {
+        return Internals.bindCommand(object, commandName, ...args)()
       }
     })()
   }
