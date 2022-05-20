@@ -77,16 +77,20 @@ import { notConverter } from 'eilmer/converters'
     })
 
     return <>
-      <div>Model Value: {JSON.stringify(personModel)}</div>
-      <Binder.Binding vm={viewModel} value="firstName">
-        <input/>
-      </Binder.Binding>
-      <Binder.Binding vm={viewModel} value="lastName">
-        <input/>
-      </Binder.Binding>
-      <Binder.Binding vm={viewModel} command="save" canExecute={['disabled', notConverter]}>
-        <button>Save</button>
-      </Binder.Binding>
+      <div>
+        Model Value: {JSON.stringify(personModel)}
+      </div>
+      <div>
+        <Binder.Binding vm={viewModel} firstName="value">
+          <input/>
+        </Binder.Binding>
+        <Binder.Binding vm={viewModel} lastName="value">
+          <input/>
+        </Binder.Binding>
+        <Binder.Binding vm={viewModel} command="save" canExecute={['disabled', notConverter]}>
+          <button>Save</button>
+        </Binder.Binding>
+      </div>
     </>
   }
 ```

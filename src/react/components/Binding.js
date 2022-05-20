@@ -10,16 +10,18 @@ function Binding({ vm, command, canExecute, converter, children, ...props }) {
   const childProps = {}
 
   let eventProperty, eventBinding = null
-  Object.entries(properties).forEach(([childProp, propertyName]) => {
-    let binding
-    if (typeof propertyName === 'string') {
+  Object.entries(properties).forEach((each) => {
+    let binding = null, propertyName = each[0], childProp = each[1]
+    if (typeof childProp === 'string') {
       binding = binder.useBinding(propertyName, fromConverter)
-    } else if (Array.isArray(propertyName)) {
-      const [ property, converter ] = propertyName
-      binding = binder.useBinding(property, converter)
-    } else if (typeof propertyName === 'object') {
-      const { property, converter } = propertyName
-      binding = binder.useBinding(property, converter)
+    } else if (Array.isArray(childProp)) {
+      const [ property, converter ] = childProp
+      binding = binder.useBinding(propertyName, converter)
+      childProp = property
+    } else if (typeof childProp === 'object') {
+      const { property, converter } = childProp
+      binding = binder.useBinding(propertyName, converter)
+      childProp = property
     }
     eventBinding = eventBinding || binding
     eventProperty = eventProperty || childProp
@@ -103,15 +105,14 @@ function Binding({ vm, command, canExecute, converter, children, ...props }) {
     throw new Error('Binding accepts only one child Component')
   } else {
     return (
-      <Children {...childrenProps} {...childProps}>
+      <BoundChild {...childrenProps} {...childProps}>
         {children}
-      </Children>
+      </BoundChild>
     )
   }
 }
 
-// TODO: THINK OF A BETTER NAME
-function Children(props) {
+function BoundChild(props) {
   const ref = React.useRef()
   const defaultState = { componentProps: props, converterProps: {}}
   const [ savedProps, setSavedProps ] = React.useState(defaultState)
@@ -135,12 +136,6 @@ function Children(props) {
       const context = eventBinding.getContext()
       const value = e.target[context.componentProperty]
       if (eventConverter) {
-
-        // Ok so I need to perhaps find a better way - in essence
-        // it out to be part of the binding and already set up but then
-        // I can't see how that's possible - although I guess I can have
-        // a method on the binder, to set BOTH in a new context or something?
-
         context.component = ref.current
         context.setComponentPropertiesHandler = (converterProps) => {
           setSavedProps(savedProps => ({
@@ -148,7 +143,6 @@ function Children(props) {
           }))
           return true
         }
-
         try {
           eventBinding.setValue(eventConverter.convertTo(value, context))
         } catch (exception) {
@@ -170,17 +164,14 @@ function Children(props) {
 }
 
 function useBinder(vm) {
-  const contextBinder = Binder.useBinder()
   const localBinder = useBinderFor(vm)
-  return localBinder || contextBinder
+  return localBinder || Binder.useBinder()
 }
 
-// So reserved props are vm and command
-// Then there are onX properties which are event types
-// Anything else is passed down
 function parseProps(props) {
   return Object.entries(props).reduce((parsed, [prop, value]) => {
     if (prop.substr(0, 2) === 'on') {
+      // TODO: Shouldn't this be a boolean?
       if (typeof value === 'string') {
         parsed.events[prop] = value
       /*
