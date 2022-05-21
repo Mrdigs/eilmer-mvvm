@@ -1,4 +1,4 @@
-![eilmer-github](https://user-images.githubusercontent.com/3416486/169549391-252a8846-7be9-4d27-9d60-70b250b28b2f.png)
+![eilmer-original](https://user-images.githubusercontent.com/3416486/169643721-56b09632-9733-41a5-b220-8ea2a0985e30.svg)
 # Eilmer MVVM
 
 Eilmer is a toolkit for building MVVM applications and frameworks, specifically targeted for (but not limited to) **React**.
@@ -92,4 +92,4 @@ function PersonView({ viewModel = personViewModel }) {
   </>
 }
 ```
-![react+eilmer](https://user-images.githubusercontent.com/3416486/169589318-eeb26b08-0a17-44b6-ae53-a8939869bd45.png)
+![react+eilmer](https://user-images.githubusercontent.com/3416486/169643780-e3110ace-221b-4047-a530-43ef6286c961.svg)
