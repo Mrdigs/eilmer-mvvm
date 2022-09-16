@@ -37,8 +37,8 @@
     }
   },
   "exports": {
-    "./react": "./dist/react/index.js",
-    ".": "./dist/index.js"
+    "./react": "./es/react/index.js",
+    ".": "./es/index.js"
   },
   "dependencies": {
     "fast-deep-equal": "^3.1.3",
