@@ -1,5 +1,5 @@
 import Binder from '../../bindings/classes/Binder'
-import { bindProperty, bindBinding, bindCommand, bindEvent } from '../internals'
+import { bindProperty, bindBinding, bindCommand, bindExpression, bindEvent } from '../internals'
 
 class ReactBinder extends Binder {
 
@@ -15,8 +15,12 @@ class ReactBinder extends Binder {
     return bindBinding(this.viewModel, propertyName, converter)
   }
 
-  useCommand(commandName, converter) {
-    return bindCommand(this.viewModel, commandName, converter)
+  useCommand(commandName, converter, listener) {
+    return bindCommand(this.viewModel, commandName, converter, listener)
+  }
+
+  useExpression(expression) {
+    return bindExpression(this.viewModel, expression)
   }
 
   useEvent(eventName, listener) {

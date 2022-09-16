@@ -4,6 +4,7 @@ import equal from 'fast-deep-equal'
 import { Converter, ConverterException } from '../converters'
 import { addPropertyChangeListener, removePropertyChangeListener } from '../properties'
 import { CommandBinding, executeCommand } from '../commands'
+import ExpressionBinding from '../expressions/classes/ExpressionBinding'
 import EventBinding from '../events/classes/EventBinding'
 
 import ReactBinding from './classes/ReactBinding'
@@ -71,7 +72,7 @@ export function useBinding(instance, propertyName, converter = null) {
   }
 }
 
-export function useCommand(instance, commandName, converter = null) {
+export function useCommand(instance, commandName, converter = null, listener = null) {
   if (!(instance instanceof ViewModel)) {
 
     const oldInstance = reactRef(instance)
@@ -86,8 +87,14 @@ export function useCommand(instance, commandName, converter = null) {
           binding: new CommandBinding(instance, commandName, converter)
         })
       }
-      state.binding.bind(() => setState(state => ({ ...state })))
+      state.binding.bind((...args) => {
+        if (typeof listener !== 'function' || listener(...args)) {
+          setState(state => ({ ...state }))
+        }
+      })
       return state.binding.unbind.bind(state.binding)
+      // state.binding.bind(() => setState(state => ({ ...state })))
+      // return state.binding.unbind.bind(state.binding)
     }, [instance])
 
     return state.binding
@@ -129,6 +136,32 @@ export function useEvent(instance, eventName, listener = null) {
   }
 }
 
+// TODO: Converter?
+export function useExpression(instance, expression) {
+  if (!(instance instanceof ViewModel)) {
+
+      const oldInstance = reactRef(instance)
+      const [ state, setState ] = reactState(() => ({
+        binding: new ExpressionBinding(instance, expression)
+      }))
+
+      reactEffect(() => {
+        if (instance !== oldInstance.current) {
+          oldInstance.current = instance
+          setState({
+            binding: new ExpressionBinding(instance, expression)
+          })
+        }
+        return state.binding.bind(() => setState(state => ({ ...state })))
+      }, [instance])
+
+      // TODO: iterator generator on the binding
+      return state.binding
+
+  } else {
+    throw new Error('Not implemented yet')
+  }
+}
 // TODO: MAYBE I SHOULD JUST SCRAP THIS AND RENAME USEBINDING TO USE
 // PROPERTY.
 

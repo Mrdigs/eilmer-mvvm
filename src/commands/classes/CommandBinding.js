@@ -26,7 +26,7 @@ export default class CommandBinding extends Binding {
     executeCommand(this.#viewModel, this.#commandName, ...args)
   }
 
-  canExecute() {
+  get canExecute() {
     const value = !!super.getValue()
     if (this.#converter) {
       return this.#converter.convertFrom(value, this.getContext())
@@ -44,7 +44,7 @@ export default class CommandBinding extends Binding {
 
   *[Symbol.iterator]() {
     yield this.execute.bind(this)
-    yield this.canExecute()
+    yield this.canExecute
   }
 
 }
