@@ -214,7 +214,7 @@ class DateTimeConverter extends Converter {
 
 }
 
-class IsoDateConverter extends Converter {
+export class IsoDateConverter extends Converter {
   includeTime = false;
 
   constructor(includeTime) {

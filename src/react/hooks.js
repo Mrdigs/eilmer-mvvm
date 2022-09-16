@@ -56,13 +56,14 @@ export function useBinding(instance, propertyName, converter = null) {
     }))
 
     reactEffect(() => {
+      // TODO: THIS NEEDS TO HAPPEN IN COMMAND TOO, BUT NEEDS CHECKING
+      let binding = state.binding
       if (instance !== oldInstance.current) {
         oldInstance.current = instance
-        setState({
-          binding: new ReactBinding(instance, propertyName, converter)
-        })
+        binding = new ReactBinding(instance, propertyName, converter)
+        setState({ binding: binding })
       }
-      return state.binding.bind(() => setState(state => ({ ...state })))
+      return binding.bind(() => setState(state => ({ ...state })))
     }, [instance])
 
     return state.binding
