@@ -37,6 +37,7 @@
     }
   },
   "exports": {
+    "./converters": "./es/converters/index.js",
     "./react": "./es/react/index.js",
     ".": "./es/index.js"
   },
