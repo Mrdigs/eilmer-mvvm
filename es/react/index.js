@@ -1,47 +1,35 @@
-import React from 'react';
-import ViewModel from './classes/ViewModel';
-import { Binder, Binding } from './components';
-import { useInstanceOf, useProperty, useBinding, useProperties, useCommand, useViewModel, useEvent } from './hooks';
-import ReactBindingContext from './classes/ReactBindingContext';
-import ReactBindingConverter from './classes/ReactBindingConverter'; // TODO: Move all of this out. And in fact, This should maybe all become
-// part of Binder, and allow viewModels to be *named*. Perhaps for a
-// test, this should become NamingContext and then Binder can make use
-// of it, if need be. And Binding vm parameter can either be an object
-// or a string, and if a string, it looks for the named vm.
-
-/*
-const LocatorContext = React.createContext()
-
-export function LocatorProvider({ children, ...props }) {
-  const parent = React.useContext(LocatorContext)
-  const provider = Object.create(parent ? parent : null)
-  Object.assign(provider, props)
-
-  return (
-    <LocatorContext.Provider value={provider}>
-      {children}
-    </LocatorContext.Provider>
-  )
-}
-
-LocatorProvider.use = function(name) {
-  // This way to accessing useContext is needed for compilation
-  const current = React['useContext'](LocatorContext)
-  return current[name]
-}
-*/
-
-export { Binder, Binding, useInstanceOf, useProperty, useBinding, useProperties, useCommand, useViewModel, useEvent }; // TODO WHY NOT JUST EXPORT FROM?
-
-export { ReactBindingContext };
-export { ReactBindingConverter };
-export default {
-  Binder,
-  Binding,
-  useProperty,
-  useInstanceOf,
-  useBinding,
-  useProperties,
-  useCommand,
-  useViewModel
+"use strict";
+exports.__esModule = true;
+exports.ReactBindingConverter = exports.ReactBindingContext = exports.useExpression = exports.useEvent = exports.useCommand = exports.useBinding = exports.useProperty = exports.useInstanceOf = exports.Bind = exports.Binding = exports.Binder = void 0;
+// import ViewModel from './classes/ViewModel'
+var components_1 = require("./components");
+exports.Bind = components_1.Bind;
+exports.Binder = components_1.Binder;
+exports.Binding = components_1.Binding;
+var ReactBindingContext_1 = require("./classes/ReactBindingContext");
+exports.ReactBindingContext = ReactBindingContext_1["default"];
+var ReactBindingConverter_1 = require("./classes/ReactBindingConverter");
+exports.ReactBindingConverter = ReactBindingConverter_1["default"];
+var useBinding_1 = require("./hooks/useBinding");
+exports.useBinding = useBinding_1["default"];
+var useCommand_1 = require("./hooks/useCommand");
+exports.useCommand = useCommand_1["default"];
+var useEvent_1 = require("./hooks/useEvent");
+exports.useEvent = useEvent_1["default"];
+var useInstanceOf_1 = require("./hooks/useInstanceOf");
+exports.useInstanceOf = useInstanceOf_1["default"];
+var useProperty_1 = require("./hooks/useProperty");
+exports.useProperty = useProperty_1["default"];
+var useExpression_1 = require("./hooks/useExpression");
+exports.useExpression = useExpression_1["default"];
+exports["default"] = {
+    Bind: components_1.Bind,
+    Binder: components_1.Binder,
+    Binding: components_1.Binding,
+    useProperty: useProperty_1["default"],
+    useInstanceOf: useInstanceOf_1["default"],
+    useBinding: useBinding_1["default"],
+    useCommand: useCommand_1["default"],
+    useExpression: useExpression_1["default"]
 };
+//# sourceMappingURL=index.js.map

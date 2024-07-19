@@ -1,1 +1,1 @@
-{"version":3,"file":"Event.d.ts","sourceRoot":"","sources":["../../../src/events/classes/Event.js"],"names":[],"mappings":"AAAA;IAKE,kCAKC;IAED,8BAMC;IAED,iCAEC;IAGD,6BAGC;;CACF"}
+{"version":3,"file":"Event.d.ts","sourceRoot":"","sources":["../../../src/events/classes/Event.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,UAAU,CAAA;AAExC,MAAM,CAAC,OAAO,OAAO,KAAK;IAExB,OAAO,CAAC,SAAS,CAAsB;IACvC,OAAO,CAAC,cAAc,CAAO;gBAEjB,cAAc,GAAE,aAAoB;IAIhD,SAAS,CAAC,QAAQ,EAAE,aAAa;IAKjC,WAAW,CAAC,QAAQ,EAAE,aAAa;IAInC,OAAO,CAAC,GAAG,IAAI,EAAE,GAAG,EAAE;CAIvB"}

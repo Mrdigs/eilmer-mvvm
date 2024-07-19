@@ -1,0 +1,1 @@
+{"version":3,"file":"NotifyPropertyChanged.js","sourceRoot":"","sources":["../../../src/properties/classes/NotifyPropertyChanged.ts"],"names":[],"mappings":";;AACA,2CAAqC;AAErC;;;;GAIG;AACH;IAAA;IAUA,CAAC;IATC;;OAEG;IACH,qDAAqB,GAArB,UAAsB,YAAoB;QACxC,uBAAU,CAAC,qBAAqB,CAAC,IAAI,EAAE,YAAY,CAAC,CAAA;IACtD,CAAC;IAIH,4BAAC;AAAD,CAAC,AAVD,IAUC;AAED,qBAAe,qBAAqB,CAAA"}

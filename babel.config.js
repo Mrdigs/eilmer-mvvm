@@ -1,12 +1,3 @@
-/*
-{
-  "plugins": ["@babel/plugin-proposal-private-methods"],
-  "presets": [
-    "@babel/preset-react",
-  ]
-}
-*/
-
 module.exports = function (api) {
   const isTest = api.env('test')
   const presets = ['@babel/preset-react']
@@ -14,6 +5,7 @@ module.exports = function (api) {
 
   if (isTest) {
     presets.push(['@babel/preset-env', {targets: {node: 'current'}}])
+    presets.push('@babel/preset-typescript')
   }
 
   return {

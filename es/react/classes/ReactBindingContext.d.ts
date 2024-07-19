@@ -1,5 +1,6 @@
 export default ReactBindingContext;
 declare class ReactBindingContext extends BindingContext {
+    constructor(viewModel: any, propertyName: any);
     component: any;
     componentProperty: any;
     setComponentPropertiesHandler: () => boolean;

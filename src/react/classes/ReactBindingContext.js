@@ -9,8 +9,8 @@ class ReactBindingContext extends BindingContext {
   // THIS WILL DO FOR THE TIME BEING
   setComponentPropertiesHandler = () => false
 
-  constructor(viewModel, propertyName) {
-    super(viewModel, propertyName)
+  constructor(viewModel, propertyName, binding) {
+    super(viewModel, propertyName, binding)
   }
 
   setComponentProperties(properties) {

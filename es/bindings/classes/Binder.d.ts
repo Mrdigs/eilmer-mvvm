@@ -1,19 +1,22 @@
-export default Binder;
-declare class Binder {
-    constructor(viewModel: any);
-    get viewModel(): any;
+import Binding from './Binding';
+import CommandBinding from '../../commands/classes/CommandBinding';
+import { Listener } from '../../properties/types';
+import { Converter } from '../../converters';
+import IConverter from '../../converters/classes/IConverter';
+declare class Binder<T extends object> {
+    protected viewModel: T;
+    constructor(viewModel: T);
+    getViewModel(): T;
     /**
      *
      * @return {Binding}
      */
-    bindProperty(propertyName: any, converter?: any, subscriber?: any): Binding;
+    bindProperty<T = any, K = T>(propertyName: string, converter?: IConverter<T, K>, subscriber?: Listener<T>): Binding<T, K>;
     /**
      *
      * @return {CommandBinding}
      */
-    bindCommand(commandName: any, converter?: any, subscriber?: any): CommandBinding;
-    #private;
+    bindCommand(commandName: string, converter?: Converter, subscriber?: Listener): CommandBinding;
 }
-import Binding from "./Binding";
-import CommandBinding from "../../commands/classes/CommandBinding";
+export default Binder;
 //# sourceMappingURL=Binder.d.ts.map

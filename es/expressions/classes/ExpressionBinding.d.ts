@@ -1,10 +1,20 @@
-export default class ExpressionBinding extends Binding {
-    constructor(viewModel: any, expr: any, converter?: any, subscriber?: any);
+import Binding from '../../bindings/classes/Binding';
+import IConverter from '../../converters/classes/IConverter';
+import { Listener } from '../../properties/types';
+export default class ExpressionBinding<T = any, K = T> extends Binding<T, K> {
+    private properties;
+    private expression;
+    private evaluated;
+    private listener;
+    private myViewModel;
+    private variableResolver;
+    constructor(viewModel: object, expr: string, converter?: IConverter<T, K>);
+    private resolveVariable;
     evaluate(): void;
-    setValue(value: any): void;
-    getValue(): void;
-    bind(subscriber: any): any;
-    #private;
+    setValue(value: K): void;
+    getValue(): K;
+    bind(subscriber: Listener<T>): any;
+    unbind(): void;
+    [Symbol.iterator](): Generator<K, void, unknown>;
 }
-import Binding from "../../bindings/classes/Binding";
 //# sourceMappingURL=ExpressionBinding.d.ts.map

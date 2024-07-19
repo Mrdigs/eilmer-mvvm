@@ -1,4 +1,6 @@
-export default Binding;
+import BindingContext from './BindingContext';
+import { Listener } from '../../properties/types';
+import IConverter from '../../converters/classes/IConverter';
 /**
  * Provides a binding between an object property and a listener.
  *
@@ -7,7 +9,7 @@ export default Binding;
  *
  * This class will work on any type of object providing the bound property
  * is configurable. This means that certain cases are not possible, particularly
- * with built-in object types: new Binding(new Array(), 'length') will trigger
+ * with built-in object types: new Binding(new Array(), 'length') (SEE BELOW, NOT RIGHT) will trigger
  * an error, for example (the {@link Observable} class can be utilized for
  * this kind of use case).
  *
@@ -24,7 +26,13 @@ export default Binding;
  *   binding.setValue(binding.getValue() + 1)
  * }, 1000)
  */
-declare class Binding {
+declare class Binding<T = any, K = T> {
+    protected viewModel: object;
+    private propertyName;
+    private converter;
+    private subscriber;
+    private context;
+    protected bound: boolean;
     /**
      * Create a new Binding. If a subscriber function is provided, then the
      * Binding is immediately to that listener on construction.
@@ -34,7 +42,7 @@ declare class Binding {
      * @param {Converter} converter - An optional Converter.
      * @param {function} subscriber - An optional listener function.
      */
-    constructor(viewModel: object, propertyName: string, converter?: Converter, subscriber?: Function);
+    constructor(viewModel: object, propertyName: string, converter?: IConverter<T, K>, subscriber?: Listener<T>);
     /**
      * Returns the context for this Binding. This context is provided to the
      * Converter, if there is one. There's no good reason to retrieve it
@@ -43,7 +51,8 @@ declare class Binding {
      *
      * @ignore
      */
-    getContext(): any;
+    getContext(): BindingContext;
+    protected setContext(context: BindingContext): void;
     /**
      * Binds this binding to a listener function which will be called
      * whenever the object property this Binder is bound to is updated
@@ -55,7 +64,7 @@ declare class Binding {
      *
      * @param {function} subscriber - The listener function.
      */
-    bind(subscriber: Function): any;
+    bind(subscriber: Listener<T>): any;
     /**
      * Unbinds the bound subscriber and disposes of the Binders reference
      * to it. After this method is called, a new subscriber can be bound to
@@ -69,7 +78,7 @@ declare class Binding {
      *
      * @param value - The value to set the property to.
      */
-    setValue(value: any): void;
+    setValue(value: K): void;
     /**
      * Retrieves the current value of the bound property. If a converter
      * has been specified, the value is converted using the converter's
@@ -77,9 +86,8 @@ declare class Binding {
      *
      * @returns The current property value.
      */
-    getValue(): any;
-    [Symbol.iterator](): Generator<any, void, unknown>;
-    #private;
+    getValue(): K;
+    [Symbol.iterator](): Generator<K | ((value: K) => {}), void, undefined>;
 }
-import { Converter } from "../../converters";
+export default Binding;
 //# sourceMappingURL=Binding.d.ts.map

@@ -1,4 +1,8 @@
-import { useInstanceOf, useBinding, useProperty, useProperties, useCommand, useExpression, useViewModel, useEvent } from './hooks';
+import useBinding from './hooks/useBinding';
+import useProperty from './hooks/useProperty';
+import useExpression from './hooks/useExpression';
+import useCommand from './hooks/useCommand';
+import useEvent from './hooks/useEvent';
 export { useProperty as bindProperty };
 export { useBinding as bindBinding };
 export { useCommand as bindCommand };

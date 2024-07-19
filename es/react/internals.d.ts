@@ -1,5 +1,4 @@
 import { useProperty } from "./hooks";
-import { useBinding } from "./hooks";
 import { useCommand } from "./hooks";
 import { useExpression } from "./hooks";
 import { useEvent } from "./hooks";

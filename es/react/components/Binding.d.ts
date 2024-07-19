@@ -4,5 +4,5 @@ declare function Binding({ vm, converter, children, ...props }: {
     vm: any;
     converter: any;
     children: any;
-}): any;
+}): JSX.Element;
 //# sourceMappingURL=Binding.d.ts.map

@@ -1,1 +1,1 @@
-{"version":3,"file":"PropertyChangeSupport.d.ts","sourceRoot":"","sources":["../../../src/properties/classes/PropertyChangeSupport.js"],"names":[],"mappings":""}
+{"version":3,"file":"PropertyChangeSupport.d.ts","sourceRoot":"","sources":["../../../src/properties/classes/PropertyChangeSupport.ts"],"names":[],"mappings":"AAAA,cAAM,qBAAqB;IAEvB,OAAO,CAAC,MAAM,CAAQ;gBAEV,MAAM,EAAE,MAAM;CAI7B"}

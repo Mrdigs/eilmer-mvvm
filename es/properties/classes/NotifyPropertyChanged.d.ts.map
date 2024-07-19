@@ -1,1 +1,1 @@
-{"version":3,"file":"NotifyPropertyChanged.d.ts","sourceRoot":"","sources":["../../../src/properties/classes/NotifyPropertyChanged.js"],"names":[],"mappings":";AAEA;;;;GAIG;AACH;IAEE;;OAEG;IACH,oCAIC;CAEF"}
+{"version":3,"file":"NotifyPropertyChanged.d.ts","sourceRoot":"","sources":["../../../src/properties/classes/NotifyPropertyChanged.ts"],"names":[],"mappings":"AAAA,OAAO,sBAAsB,MAAM,0BAA0B,CAAA;AAG7D;;;;GAIG;AACH,uBAAe,qBAAsB,YAAW,sBAAsB;IACpE;;OAEG;IACH,qBAAqB,CAAC,YAAY,EAAE,MAAM;IAI1C,QAAQ,CAAC,iBAAiB,CAAC,YAAY,EAAE,MAAM,GAAG,IAAI;CAEvD;AAED,eAAe,qBAAqB,CAAA"}

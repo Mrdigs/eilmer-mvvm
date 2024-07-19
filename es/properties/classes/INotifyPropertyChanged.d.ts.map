@@ -1,0 +1,1 @@
+{"version":3,"file":"INotifyPropertyChanged.d.ts","sourceRoot":"","sources":["../../../src/properties/classes/INotifyPropertyChanged.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,cAAc,CAAC;AAErC,MAAM,CAAC,OAAO,WAAW,sBAAsB;IAE3C,iBAAiB,EAAE,CAAC,YAAY,EAAE,MAAM,KAAK,IAAI,GAAG,KAAK,CAAA;CAC5D"}

@@ -1,13 +1,15 @@
-export default NotifyPropertyChanged;
+import INotifyPropertyChanged from './INotifyPropertyChanged';
 /**
  *
  *
  * @abstract
  */
-declare class NotifyPropertyChanged {
+declare abstract class NotifyPropertyChanged implements INotifyPropertyChanged {
     /**
      * Notifies any listeners for a given property that it has changed.
      */
-    notifyChanged(...args: any[]): void;
+    notifyPropertyChanged(propertyName: string): void;
+    abstract onPropertyChanged(propertyName: string): void;
 }
+export default NotifyPropertyChanged;
 //# sourceMappingURL=NotifyPropertyChanged.d.ts.map

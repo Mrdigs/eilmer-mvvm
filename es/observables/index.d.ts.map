@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/observables/index.js"],"names":[],"mappings":""}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/observables/index.ts"],"names":[],"mappings":"AAAA,OAAO,UAAU,MAAM,sBAAsB,CAAA;AAE7C,QAAA,MAAM,WAAW;;CAEhB,CAAA;AAED,OAAO,EAAE,UAAU,EAAE,CAAA;AACrB,eAAe,WAAW,CAAA"}

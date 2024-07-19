@@ -1,9 +1,12 @@
+import { Binding } from '../../bindings';
 export default class EventBinding extends Binding {
-    constructor(viewModel: any, eventName: any, subscriber?: any);
+    private mySubscriber;
+    private eventName;
+    constructor(viewModel: object, eventName: string, subscriber?: any);
     bind(subscriber: any): any;
+    unbind(): void;
     setValue(value: any): void;
     getValue(): void;
-    #private;
+    [Symbol.iterator](): Generator<any, void, unknown>;
 }
-import { Binding } from "../../bindings";
 //# sourceMappingURL=EventBinding.d.ts.map

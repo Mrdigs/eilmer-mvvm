@@ -1,28 +1,30 @@
-export default class PropertyAccessor {
-  // TODO: Be careful, don't want a memory leak via reference to the value
-  // I should probably revert the descriptor when the last listener is
-  // removed. But still, this will do for now.
-  constructor(object, propertyDescriptor) {
-    this._getter = propertyDescriptor.get?.bind(object);
-    this._setter = propertyDescriptor.set?.bind(object);
-    this._value = propertyDescriptor.value;
-  }
-
-  set(value) {
-    if (this._setter) {
-      return this._setter(value);
-    } else {
-      this._value = value;
-      return value;
+"use strict";
+exports.__esModule = true;
+var PropertyAccessor = /** @class */ (function () {
+    function PropertyAccessor(object, propertyDescriptor) {
+        this.value = new WeakMap();
+        this.value.set(object || this, propertyDescriptor.value);
+        this.getter = propertyDescriptor.get;
+        this.setter = propertyDescriptor.set;
     }
-  }
-
-  get() {
-    if (this._getter) {
-      return this._getter();
-    } else {
-      return this._value;
-    }
-  }
-
-}
+    PropertyAccessor.prototype.set = function (object, value) {
+        if (this.setter) {
+            return this.setter.call(object, value);
+        }
+        else {
+            this.value.set(object || this, value);
+            return value;
+        }
+    };
+    PropertyAccessor.prototype.get = function (object) {
+        if (this.getter) {
+            return this.getter.call(object);
+        }
+        else {
+            return this.value.get(object || this);
+        }
+    };
+    return PropertyAccessor;
+}());
+exports["default"] = PropertyAccessor;
+//# sourceMappingURL=PropertyAccessor.js.map

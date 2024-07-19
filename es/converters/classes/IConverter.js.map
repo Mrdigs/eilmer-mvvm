@@ -1,0 +1,1 @@
+{"version":3,"file":"IConverter.js","sourceRoot":"","sources":["../../../src/converters/classes/IConverter.ts"],"names":[],"mappings":";;AA4BA;IAAA;IASA,CAAC;IAPC,mCAAW,GAAX,UAAY,cAAsB,EAAE,cAA8B;QAChE,MAAM,IAAI,KAAK,CAAC,yBAAyB,CAAC,CAAC;IAC7C,CAAC;IACD,iCAAS,GAAT,UAAU,SAAiB,EAAE,cAA8B;QACzD,MAAM,IAAI,KAAK,CAAC,yBAAyB,CAAC,CAAC;IAC7C,CAAC;IAEH,oBAAC;AAAD,CAAC,AATD,IASC"}

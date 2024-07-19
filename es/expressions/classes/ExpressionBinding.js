@@ -1,146 +1,149 @@
-function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
-
-function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
-
-function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
-
-function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
-
-function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
-
-function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
-
-function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
-
-function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
-
-function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
-
-import Binding from '../../bindings/classes/Binding';
-import Properties from '../../properties/classes/Properties';
-import VariableResolver from './VariableResolver';
-import Expression from './Expression';
-
-var _bindings = /*#__PURE__*/new WeakMap();
-
-var _properties = /*#__PURE__*/new WeakMap();
-
-var _expression = /*#__PURE__*/new WeakMap();
-
-var _evaluated = /*#__PURE__*/new WeakMap();
-
-var _viewModel = /*#__PURE__*/new WeakMap();
-
-var _listener = /*#__PURE__*/new WeakMap();
-
-var _resolveVariable = /*#__PURE__*/new WeakSet();
-
-export default class ExpressionBinding extends Binding {
-  constructor(viewModel, expr, converter = null, subscriber = null) {
-    const expression = new Expression(expr);
-    super(expression, 'result');
-
-    _classPrivateMethodInitSpec(this, _resolveVariable);
-
-    _classPrivateFieldInitSpec(this, _bindings, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldInitSpec(this, _properties, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldInitSpec(this, _expression, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldInitSpec(this, _evaluated, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldInitSpec(this, _viewModel, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldInitSpec(this, _listener, {
-      writable: true,
-      value: void 0
-    });
-
-    _classPrivateFieldSet(this, _listener, this.evaluate.bind(this));
-
-    _classPrivateFieldSet(this, _expression, expression);
-
-    _classPrivateFieldSet(this, _viewModel, viewModel);
-
-    _classPrivateFieldSet(this, _evaluated, false);
-
-    _classPrivateFieldSet(this, _properties, {});
-
-    _classPrivateFieldSet(this, _bindings, []);
-  }
-
-  evaluate() {
-    console.log('EVALUATING:', _classPrivateFieldGet(this, _expression));
-
-    const resolveVariable = _classPrivateMethodGet(this, _resolveVariable, _resolveVariable2).bind(this);
-
-    _classPrivateFieldGet(this, _expression).evaluate(new class extends VariableResolver {
-      resolveVariable(name) {
-        return resolveVariable(name);
-      }
-
-    }());
-
-    _classPrivateFieldSet(this, _evaluated, true);
-  }
-
-  setValue(value) {
-    throw new Error('Not supported at the moment');
-  }
-
-  getValue() {
-    if (!_classPrivateFieldGet(this, _evaluated)) this.evaluate();
-    super.getValue();
-  }
-
-  bind(subscriber) {
-    this.getValue();
-    const result = super.bind(subscriber);
-    Object.entries(_classPrivateFieldGet(this, _properties)).forEach(([property, object]) => {
-      let args = [object, property, _classPrivateFieldGet(this, _listener)];
-      console.log('In ExpressionBinding, binding', object, property);
-      Properties.addPropertyChangeListener.apply(null, args);
-    });
-    return result;
-  }
-
-  unbind() {
-    super.unbind(subscriber);
-    Object.entries(_classPrivateFieldGet(this, _properties)).forEach(([property, object]) => {
-      let args = [object, property, _classPrivateFieldGet(this, _listener)];
-      Properties.removePropertyChangeListener.apply(null, args);
-    });
-  }
-
-}
-
-function _resolveVariable2(name) {
-  if (name[0] !== '@') {
-    _classPrivateFieldGet(this, _properties)[name] = _classPrivateFieldGet(this, _viewModel);
-    return Properties.getPropertyValue(_classPrivateFieldGet(this, _viewModel), name);
-  } else {
-    const attribute = name.slice(1);
-    const attributes = this.getContext().attributes;
-    _classPrivateFieldGet(this, _properties)[attribute] = attributes;
-    const result = Properties.getPropertyValue(attributes, attribute); // Ok so this is *not* updating
-
-    console.log('FOR', name, 'GOT', result);
-    return result;
-  }
-}
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+exports.__esModule = true;
+var Binding_1 = require("../../bindings/classes/Binding");
+var Properties_1 = require("../../properties/classes/Properties");
+var Expression_1 = require("./Expression");
+var ExpressionBinding = /** @class */ (function (_super) {
+    __extends(ExpressionBinding, _super);
+    function ExpressionBinding(viewModel, expr, converter) {
+        if (converter === void 0) { converter = null; }
+        var _this = this;
+        var expression = new Expression_1["default"](expr);
+        _this = _super.call(this, expression, 'result', converter) || this;
+        _this.listener = _this.evaluate.bind(_this);
+        _this.variableResolver = new VariableResolver(_this.resolveVariable.bind(_this));
+        _this.expression = expression;
+        _this.myViewModel = viewModel;
+        _this.evaluated = false;
+        _this.properties = {};
+        return _this;
+    }
+    ExpressionBinding.prototype.resolveVariable = function (name) {
+        console.log('Resolving variable:', name);
+        if (name[0] !== '@') {
+            this.properties[name] = this.myViewModel;
+            return Properties_1["default"].getPropertyValue(this.myViewModel, name);
+        }
+        else {
+            throw new Error('No longer implementing');
+            var attribute = name.slice(1);
+            var attributes = this.getContext().attributes;
+            this.properties[attribute] = attributes;
+            var result = Properties_1["default"].getPropertyValue(attributes, attribute);
+            return result;
+        }
+    };
+    ExpressionBinding.prototype.evaluate = function () {
+        this.expression.evaluate(this.variableResolver);
+        this.evaluated = true;
+    };
+    ExpressionBinding.prototype.setValue = function (value) {
+        throw new Error('Not supported at the moment');
+    };
+    ExpressionBinding.prototype.getValue = function () {
+        if (!this.evaluated)
+            this.evaluate();
+        return _super.prototype.getValue.call(this);
+    };
+    // TODO: Is T the actual correct type?
+    ExpressionBinding.prototype.bind = function (subscriber) {
+        var _this = this;
+        this.getValue();
+        var result = _super.prototype.bind.call(this, subscriber);
+        Object.entries(this.properties).forEach(function (_a) {
+            var _b = __read(_a, 2), property = _b[0], object = _b[1];
+            var args = [object, property, _this.listener];
+            Properties_1["default"].addPropertyChangeListener.apply(null, args);
+        });
+        return result;
+    };
+    ExpressionBinding.prototype.unbind = function () {
+        var _this = this;
+        _super.prototype.unbind.call(this);
+        Object.entries(this.properties).forEach(function (_a) {
+            var _b = __read(_a, 2), property = _b[0], object = _b[1];
+            var args = [object, property, _this.listener];
+            Properties_1["default"].removePropertyChangeListener.apply(null, args);
+        });
+    };
+    ExpressionBinding.prototype[Symbol.iterator] = function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, this.getValue()];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    };
+    return ExpressionBinding;
+}(Binding_1["default"]));
+exports["default"] = ExpressionBinding;
+var VariableResolver = /** @class */ (function () {
+    function VariableResolver(resolveFunction) {
+        this.resolveFunction = resolveFunction;
+    }
+    VariableResolver.prototype.resolveVariable = function (variableName) {
+        return this.resolveFunction(variableName);
+    };
+    return VariableResolver;
+}());
+//# sourceMappingURL=ExpressionBinding.js.map

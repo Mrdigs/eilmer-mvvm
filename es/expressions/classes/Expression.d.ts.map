@@ -1,1 +1,1 @@
-{"version":3,"file":"Expression.d.ts","sourceRoot":"","sources":["../../../src/expressions/classes/Expression.js"],"names":[],"mappings":"AAKA;IAME,uBAGC;IALD,YAAM;IAON,sCAMC;IAED,gBAEC;;CAEF"}
+{"version":3,"file":"Expression.d.ts","sourceRoot":"","sources":["../../../src/expressions/classes/Expression.ts"],"names":[],"mappings":"AACA,OAAO,iBAAiB,MAAM,qBAAqB,CAAA;AAWnD,MAAM,CAAC,OAAO,OAAO,UAAU,CAAC,CAAC;IAE/B,OAAO,CAAC,IAAI,CAAQ;IACpB,OAAO,CAAC,OAAO,CAAiB;IAChC,MAAM,EAAE,CAAC,CAAA;gBAEG,IAAI,EAAE,MAAM;IAKxB,QAAQ,CAAC,gBAAgB,EAAE,iBAAiB;IAK5C,QAAQ;CAIT"}

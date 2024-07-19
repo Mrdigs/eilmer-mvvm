@@ -1,0 +1,1 @@
+{"version":3,"file":"useInstanceOf.d.ts","sourceRoot":"","sources":["../../../src/react/hooks/useInstanceOf.ts"],"names":[],"mappings":"AAEA,MAAM,CAAC,OAAO,UAAU,aAAa,CAAC,CAAC,EACrC,aAAa,EAAE,KAAK,GAAG,IAAI,EAAE,GAAG,EAAE,KAAK,CAAC,EACxC,GAAG,eAAe,EAAE,GAAG,EAAE,GACxB,CAAC,CAOH"}

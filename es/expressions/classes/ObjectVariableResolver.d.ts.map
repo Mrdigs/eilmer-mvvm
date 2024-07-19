@@ -1,0 +1,1 @@
+{"version":3,"file":"ObjectVariableResolver.d.ts","sourceRoot":"","sources":["../../../src/expressions/classes/ObjectVariableResolver.ts"],"names":[],"mappings":"AACA,OAAO,iBAAiB,MAAM,qBAAqB,CAAC;AAEpD,MAAM,CAAC,OAAO,OAAO,sBAAuB,YAAW,iBAAiB;IAEpE,OAAO,CAAC,OAAO,CAAQ;gBAEX,OAAO,EAAE,MAAM;IAI3B,eAAe,CAAC,YAAY,EAAE,MAAM;CAIvC"}

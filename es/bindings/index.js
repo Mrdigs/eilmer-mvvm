@@ -1,20 +1,16 @@
+"use strict";
+exports.__esModule = true;
+exports.BindingContext = exports.Binding = exports.Binder = void 0;
 /** @module bindings */
-import Binder from './classes/Binder';
-import Binding from './classes/Binding';
-import BindingContext from './classes/BindingContext';
-const Bindings = {
-  Binder,
-  Binding
+var Binder_1 = require("./classes/Binder");
+exports.Binder = Binder_1["default"];
+var Binding_1 = require("./classes/Binding");
+exports.Binding = Binding_1["default"];
+var BindingContext_1 = require("./classes/BindingContext");
+exports.BindingContext = BindingContext_1["default"];
+var Bindings = {
+    Binder: Binder_1["default"],
+    Binding: Binding_1["default"]
 };
-/**
- * Some documentation
- */
-
-export { Binder };
-/**
- * Some documentation
- */
-
-export { Binding };
-export { BindingContext };
-export default Bindings;
+exports["default"] = Bindings;
+//# sourceMappingURL=index.js.map

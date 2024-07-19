@@ -3,7 +3,7 @@ export default Binder;
 declare function Binder({ vm, children }: {
     vm: any;
     children: any;
-}): any;
+}): JSX.Element;
 declare namespace Binder {
     export function useBinder(): any;
     export { BinderContext as Context };
