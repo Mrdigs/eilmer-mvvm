@@ -26,9 +26,13 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = useBinding;
 var react_1 = require("react");
-var ReactBinding_1 = require("../classes/ReactBinding");
+var ReactBinding_1 = __importDefault(require("../classes/ReactBinding"));
 /**
  * Creates and manages a ReactBinding between a specified property on the
  * supplied ViewModel and the calling component, forcing a re-render of the
@@ -60,7 +64,7 @@ function useBinding(viewModel, propertyName, converter) {
     if (converter === void 0) { converter = null; }
     var _a = __read((0, react_1.useState)({}), 2), state = _a[0], setState = _a[1];
     state.binding = (0, react_1.useMemo)(function () {
-        return new ReactBinding_1["default"](viewModel, propertyName, converter);
+        return new ReactBinding_1.default(viewModel, propertyName, converter);
     }, [viewModel, propertyName, converter]);
     (0, react_1.useEffect)(function () {
         // The use of useEffect here ensures that the binding becomes unbound
@@ -74,5 +78,6 @@ function useBinding(viewModel, propertyName, converter) {
         state.binding.getContext(),
     ];
 }
-exports["default"] = useBinding;
+// const [a, b] = useBinding({ name: "darren" }, "name");
+// const [length] = useBinding([1,2,3], "length")
 //# sourceMappingURL=useBinding.js.map

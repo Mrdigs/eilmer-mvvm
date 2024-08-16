@@ -1,7 +1,8 @@
-import Binding from '../../bindings/classes/Binding';
-import IConverter from '../../converters/classes/IConverter';
-import { Listener } from '../../properties/types';
-export default class ExpressionBinding<T = any, K = T> extends Binding<T, K> {
+import Binding from "../../bindings/classes/Binding";
+import Expression from "./Expression";
+import IConverter from "../../converters/classes/IConverter";
+import { Listener } from "../../properties/types";
+export default class ExpressionBinding<T = any, K = T> extends Binding<Expression<T>, "result", K> {
     private properties;
     private expression;
     private evaluated;

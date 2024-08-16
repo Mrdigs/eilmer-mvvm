@@ -1,7 +1,10 @@
 "use strict";
-exports.__esModule = true;
-var Binding_1 = require("./Binding");
-var CommandBinding_1 = require("../../commands/classes/CommandBinding");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Binding_1 = __importDefault(require("./Binding"));
+var CommandBinding_1 = __importDefault(require("../../commands/classes/CommandBinding"));
 var Binder = /** @class */ (function () {
     function Binder(viewModel) {
         this.viewModel = viewModel;
@@ -16,7 +19,7 @@ var Binder = /** @class */ (function () {
     Binder.prototype.bindProperty = function (propertyName, converter, subscriber) {
         if (converter === void 0) { converter = null; }
         if (subscriber === void 0) { subscriber = null; }
-        return new Binding_1["default"](this.viewModel, propertyName, converter, subscriber);
+        return new Binding_1.default(this.viewModel, propertyName, converter, subscriber);
     };
     /**
      *
@@ -25,9 +28,9 @@ var Binder = /** @class */ (function () {
     Binder.prototype.bindCommand = function (commandName, converter, subscriber) {
         if (converter === void 0) { converter = null; }
         if (subscriber === void 0) { subscriber = null; }
-        return new CommandBinding_1["default"](this.viewModel, commandName, converter, subscriber);
+        return new CommandBinding_1.default(this.viewModel, commandName, converter, subscriber);
     };
     return Binder;
 }());
-exports["default"] = Binder;
+exports.default = Binder;
 //# sourceMappingURL=Binder.js.map

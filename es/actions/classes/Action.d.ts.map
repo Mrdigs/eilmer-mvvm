@@ -1,1 +1,1 @@
-{"version":3,"file":"Action.d.ts","sourceRoot":"","sources":["../../../src/actions/classes/Action.js"],"names":[],"mappings":"AAAA;IAIE,8BAMC;IAED,mCAEC;IAED,qCAYC;;CAEF"}
+{"version":3,"file":"Action.d.ts","sourceRoot":"","sources":["../../../src/actions/classes/Action.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,OAAO,MAAM;IACzB,OAAO,CAAC,QAAQ,CAAM;IAEtB,UAAU,CAAC,OAAO,KAAA;IAQlB,aAAa,CAAC,QAAQ,KAAA;IAItB,MAAM,CAAC,GAAG,IAAI,OAAA;CAaf"}

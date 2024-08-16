@@ -1,6 +1,9 @@
 "use strict";
-exports.__esModule = true;
-var Properties_1 = require("./Properties");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Properties_1 = __importDefault(require("./Properties"));
 /**
  *
  *
@@ -13,9 +16,9 @@ var NotifyPropertyChanged = /** @class */ (function () {
      * Notifies any listeners for a given property that it has changed.
      */
     NotifyPropertyChanged.prototype.notifyPropertyChanged = function (propertyName) {
-        Properties_1["default"].notifyPropertyChanged(this, propertyName);
+        Properties_1.default.notifyPropertyChanged(this, propertyName);
     };
     return NotifyPropertyChanged;
 }());
-exports["default"] = NotifyPropertyChanged;
+exports.default = NotifyPropertyChanged;
 //# sourceMappingURL=NotifyPropertyChanged.js.map

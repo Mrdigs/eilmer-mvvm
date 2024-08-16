@@ -1,16 +1,14 @@
-import Binding from "./Binding";
 /**
  * Contains contextual information about a Binding.
  */
 declare class BindingContext {
     readonly viewModel: object;
     readonly propertyName: string;
-    readonly binding: Binding;
     readonly attributes: {};
     /**
      * @hideconstructor
      */
-    constructor(viewModel: object, propertyName: string, binding: Binding);
+    constructor(viewModel: object, propertyName: string);
     setAttribute(key: string, value: any): void;
     getAttribute(key: string): any;
 }

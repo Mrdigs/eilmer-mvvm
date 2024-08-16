@@ -15,8 +15,11 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
-var useBinding_1 = require("./useBinding");
+var useBinding_1 = __importDefault(require("./useBinding"));
 /**
  *
  * @deprecated

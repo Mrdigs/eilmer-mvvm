@@ -20,7 +20,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -41,19 +41,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
-var Event_1 = require("./Event");
-var Events_1 = require("./Events");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Event_1 = __importDefault(require("./Event"));
+var Events_1 = __importDefault(require("./Events"));
 var bindings_1 = require("../../bindings");
+// TODO: Basically lets NOT extend Binding, it's weird
 var EventBinding = /** @class */ (function (_super) {
     __extends(EventBinding, _super);
     // TODO: If it's a function, then it MUST BEGIN with "onX"
     // getValue() can be the last value that the event was called with...
-    function EventBinding(viewModel, eventName, subscriber) {
-        if (subscriber === void 0) { subscriber = null; }
+    function EventBinding(viewModel, eventName) {
         var _this = this;
         var event = viewModel[eventName];
-        if (!(event instanceof Event_1["default"] || typeof event === 'function')) {
+        if (!(event instanceof Event_1.default || typeof event === "function")) {
             throw new Error("Bound event ".concat(eventName, " should be a function or instance of Event"));
         }
         _this = _super.call(this, viewModel, eventName, null, null) || this;
@@ -67,27 +70,28 @@ var EventBinding = /** @class */ (function (_super) {
     EventBinding.prototype.bind = function (subscriber) {
         if (!this.bound) {
             var args = [this.viewModel, this.eventName, subscriber];
-            Events_1["default"].addEventListener.apply(null, args);
+            Events_1.default.addEventListener.apply(null, args);
             this.mySubscriber = subscriber;
             this.bound = true;
             return this.unbind.bind(this);
         }
         else {
-            throw new Error('Binding is already bound to a subscriber');
+            throw new Error("Binding is already bound to a subscriber");
         }
     };
     EventBinding.prototype.unbind = function () {
         if (this.bound) {
             var args = [this.viewModel, this.eventName, this.mySubscriber];
-            Events_1["default"].removeEventListener.apply(null, args);
+            Events_1.default.removeEventListener.apply(null, args);
             this.mySubscriber = null;
             this.bound = false;
         }
     };
     EventBinding.prototype.setValue = function (value) {
-        throw new Error('The value of events cannot be set');
+        throw new Error("The value of events cannot be set");
     };
     EventBinding.prototype.getValue = function () {
+        throw new Error("The value of events cannot be read");
         // TODO: This needs to be the last RETURNED VALUE when the
         // event was triggered
         // return this.#command
@@ -104,5 +108,5 @@ var EventBinding = /** @class */ (function (_super) {
     };
     return EventBinding;
 }(bindings_1.Binding));
-exports["default"] = EventBinding;
+exports.default = EventBinding;
 //# sourceMappingURL=EventBinding.js.map

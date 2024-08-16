@@ -1,4 +1,8 @@
 import { BindingContext } from "../../bindings";
+/**
+ * A Converter performs the task of converting values between the View and
+ * the ViewModel.
+ */
 export default interface IConverter<VM, V = VM> {
     /**
      * Performs a conversion from the ViewModel type to the View type. Unless

@@ -15,9 +15,12 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
-var PropertyAccessor_1 = require("./PropertyAccessor");
-var Event_1 = require("../../events/classes/Event");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var PropertyAccessor_1 = __importDefault(require("./PropertyAccessor"));
+var Event_1 = __importDefault(require("../../events/classes/Event"));
 var Properties = /** @class */ (function () {
     function Properties() {
     }
@@ -27,11 +30,11 @@ var Properties = /** @class */ (function () {
         var defaultDescriptor = { enumerable: false, configurable: true };
         var descriptor = getPropertyDescriptor(object, property) || defaultDescriptor;
         if (!((_a = descriptor.set) === null || _a === void 0 ? void 0 : _a.listeners)) {
-            var accessor_1 = new PropertyAccessor_1["default"](object, descriptor);
-            descriptor.get = (function () {
+            var accessor_1 = new PropertyAccessor_1.default(object, descriptor);
+            descriptor.get = function () {
                 return accessor_1.get(this);
-            });
-            descriptor.set = (function (v, notify) {
+            };
+            descriptor.set = function (v, notify) {
                 var old = accessor_1.get(this), result = accessor_1.set(this, v);
                 if (descriptor === defaultDescriptor && !descriptor.enumerable) {
                     descriptor.enumerable = true;
@@ -39,14 +42,14 @@ var Properties = /** @class */ (function () {
                     Object.defineProperty(object, property, descriptor);
                 }
                 if (v !== old || notify) {
-                    // TODO: I'm not sure if there's any purpose to this internal version 
-                    // It does handle the propertyChangeSupport stuff, so maybe. I depends 
+                    // TODO: I'm not sure if there's any purpose to this internal version
+                    // It does handle the propertyChangeSupport stuff, so maybe. I depends
                     // whether I want to actually handle that, plus the whole revision thing.
                     notifyPropertyChangedInternal(object, property, notify);
                     // notifyPropertyChanged(object, property, v, old)
                 }
                 return result;
-            });
+            };
             delete descriptor.value;
             delete descriptor.writable;
             if (descriptor !== defaultDescriptor) {
@@ -56,7 +59,7 @@ var Properties = /** @class */ (function () {
                 console.warn("[Eilmer] Binding to an non-existent property ".concat(property, ". This isn't a problem, but may not be intentional"));
             }
             descriptor.set.rev = 0;
-            // TODO: Is there some way of not keeping a strong 
+            // TODO: Is there some way of not keeping a strong
             // reference to each listener?
             descriptor.set.listeners = [];
             Object.defineProperty(object, property, descriptor);
@@ -86,7 +89,7 @@ var Properties = /** @class */ (function () {
             set.listeners = listeners.filter(function (l) { return l !== listener; });
         }
         // TODO: I need to track down why this is here. What is it used for,
-        // if anything? Right now, this is a terrible hack to cast it 
+        // if anything? Right now, this is a terrible hack to cast it
         // as any. Need to check whether this is actually referenced anywhere
         // (listener as any).value = undefined
         // listener.value = undefined
@@ -108,7 +111,7 @@ var Properties = /** @class */ (function () {
     };
     return Properties;
 }());
-exports["default"] = Properties;
+exports.default = Properties;
 function notifyPropertyChangedInternal(targetObject, propertyName, regardless) {
     var _a = __read(getTargetAndPropertyName(targetObject, propertyName), 2), object = _a[0], property = _a[1];
     // If the descriptor doesn't exist then we shouldn't error
@@ -120,7 +123,7 @@ function notifyPropertyChangedInternal(targetObject, propertyName, regardless) {
             // TODO: DOES THIS *ACTUALLY* SOLVE ANYTHING????
             // TODO: Why did I even add this in anyway? I think it's so that
             // I don't have to keep track of the last value that the listener
-            // has received for memory leak purposes. I'll keep it in anyway 
+            // has received for memory leak purposes. I'll keep it in anyway
             // for now and revisit it later
             var revision = listener;
             if (regardless || revision.rev !== rev_1) {
@@ -131,7 +134,7 @@ function notifyPropertyChangedInternal(targetObject, propertyName, regardless) {
         // Automatically triggers the onPropertyChanged event for this property
         // if the target object supports receiving that event.
         if (canNotifyPropertyChanged(object)) {
-            if (object.onPropertyChanged instanceof Event_1["default"]) {
+            if (object.onPropertyChanged instanceof Event_1.default) {
                 object.onPropertyChanged.trigger(property);
             }
             else {
@@ -153,21 +156,21 @@ function getPropertyDescriptor(targetObject, propertyName) {
 }
 function getTargetAndPropertyName(targetObject, propertyName) {
     var target = targetObject, targetPropertyName = propertyName;
-    // TODO: Should I allow this? Is there any need, especially when I'm looking 
+    // TODO: Should I allow this? Is there any need, especially when I'm looking
     // at including expression support. Actually it's neccessary *FOR* expression support!!!!
-    if (typeof propertyName === 'string' && propertyName.includes('.')) {
-        var parts = propertyName.split('.'), length_1 = parts.length - 1;
+    if (typeof propertyName === "string" && propertyName.includes(".")) {
+        var parts = propertyName.split("."), length_1 = parts.length - 1;
         for (var i = 0; i < length_1; i++) {
             if (parts[i].length)
                 target = target[parts[i]];
-            if (typeof target === 'undefined') {
-                throw new Error('Cannot bind to a property of an undefined object');
+            if (typeof target === "undefined") {
+                throw new Error("Cannot bind to a property of an undefined object");
             }
         }
         targetPropertyName = parts[length_1];
     }
-    else if (typeof target === 'undefined') {
-        throw new Error('Cannot bind to a property of an undefined object');
+    else if (typeof target === "undefined") {
+        throw new Error("Cannot bind to a property of an undefined object");
     }
     return [target, targetPropertyName];
 }

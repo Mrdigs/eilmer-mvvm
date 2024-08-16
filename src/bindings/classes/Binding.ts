@@ -1,9 +1,9 @@
-import { Properties } from '../../properties'
-import { Converter, ConverterException } from '../../converters'
+import { Properties } from "../../properties";
+import { Converter, ConverterException } from "../../converters";
 
-import BindingContext from './BindingContext'
-import { Listener } from '../../properties/types'
-import IConverter from '../../converters/classes/IConverter'
+import BindingContext from "./BindingContext";
+import { Listener } from "../../properties/types";
+import IConverter from "../../converters/classes/IConverter";
 
 /**
  * Provides a binding between an object property and a listener.
@@ -30,17 +30,14 @@ import IConverter from '../../converters/classes/IConverter'
  *   binding.setValue(binding.getValue() + 1)
  * }, 1000)
  */
-class Binding<T = any, K = T> {
+class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
+  protected viewModel: VM;
+  private propertyName: P;
+  private converter: IConverter<VM[P], V> | null;
+  private subscriber: Listener;
+  private context: BindingContext;
 
-  // At some point, replace viewModel with binder
-
-  protected viewModel: object
-  private propertyName: string
-  private converter: Converter
-  private subscriber: Listener
-  private context: BindingContext
-
-  protected bound = false
+  protected bound = false;
 
   /**
    * Create a new Binding. If a subscriber function is provided, then the
@@ -51,20 +48,25 @@ class Binding<T = any, K = T> {
    * @param {Converter} converter - An optional Converter.
    * @param {function} subscriber - An optional listener function.
    */
-  constructor(viewModel: object, propertyName: string, converter: IConverter<T, K> = null, subscriber: Listener<T> = null) {
+  constructor(
+    viewModel: VM,
+    propertyName: P,
+    converter: IConverter<VM[P], V> | null = null,
+    subscriber: Listener<VM[P]> = null
+  ) {
     if (!(viewModel && propertyName)) {
-      throw new Error('viewModel and propertyName are required arguments')
-    } else if (typeof propertyName !== 'string') {
-      throw new TypeError('propertyName must be a string')
+      throw new Error("viewModel and propertyName are required arguments");
+    } else if (typeof propertyName !== "string") {
+      throw new TypeError("propertyName must be a string");
     } else {
-      this.context = new BindingContext(viewModel, propertyName, this)
+      this.context = new BindingContext(viewModel, propertyName);
       if (converter instanceof Converter) {
-        this.converter = converter
+        this.converter = converter;
       }
-      this.viewModel = viewModel
-      this.propertyName = propertyName
+      this.viewModel = viewModel;
+      this.propertyName = propertyName;
       if (subscriber) {
-        this.bind(subscriber)
+        this.bind(subscriber);
       }
     }
   }
@@ -78,11 +80,11 @@ class Binding<T = any, K = T> {
    * @ignore
    */
   getContext() {
-    return this.context
+    return this.context;
   }
 
   protected setContext(context: BindingContext) {
-    this.context = context
+    this.context = context;
   }
 
   /**
@@ -96,15 +98,15 @@ class Binding<T = any, K = T> {
    *
    * @param {function} subscriber - The listener function.
    */
-  bind(subscriber: Listener<T>) {
+  bind(subscriber: Listener<VM[P]>) {
     if (!this.bound) {
-      const args = [this.viewModel, this.propertyName, subscriber]
-      Properties.addPropertyChangeListener.apply(null, args)
-      this.subscriber = subscriber
-      this.bound = true
-      return this.unbind.bind(this)
+      const args = [this.viewModel, this.propertyName, subscriber];
+      Properties.addPropertyChangeListener.apply(null, args);
+      this.subscriber = subscriber;
+      this.bound = true;
+      return this.unbind.bind(this);
     } else {
-      throw new Error('Binding is already bound to a subscriber')
+      throw new Error("Binding is already bound to a subscriber");
     }
   }
 
@@ -115,10 +117,10 @@ class Binding<T = any, K = T> {
    */
   unbind() {
     if (this.bound) {
-      const args = [this.viewModel, this.propertyName, this.subscriber]
-      Properties.removePropertyChangeListener.apply(null, args)
-      this.subscriber = null
-      this.bound = false
+      const args = [this.viewModel, this.propertyName, this.subscriber];
+      Properties.removePropertyChangeListener.apply(null, args);
+      this.subscriber = null;
+      this.bound = false;
     }
   }
 
@@ -129,22 +131,26 @@ class Binding<T = any, K = T> {
    *
    * @param value - The value to set the property to.
    */
-  setValue(value: K) {
+  setValue(value: V) {
     // TODO: this should allow a function to be passed as per Reacts
     // useState hook.
     if (this.converter) {
       try {
-        const converted = this.converter.convertTo(value, this.getContext())
-        Properties.setPropertyValue(this.viewModel, this.propertyName, converted)
+        const converted = this.converter.convertTo(value, this.getContext());
+        Properties.setPropertyValue(
+          this.viewModel,
+          this.propertyName,
+          converted
+        );
       } catch (exception) {
         if (exception instanceof ConverterException) {
-          console.warn('Unhandled', exception.toString())
+          console.warn("Unhandled", exception.toString());
         } else {
-          throw exception
+          throw exception;
         }
       }
     } else {
-      Properties.setPropertyValue(this.viewModel, this.propertyName, value)
+      Properties.setPropertyValue(this.viewModel, this.propertyName, value);
     }
   }
 
@@ -155,69 +161,27 @@ class Binding<T = any, K = T> {
    *
    * @returns The current property value.
    */
-  getValue(): K {
-    const value = Properties.getPropertyValue(this.viewModel, this.propertyName)
-    if (this.converter) {
-      return this.converter.convertFrom(value, this.getContext())
+  getValue(): V {
+    const value = Properties.getPropertyValue(
+      this.viewModel,
+      this.propertyName
+    );
+    if (this.converter !== null) {
+      return this.converter.convertFrom(value, this.getContext());
     }
-    return value
+    return value;
   }
 
   // TODO: Unfortunately, the requirement to preserve the correct types
-  // in the yeilded tuple is not yet implemented in TypeScript.
+  // in the yielded tuple is not yet implemented in TypeScript.
   // See: https://github.com/microsoft/TypeScript/issues/43150
   *[Symbol.iterator]() {
-    const values: [K, (value: K) => {}] = [this.getValue(), this.setValue.bind(this)]
-    // return values[Symbol.iterator]
-    yield* values
-
-    /*
-    yield this.getValue()
-    yield this.setValue.bind(this)
-    */
+    const values: [V, (value: V) => void] = [
+      this.getValue(),
+      this.setValue.bind(this),
+    ];
+    yield* values;
   }
-
-  /*
-  *[Symbol.iterator]() {
-    yield this.getValue()
-    yield this.setValue.bind(this)
-  }
-  */
-
 }
 
-
-// Ok so this works great without a converter, but what about *with* a converter
-
-class TestConverter implements IConverter<string, number> {
-  convertFrom(viewModelValue: string, bindingContext: BindingContext): number {
-    throw new Error('Method not implemented.')
-  }
-  convertTo(viewValue: number, bindingContext: BindingContext): string {
-    throw new Error('Method not implemented.')
-  }
-
-}
-
-const test = [1, "2"] as const
-const [first, second] = test
-
-// So both are string | number and that's no good.
-
-const object = { count: 0 }
-const converter = new TestConverter()
-const binding = new Binding<number>(object, 'count')
-const [ value, setValue ] = binding
-//setValue(5)
-/*
-binding.bind((count: number) => {
-   console.log('Count is now:', count)
-})
-binding.getValue() * 2
-/*
-setInterval(() => {
-  binding.setValue(binding.getValue() + 1)
-}, 1000)
-*/
-
-export default Binding
+export default Binding;

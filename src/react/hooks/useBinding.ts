@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from "react"
-import ReactBinding from "../classes/ReactBinding"
-import IConverter from "../../converters/classes/IConverter"
-import { Binding } from "../../bindings"
-import BindingContext from "../../bindings/classes/BindingContext"
+import { useEffect, useMemo, useState } from "react";
+import ReactBinding from "../classes/ReactBinding";
+import IConverter from "../../converters/classes/IConverter";
+import { Binding } from "../../bindings";
+import BindingContext from "../../bindings/classes/BindingContext";
 
-type BindingState<T, K> = {
-  binding?: Binding<T, K>
-}
+type BindingState<VM extends object, P extends keyof VM & string, V> = {
+  binding?: ReactBinding<VM, P, V>;
+};
 
 /**
  * Creates and manages a ReactBinding between a specified property on the
@@ -35,27 +35,35 @@ type BindingState<T, K> = {
  * propertyName (of type V). The second element is a function accepting
  * a V type input which, when called, will update that same ViewModel property.
  */
-export default function useBinding<VM = any, V = VM>(
+export default function useBinding<
+  VM extends object,
+  P extends keyof VM & string,
+  V = VM[P]
+>(
   viewModel: VM,
-  propertyName: keyof VM & string,
-  converter: IConverter<VM, V> = null
+  propertyName: P,
+  converter: IConverter<VM[P], V> | null = null
 ): [V, (value: V) => void, BindingContext] {
-  const [state, setState] = useState<BindingState<VM, V>>({})
+  const [state, setState] = useState<BindingState<VM, P, V>>({});
 
   state.binding = useMemo(() => {
-    return new ReactBinding<VM, V>(viewModel, propertyName, converter)
-  }, [viewModel, propertyName, converter])
+    return new ReactBinding(viewModel, propertyName, converter);
+  }, [viewModel, propertyName, converter]);
 
   useEffect(() => {
     // The use of useEffect here ensures that the binding becomes unbound
     // when either the component unbinds, or is re-bound to another property,
     // or another viewModel, or with another converter.
-    return state.binding.bind(() => setState((state) => ({ ...state })))
-  }, [state.binding])
+    return state.binding.bind(() => setState((state) => ({ ...state })));
+  }, [state.binding]);
 
   return [
-    state.binding.getValue() as V,
-    state.binding.setValue.bind(state.binding) as (value: V) => void,
+    state.binding.getValue(),
+    state.binding.setValue.bind(state.binding),
     state.binding.getContext(),
-  ]
+  ];
 }
+
+// const [a, b] = useBinding({ name: "darren" }, "name");
+
+// const [length] = useBinding([1,2,3], "length")

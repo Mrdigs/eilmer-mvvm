@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var jsep = require("jsep");
 // TODO: Does this *have* to be globally set?
 jsep.addIdentifierChar('@');
@@ -22,7 +22,7 @@ var Expression = /** @class */ (function () {
     };
     return Expression;
 }());
-exports["default"] = Expression;
+exports.default = Expression;
 function evaluateAst(variableResolver, ast) {
     switch (ast.type) {
         case 'Literal':

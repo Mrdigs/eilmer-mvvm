@@ -26,14 +26,18 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = useCommand;
 var react_1 = require("react");
-var CommandBinding_1 = require("../../commands/classes/CommandBinding");
+var CommandBinding_1 = __importDefault(require("../../commands/classes/CommandBinding"));
 function useCommand(viewModel, commandName, converter) {
     if (converter === void 0) { converter = null; }
     var _a = __read((0, react_1.useState)({}), 2), state = _a[0], setState = _a[1];
     state.binding = (0, react_1.useMemo)(function () {
-        return new CommandBinding_1["default"](viewModel, commandName, converter);
+        return new CommandBinding_1.default(viewModel, commandName, converter);
     }, [viewModel, commandName, converter]);
     (0, react_1.useEffect)(function () {
         // The use of useEffect here ensures that the binding becomes unbound
@@ -46,5 +50,4 @@ function useCommand(viewModel, commandName, converter) {
         state.binding.getContext(),
     ];
 }
-exports["default"] = useCommand;
 //# sourceMappingURL=useCommand.js.map

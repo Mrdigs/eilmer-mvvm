@@ -1,7 +1,6 @@
-import React = require("react");
-declare type Props = {
-    children: JSX.Element;
-};
-export default function Bind({ children, ...props }: Props): React.JSX.Element;
-export {};
+import React from "react";
+export default function Bind({ children, ...props }: {
+    [x: string]: any;
+    children: any;
+}): React.JSX.Element;
 //# sourceMappingURL=Bind.d.ts.map

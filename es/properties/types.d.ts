@@ -1,2 +1,2 @@
-export declare type Listener<T = any> = (value: T) => void;
+export type Listener<T = any> = (value: T) => void;
 //# sourceMappingURL=types.d.ts.map

@@ -14,8 +14,11 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
-var properties_1 = require("../../properties");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var properties_1 = __importDefault(require("../../properties"));
 var exceptions_1 = require("../../exceptions");
 var Command = /** @class */ (function () {
     function Command() {
@@ -28,13 +31,8 @@ var Command = /** @class */ (function () {
         }
         throw new exceptions_1.NotImplementedException();
     };
-    /*
-    get canExecute() {
-      return true
-    }
-    */
     Command.prototype.canExecuteChanged = function () {
-        properties_1["default"].notifyPropertyChanged(this, "canExecute");
+        properties_1.default.notifyPropertyChanged(this, "canExecute");
     };
     Command.from = function (receiver, execute) {
         return new (/** @class */ (function (_super) {
@@ -54,5 +52,5 @@ var Command = /** @class */ (function () {
     };
     return Command;
 }());
-exports["default"] = Command;
+exports.default = Command;
 //# sourceMappingURL=Command.js.map

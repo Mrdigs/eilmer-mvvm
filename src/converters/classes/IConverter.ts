@@ -1,7 +1,10 @@
 import { BindingContext } from "../../bindings";
 
+/**
+ * A Converter performs the task of converting values between the View and
+ * the ViewModel.
+ */
 export default interface IConverter<VM, V = VM> {
-
   /**
    * Performs a conversion from the ViewModel type to the View type. Unless
    * overidden either via the constructor or by a subclass, this method will
@@ -23,16 +26,4 @@ export default interface IConverter<VM, V = VM> {
    * @throws {ConverterException} If the value cannot be converted
    */
   convertTo(viewValue: V, bindingContext: BindingContext): VM;
-
-}
-
-class TestConverter implements IConverter<number, string> {
-
-  convertFrom(viewModelValue: number, bindingContext: BindingContext): string {
-    throw new Error("Method not implemented.");
-  }
-  convertTo(viewValue: string, bindingContext: BindingContext): number {
-    throw new Error("Method not implemented.");
-  }
-  
 }

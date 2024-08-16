@@ -1,6 +1,6 @@
-import BindingContext from './BindingContext';
-import { Listener } from '../../properties/types';
-import IConverter from '../../converters/classes/IConverter';
+import BindingContext from "./BindingContext";
+import { Listener } from "../../properties/types";
+import IConverter from "../../converters/classes/IConverter";
 /**
  * Provides a binding between an object property and a listener.
  *
@@ -26,8 +26,8 @@ import IConverter from '../../converters/classes/IConverter';
  *   binding.setValue(binding.getValue() + 1)
  * }, 1000)
  */
-declare class Binding<T = any, K = T> {
-    protected viewModel: object;
+declare class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
+    protected viewModel: VM;
     private propertyName;
     private converter;
     private subscriber;
@@ -42,7 +42,7 @@ declare class Binding<T = any, K = T> {
      * @param {Converter} converter - An optional Converter.
      * @param {function} subscriber - An optional listener function.
      */
-    constructor(viewModel: object, propertyName: string, converter?: IConverter<T, K>, subscriber?: Listener<T>);
+    constructor(viewModel: VM, propertyName: P, converter?: IConverter<VM[P], V> | null, subscriber?: Listener<VM[P]>);
     /**
      * Returns the context for this Binding. This context is provided to the
      * Converter, if there is one. There's no good reason to retrieve it
@@ -64,7 +64,7 @@ declare class Binding<T = any, K = T> {
      *
      * @param {function} subscriber - The listener function.
      */
-    bind(subscriber: Listener<T>): any;
+    bind(subscriber: Listener<VM[P]>): any;
     /**
      * Unbinds the bound subscriber and disposes of the Binders reference
      * to it. After this method is called, a new subscriber can be bound to
@@ -78,7 +78,7 @@ declare class Binding<T = any, K = T> {
      *
      * @param value - The value to set the property to.
      */
-    setValue(value: K): void;
+    setValue(value: V): void;
     /**
      * Retrieves the current value of the bound property. If a converter
      * has been specified, the value is converted using the converter's
@@ -86,8 +86,8 @@ declare class Binding<T = any, K = T> {
      *
      * @returns The current property value.
      */
-    getValue(): K;
-    [Symbol.iterator](): Generator<K | ((value: K) => {}), void, undefined>;
+    getValue(): V;
+    [Symbol.iterator](): Generator<V | ((value: V) => void), void, undefined>;
 }
 export default Binding;
 //# sourceMappingURL=Binding.d.ts.map

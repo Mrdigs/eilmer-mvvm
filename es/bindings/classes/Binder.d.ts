@@ -1,22 +1,21 @@
-import Binding from './Binding';
-import CommandBinding from '../../commands/classes/CommandBinding';
-import { Listener } from '../../properties/types';
-import { Converter } from '../../converters';
-import IConverter from '../../converters/classes/IConverter';
-declare class Binder<T extends object> {
-    protected viewModel: T;
-    constructor(viewModel: T);
-    getViewModel(): T;
+import Binding from "./Binding";
+import CommandBinding from "../../commands/classes/CommandBinding";
+import { Listener } from "../../properties/types";
+import IConverter from "../../converters/classes/IConverter";
+declare class Binder<VM extends object> {
+    protected viewModel: VM;
+    constructor(viewModel: VM);
+    getViewModel(): VM;
     /**
      *
      * @return {Binding}
      */
-    bindProperty<T = any, K = T>(propertyName: string, converter?: IConverter<T, K>, subscriber?: Listener<T>): Binding<T, K>;
+    bindProperty<P extends keyof VM & string, V = VM[P]>(propertyName: P, converter?: IConverter<VM[P], V>, subscriber?: Listener<VM[P]>): Binding<VM, P, V>;
     /**
      *
      * @return {CommandBinding}
      */
-    bindCommand(commandName: string, converter?: Converter, subscriber?: Listener): CommandBinding;
+    bindCommand<T, K = T>(commandName: keyof VM & string, converter?: IConverter<T, K>, subscriber?: Listener): CommandBinding;
 }
 export default Binder;
 //# sourceMappingURL=Binder.d.ts.map

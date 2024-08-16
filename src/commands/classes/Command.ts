@@ -8,12 +8,6 @@ export default class Command<T> {
     throw new NotImplementedException();
   }
 
-  /*
-  get canExecute() {
-    return true
-  }
-  */
-
   canExecuteChanged() {
     Properties.notifyPropertyChanged(this, "canExecute");
   }

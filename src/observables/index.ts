@@ -1,8 +1,9 @@
-import Observable from './classes/Observable'
+import Observable from "./classes/Observable";
 
 const Observables = {
-  Observable
-}
+  Observable,
+};
 
-export { Observable }
-export default Observables
+// Not exporting as it needs work
+// export { Observable }
+// export default Observables

@@ -14,40 +14,34 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
-var Binder_1 = require("../../bindings/classes/Binder");
-var useBinding_1 = require("../hooks/useBinding");
-var useProperty_1 = require("../hooks/useProperty");
-var useExpression_1 = require("../hooks/useExpression");
-var useCommand_1 = require("../hooks/useCommand");
-var useEvent_1 = require("../hooks/useEvent");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Binder_1 = __importDefault(require("../../bindings/classes/Binder"));
+var useBinding_1 = __importDefault(require("../hooks/useBinding"));
+var useExpression_1 = __importDefault(require("../hooks/useExpression"));
+var useCommand_1 = __importDefault(require("../hooks/useCommand"));
+var useEvent_1 = __importDefault(require("../hooks/useEvent"));
 var ReactBinder = /** @class */ (function (_super) {
     __extends(ReactBinder, _super);
     function ReactBinder(viewModel) {
         return _super.call(this, viewModel) || this;
     }
-    /**
-     *
-     * @deprecated
-     */
-    ReactBinder.prototype.useProperty = function (propertyName, converter) {
-        if (converter === void 0) { converter = null; }
-        return (0, useProperty_1["default"])(this.viewModel, propertyName, converter);
-    };
     ReactBinder.prototype.useBinding = function (propertyName, converter) {
         if (converter === void 0) { converter = null; }
-        return (0, useBinding_1["default"])(this.viewModel, propertyName, converter);
+        return (0, useBinding_1.default)(this.viewModel, propertyName, converter);
     };
     ReactBinder.prototype.useCommand = function (commandName, converter) {
-        return (0, useCommand_1["default"])(this.viewModel, commandName, converter);
+        return (0, useCommand_1.default)(this.viewModel, commandName, converter);
     };
     ReactBinder.prototype.useExpression = function (expression) {
-        return (0, useExpression_1["default"])(this.viewModel, expression);
+        return (0, useExpression_1.default)(this.viewModel, expression);
     };
     ReactBinder.prototype.useEvent = function (eventName, listener) {
-        return (0, useEvent_1["default"])(this.viewModel, eventName, listener);
+        return (0, useEvent_1.default)(this.viewModel, eventName, listener);
     };
     return ReactBinder;
-}(Binder_1["default"]));
-exports["default"] = ReactBinder;
+}(Binder_1.default));
+exports.default = ReactBinder;
 //# sourceMappingURL=ReactBinder.js.map

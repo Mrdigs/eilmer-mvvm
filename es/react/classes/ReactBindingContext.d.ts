@@ -1,10 +1,10 @@
-export default ReactBindingContext;
+import { BindingContext } from "../../bindings";
 declare class ReactBindingContext extends BindingContext {
-    constructor(viewModel: any, propertyName: any);
     component: any;
     componentProperty: any;
     setComponentPropertiesHandler: () => boolean;
-    setComponentProperties(properties: any): boolean;
+    constructor(viewModel: object, propertyName: string);
+    setComponentProperties(properties: any): void;
 }
-import { BindingContext } from "../../bindings";
+export default ReactBindingContext;
 //# sourceMappingURL=ReactBindingContext.d.ts.map

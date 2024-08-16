@@ -27,5 +27,5 @@ import BindingContext from "../../bindings/classes/BindingContext";
  * propertyName (of type V). The second element is a function accepting
  * a V type input which, when called, will update that same ViewModel property.
  */
-export default function useBinding<VM = any, V = VM>(viewModel: object, propertyName: string, converter?: IConverter<VM, V>): [V, (value: V) => void, BindingContext];
+export default function useBinding<VM extends object, P extends keyof VM & string, V = VM[P]>(viewModel: VM, propertyName: P, converter?: IConverter<VM[P], V> | null): [V, (value: V) => void, BindingContext];
 //# sourceMappingURL=useBinding.d.ts.map

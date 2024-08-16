@@ -29,7 +29,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -75,9 +75,12 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-exports.__esModule = true;
-var Command_1 = require("./Command");
-var Binding_1 = require("../../bindings/classes/Binding");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Command_1 = __importDefault(require("./Command"));
+var Binding_1 = __importDefault(require("../../bindings/classes/Binding"));
 var CommandBinding = /** @class */ (function (_super) {
     __extends(CommandBinding, _super);
     function CommandBinding(viewModel, commandName, converter, subscriber) {
@@ -85,17 +88,19 @@ var CommandBinding = /** @class */ (function (_super) {
         if (subscriber === void 0) { subscriber = null; }
         var _this = this;
         var command = viewModel[commandName];
-        if (!(command instanceof Command_1["default"] || typeof command === 'function')) {
+        if (!(command instanceof Command_1.default || typeof command === "function")) {
             throw new Error("Bound command ".concat(commandName, " should be a function or instance of Command"));
         }
         else {
-            _this = _super.call(this, command, 'canExecute', null, subscriber) || this;
-            _this.myConverter = converter;
-            if (command instanceof Command_1["default"]) {
+            if (command instanceof Command_1.default) {
+                _this = _super.call(this, command, "canExecute", null, subscriber) || this;
                 _this.command = command;
+                _this.myConverter = converter;
             }
             else {
-                _this.command = Command_1["default"].from(viewModel, command);
+                _this = _super.call(this, command, "canExecute", null, subscriber) || this;
+                _this.command = Command_1.default.from(viewModel, command);
+                _this.myConverter = converter;
             }
         }
         return _this;
@@ -145,8 +150,8 @@ var CommandBinding = /** @class */ (function (_super) {
         });
     };
     return CommandBinding;
-}(Binding_1["default"]));
-exports["default"] = CommandBinding;
+}(Binding_1.default));
+exports.default = CommandBinding;
 var CommandExecutor = /** @class */ (function () {
     function CommandExecutor(command) {
         if (command === void 0) { command = null; }
@@ -158,10 +163,10 @@ var TestConverter = /** @class */ (function () {
     function TestConverter() {
     }
     TestConverter.prototype.convertFrom = function (viewModelValue, bindingContext) {
-        throw new Error('Method not implemented.');
+        throw new Error("Method not implemented.");
     };
     TestConverter.prototype.convertTo = function (viewValue, bindingContext) {
-        throw new Error('Method not implemented.');
+        throw new Error("Method not implemented.");
     };
     return TestConverter;
 }());
@@ -173,5 +178,5 @@ var converter = new TestConverter();
 var binding = new CommandBinding(vm, "aCommand");
 binding.execute();
 var executor = new CommandExecutor();
-var command = new Command_1["default"]();
+var command = new Command_1.default();
 //# sourceMappingURL=CommandBinding.js.map

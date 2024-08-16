@@ -1,15 +1,17 @@
-export function useBinderFor(vm: any): any;
-export default Binder;
+import React from "react";
+import PropTypes from "prop-types";
+import ReactBinder from "../classes/ReactBinder";
 declare function Binder({ vm, children }: {
     vm: any;
     children: any;
-}): JSX.Element;
+}): React.JSX.Element;
 declare namespace Binder {
-    export function useBinder(): any;
-    export { BinderContext as Context };
-    export namespace propTypes {
-        const vm: any;
-    }
+    var useBinder: () => any;
+    var Context: React.Context<any>;
+    var propTypes: {
+        vm: PropTypes.Validator<object>;
+    };
 }
-declare const BinderContext: any;
+export declare function useBinderFor(vm: any): ReactBinder<any>;
+export default Binder;
 //# sourceMappingURL=Binder.d.ts.map

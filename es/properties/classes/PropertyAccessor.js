@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var PropertyAccessor = /** @class */ (function () {
     function PropertyAccessor(object, propertyDescriptor) {
         this.value = new WeakMap();
@@ -26,5 +26,5 @@ var PropertyAccessor = /** @class */ (function () {
     };
     return PropertyAccessor;
 }());
-exports["default"] = PropertyAccessor;
+exports.default = PropertyAccessor;
 //# sourceMappingURL=PropertyAccessor.js.map

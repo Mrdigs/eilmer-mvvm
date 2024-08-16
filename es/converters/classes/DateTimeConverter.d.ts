@@ -1,18 +1,23 @@
-export class IsoDateConverter extends Converter {
-    constructor(includeTime: any);
+import { BindingContext } from "../../bindings";
+import IConverter from "./IConverter";
+declare class DateTimeConverter implements IConverter<Date, string> {
+    private formatter;
+    private formatParts;
+    private formatOptions;
+    private formatDayPeriods;
+    private formatMonthNames;
+    private formatNumbers;
+    constructor(locale: string | string[], options: Intl.DateTimeFormatOptions);
+    convertFrom(viewModelValue: Date, bindingContext: BindingContext): string;
+    convertTo(viewValue: string, bindingContext: BindingContext): Date;
+}
+export declare class IsoDateConverter implements IConverter<Date, string> {
     includeTime: boolean;
-    convertFrom(viewModelValue: any, bindingContext: any): any;
-    convertTo(viewValue: any, bindingContext: any): Date;
+    constructor(includeTime: boolean);
+    convertFrom(viewModelValue: Date, bindingContext: BindingContext): string;
+    convertTo(viewValue: string, bindingContext: BindingContext): Date;
 }
+export declare const isoDateConverter: IsoDateConverter;
+export declare const isoDateTimeConverter: IsoDateConverter;
 export default DateTimeConverter;
-import Converter from "./Converter";
-declare class DateTimeConverter extends Converter {
-    convertFrom(viewModelValue: any, bindingContext: any): string;
-    convertTo(viewValue: any, bindingContext: any): Date;
-    #private;
-}
-declare namespace DateTimeConverter {
-    const isoDateConverter: IsoDateConverter;
-    const isoDateTimeConverter: IsoDateConverter;
-}
 //# sourceMappingURL=DateTimeConverter.d.ts.map

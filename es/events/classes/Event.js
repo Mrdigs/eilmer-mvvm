@@ -24,7 +24,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Event = /** @class */ (function () {
     function Event(defaultHandler) {
         if (defaultHandler === void 0) { defaultHandler = null; }
@@ -50,5 +50,5 @@ var Event = /** @class */ (function () {
     };
     return Event;
 }());
-exports["default"] = Event;
+exports.default = Event;
 //# sourceMappingURL=Event.js.map

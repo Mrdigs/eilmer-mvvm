@@ -1,10 +1,10 @@
 export default class Observable {
-    static from(object: any, ...properties: any[]): Observable;
-    constructor(properties: any, object: any);
-    self: Observable;
+    private listeners;
+    private self;
+    constructor(properties: string[], object: object);
     subscribe(listener: any): any;
     unsubscribe(listener: any): void;
     notify(property: any, newValue: any, oldValue: any): void;
-    #private;
+    static from(object: object, ...properties: string[]): Observable;
 }
 //# sourceMappingURL=Observable.d.ts.map

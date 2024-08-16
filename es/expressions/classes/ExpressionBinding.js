@@ -20,7 +20,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -57,17 +57,20 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
-var Binding_1 = require("../../bindings/classes/Binding");
-var Properties_1 = require("../../properties/classes/Properties");
-var Expression_1 = require("./Expression");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Binding_1 = __importDefault(require("../../bindings/classes/Binding"));
+var Properties_1 = __importDefault(require("../../properties/classes/Properties"));
+var Expression_1 = __importDefault(require("./Expression"));
 var ExpressionBinding = /** @class */ (function (_super) {
     __extends(ExpressionBinding, _super);
     function ExpressionBinding(viewModel, expr, converter) {
         if (converter === void 0) { converter = null; }
         var _this = this;
-        var expression = new Expression_1["default"](expr);
-        _this = _super.call(this, expression, 'result', converter) || this;
+        var expression = new Expression_1.default(expr);
+        _this = _super.call(this, expression, "result", converter) || this;
         _this.listener = _this.evaluate.bind(_this);
         _this.variableResolver = new VariableResolver(_this.resolveVariable.bind(_this));
         _this.expression = expression;
@@ -77,17 +80,17 @@ var ExpressionBinding = /** @class */ (function (_super) {
         return _this;
     }
     ExpressionBinding.prototype.resolveVariable = function (name) {
-        console.log('Resolving variable:', name);
-        if (name[0] !== '@') {
+        console.log("Resolving variable:", name);
+        if (name[0] !== "@") {
             this.properties[name] = this.myViewModel;
-            return Properties_1["default"].getPropertyValue(this.myViewModel, name);
+            return Properties_1.default.getPropertyValue(this.myViewModel, name);
         }
         else {
-            throw new Error('No longer implementing');
+            throw new Error("No longer implementing");
             var attribute = name.slice(1);
             var attributes = this.getContext().attributes;
             this.properties[attribute] = attributes;
-            var result = Properties_1["default"].getPropertyValue(attributes, attribute);
+            var result = Properties_1.default.getPropertyValue(attributes, attribute);
             return result;
         }
     };
@@ -96,7 +99,7 @@ var ExpressionBinding = /** @class */ (function (_super) {
         this.evaluated = true;
     };
     ExpressionBinding.prototype.setValue = function (value) {
-        throw new Error('Not supported at the moment');
+        throw new Error("Not supported at the moment");
     };
     ExpressionBinding.prototype.getValue = function () {
         if (!this.evaluated)
@@ -111,7 +114,7 @@ var ExpressionBinding = /** @class */ (function (_super) {
         Object.entries(this.properties).forEach(function (_a) {
             var _b = __read(_a, 2), property = _b[0], object = _b[1];
             var args = [object, property, _this.listener];
-            Properties_1["default"].addPropertyChangeListener.apply(null, args);
+            Properties_1.default.addPropertyChangeListener.apply(null, args);
         });
         return result;
     };
@@ -121,7 +124,7 @@ var ExpressionBinding = /** @class */ (function (_super) {
         Object.entries(this.properties).forEach(function (_a) {
             var _b = __read(_a, 2), property = _b[0], object = _b[1];
             var args = [object, property, _this.listener];
-            Properties_1["default"].removePropertyChangeListener.apply(null, args);
+            Properties_1.default.removePropertyChangeListener.apply(null, args);
         });
     };
     ExpressionBinding.prototype[Symbol.iterator] = function () {
@@ -135,8 +138,8 @@ var ExpressionBinding = /** @class */ (function (_super) {
         });
     };
     return ExpressionBinding;
-}(Binding_1["default"]));
-exports["default"] = ExpressionBinding;
+}(Binding_1.default));
+exports.default = ExpressionBinding;
 var VariableResolver = /** @class */ (function () {
     function VariableResolver(resolveFunction) {
         this.resolveFunction = resolveFunction;

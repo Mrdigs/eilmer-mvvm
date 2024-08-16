@@ -14,19 +14,22 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 var bindings_1 = require("../../bindings");
-var ReactBindingContext_1 = require("./ReactBindingContext");
+var ReactBindingContext_1 = __importDefault(require("./ReactBindingContext"));
 var ReactBinding = /** @class */ (function (_super) {
     __extends(ReactBinding, _super);
     function ReactBinding(viewModel, propertyName, converter, subscriber) {
         if (converter === void 0) { converter = null; }
         if (subscriber === void 0) { subscriber = null; }
         var _this = _super.call(this, viewModel, propertyName, converter, subscriber) || this;
-        _super.prototype.setContext.call(_this, new ReactBindingContext_1["default"](viewModel, propertyName, _this));
+        _super.prototype.setContext.call(_this, new ReactBindingContext_1.default(viewModel, propertyName));
         return _this;
     }
     return ReactBinding;
 }(bindings_1.Binding));
-exports["default"] = ReactBinding;
+exports.default = ReactBinding;
 //# sourceMappingURL=ReactBinding.js.map

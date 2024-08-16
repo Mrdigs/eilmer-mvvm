@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Contains contextual information about a Binding.
  */
@@ -7,11 +7,10 @@ var BindingContext = /** @class */ (function () {
     /**
      * @hideconstructor
      */
-    function BindingContext(viewModel, propertyName, binding) {
+    function BindingContext(viewModel, propertyName) {
         this.attributes = {};
         this.viewModel = viewModel;
         this.propertyName = propertyName;
-        this.binding = binding;
     }
     BindingContext.prototype.setAttribute = function (key, value) {
         this.attributes[key] = value;
@@ -21,5 +20,5 @@ var BindingContext = /** @class */ (function () {
     };
     return BindingContext;
 }());
-exports["default"] = BindingContext;
+exports.default = BindingContext;
 //# sourceMappingURL=BindingContext.js.map

@@ -1,7 +1,8 @@
-import Binding from '../../bindings/classes/Binding';
-import IConverter from '../../converters/classes/IConverter';
-import { Listener } from '../../properties/types';
-export default class CommandBinding<T = any, K = T> extends Binding<boolean> {
+import Command from "./Command";
+import Binding from "../../bindings/classes/Binding";
+import IConverter from "../../converters/classes/IConverter";
+import { Listener } from "../../properties/types";
+export default class CommandBinding<T = any, K = T> extends Binding<Command<T>, "canExecute"> {
     private command;
     private myConverter;
     constructor(viewModel: object, commandName: string, converter?: IConverter<T, K>, subscriber?: Listener<boolean>);

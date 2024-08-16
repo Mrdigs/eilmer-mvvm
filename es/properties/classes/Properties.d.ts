@@ -1,4 +1,4 @@
-import { Listener } from '../types';
+import { Listener } from "../types";
 export default class Properties {
     static addPropertyChangeListener(target: object, propertyName: string, listener: Listener): () => void;
     static removePropertyChangeListener(target: object, propertyName: string, listener: Listener): void;

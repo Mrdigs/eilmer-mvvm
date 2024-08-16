@@ -5,7 +5,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -26,22 +26,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
 var __values = (this && this.__values) || function(o) {
     var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
     if (m) return m.call(o);
@@ -53,10 +37,13 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-exports.__esModule = true;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 var properties_1 = require("../../properties");
 var converters_1 = require("../../converters");
-var BindingContext_1 = require("./BindingContext");
+var BindingContext_1 = __importDefault(require("./BindingContext"));
 /**
  * Provides a binding between an object property and a listener.
  *
@@ -97,13 +84,13 @@ var Binding = /** @class */ (function () {
         if (subscriber === void 0) { subscriber = null; }
         this.bound = false;
         if (!(viewModel && propertyName)) {
-            throw new Error('viewModel and propertyName are required arguments');
+            throw new Error("viewModel and propertyName are required arguments");
         }
-        else if (typeof propertyName !== 'string') {
-            throw new TypeError('propertyName must be a string');
+        else if (typeof propertyName !== "string") {
+            throw new TypeError("propertyName must be a string");
         }
         else {
-            this.context = new BindingContext_1["default"](viewModel, propertyName, this);
+            this.context = new BindingContext_1.default(viewModel, propertyName);
             if (converter instanceof converters_1.Converter) {
                 this.converter = converter;
             }
@@ -148,7 +135,7 @@ var Binding = /** @class */ (function () {
             return this.unbind.bind(this);
         }
         else {
-            throw new Error('Binding is already bound to a subscriber');
+            throw new Error("Binding is already bound to a subscriber");
         }
     };
     /**
@@ -181,7 +168,7 @@ var Binding = /** @class */ (function () {
             }
             catch (exception) {
                 if (exception instanceof converters_1.ConverterException) {
-                    console.warn('Unhandled', exception.toString());
+                    console.warn("Unhandled", exception.toString());
                 }
                 else {
                     throw exception;
@@ -201,29 +188,25 @@ var Binding = /** @class */ (function () {
      */
     Binding.prototype.getValue = function () {
         var value = properties_1.Properties.getPropertyValue(this.viewModel, this.propertyName);
-        if (this.converter) {
+        if (this.converter !== null) {
             return this.converter.convertFrom(value, this.getContext());
         }
         return value;
     };
     // TODO: Unfortunately, the requirement to preserve the correct types
-    // in the yeilded tuple is not yet implemented in TypeScript.
+    // in the yielded tuple is not yet implemented in TypeScript.
     // See: https://github.com/microsoft/TypeScript/issues/43150
     Binding.prototype[Symbol.iterator] = function () {
         var values;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    values = [this.getValue(), this.setValue.bind(this)];
-                    // return values[Symbol.iterator]
-                    return [5 /*yield**/, __values(values)
-                        /*
-                        yield this.getValue()
-                        yield this.setValue.bind(this)
-                        */
+                    values = [
+                        this.getValue(),
+                        this.setValue.bind(this),
                     ];
+                    return [5 /*yield**/, __values(values)];
                 case 1:
-                    // return values[Symbol.iterator]
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -231,35 +214,5 @@ var Binding = /** @class */ (function () {
     };
     return Binding;
 }());
-// Ok so this works great without a converter, but what about *with* a converter
-var TestConverter = /** @class */ (function () {
-    function TestConverter() {
-    }
-    TestConverter.prototype.convertFrom = function (viewModelValue, bindingContext) {
-        throw new Error('Method not implemented.');
-    };
-    TestConverter.prototype.convertTo = function (viewValue, bindingContext) {
-        throw new Error('Method not implemented.');
-    };
-    return TestConverter;
-}());
-var test = [1, "2"];
-var _a = __read(test, 2), first = _a[0], second = _a[1];
-// So both are string | number and that's no good.
-var object = { count: 0 };
-var converter = new TestConverter();
-var binding = new Binding(object, 'count');
-var _b = __read(binding, 2), value = _b[0], setValue = _b[1];
-//setValue(5)
-/*
-binding.bind((count: number) => {
-   console.log('Count is now:', count)
-})
-binding.getValue() * 2
-/*
-setInterval(() => {
-  binding.setValue(binding.getValue() + 1)
-}, 1000)
-*/
-exports["default"] = Binding;
+exports.default = Binding;
 //# sourceMappingURL=Binding.js.map

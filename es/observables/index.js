@@ -1,10 +1,13 @@
 "use strict";
-exports.__esModule = true;
-exports.Observable = void 0;
-var Observable_1 = require("./classes/Observable");
-exports.Observable = Observable_1["default"];
-var Observables = {
-    Observable: Observable_1["default"]
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports["default"] = Observables;
+Object.defineProperty(exports, "__esModule", { value: true });
+var Observable_1 = __importDefault(require("./classes/Observable"));
+var Observables = {
+    Observable: Observable_1.default,
+};
+// Not exporting as it needs work
+// export { Observable }
+// export default Observables
 //# sourceMappingURL=index.js.map

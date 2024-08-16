@@ -1,6 +1,7 @@
 {
   "include": ["src/**/*"],
   "compilerOptions": {
+    "jsx": "react",
     "allowJs": false,
     "declaration": true,
     "emitDeclarationOnly": false,
@@ -8,6 +9,6 @@
     "outDir": "dist",
     "declarationMap": true,
     "sourceMap": true,
-    // "jsx": "react"
+    "esModuleInterop": true
   }
 }

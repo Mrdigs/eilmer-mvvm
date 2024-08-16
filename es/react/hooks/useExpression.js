@@ -26,15 +26,19 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = useExpression;
 var react_1 = require("react");
-var ExpressionBinding_1 = require("../../expressions/classes/ExpressionBinding");
+var ExpressionBinding_1 = __importDefault(require("../../expressions/classes/ExpressionBinding"));
 // TODO: Converter?
 // TODO: Allow a generic type on Expression binding
 function useExpression(viewModel, expression) {
     var _a = __read((0, react_1.useState)({}), 2), state = _a[0], setState = _a[1];
     state.binding = (0, react_1.useMemo)(function () {
-        return new ExpressionBinding_1["default"](viewModel, expression);
+        return new ExpressionBinding_1.default(viewModel, expression);
     }, [viewModel, expression]);
     (0, react_1.useEffect)(function () {
         // The use of useEffect here ensures that the binding becomes unbound
@@ -43,5 +47,4 @@ function useExpression(viewModel, expression) {
     }, [state.binding]);
     return state.binding.getValue();
 }
-exports["default"] = useExpression;
 //# sourceMappingURL=useExpression.js.map

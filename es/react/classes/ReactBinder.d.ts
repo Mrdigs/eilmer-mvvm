@@ -1,16 +1,11 @@
-import Binder from '../../bindings/classes/Binder';
-import IConverter from '../../converters/classes/IConverter';
-declare class ReactBinder<T extends object> extends Binder<T> {
-    constructor(viewModel: T);
-    /**
-     *
-     * @deprecated
-     */
-    useProperty<T = any, K = T>(propertyName: string, converter?: IConverter<T, K>): K;
-    useBinding<T = any, K = T>(propertyName: string, converter?: IConverter<T, K>): [K, (value: K) => void, import("../../bindings/classes/BindingContext").default];
-    useCommand(commandName: string, converter: any): [(...args: any[]) => any, boolean, import("../../bindings/classes/BindingContext").default];
+import Binder from "../../bindings/classes/Binder";
+import IConverter from "../../converters/classes/IConverter";
+declare class ReactBinder<VM extends object> extends Binder<VM> {
+    constructor(viewModel: VM);
+    useBinding<P extends keyof VM & string, V = VM[P]>(propertyName: P, converter?: IConverter<VM[P], V>): [V, (value: V) => void, import("../../bindings").BindingContext];
+    useCommand(commandName: string, converter: any): [(...args: any[]) => any, boolean, import("../../bindings").BindingContext];
     useExpression(expression: string): any;
-    useEvent(eventName: string, listener: any): import("../../events").EventBinding;
+    useEvent<P extends keyof VM & string>(eventName: P, listener: any): import("../../events").EventBinding<VM, P>;
 }
 export default ReactBinder;
 //# sourceMappingURL=ReactBinder.d.ts.map

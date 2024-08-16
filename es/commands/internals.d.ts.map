@@ -1,1 +1,1 @@
-{"version":3,"file":"internals.d.ts","sourceRoot":"","sources":["../../src/commands/internals.js"],"names":[],"mappings":"AAEA,mFAuBC"}
+{"version":3,"file":"internals.d.ts","sourceRoot":"","sources":["../../src/commands/internals.ts"],"names":[],"mappings":"AAMA,wBAAgB,cAAc,CAAC,CAAC,EAAE,MAAM,EAAE,CAAC,EAAE,WAAW,EAAE,MAAM,CAAC,EAAE,GAAG,IAAI,OAAA,OA4BzE"}

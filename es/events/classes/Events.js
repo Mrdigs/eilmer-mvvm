@@ -1,6 +1,9 @@
 "use strict";
-exports.__esModule = true;
-var Event_1 = require("./Event");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Event_1 = __importDefault(require("./Event"));
 var Events = /** @class */ (function () {
     function Events() {
     }
@@ -9,11 +12,11 @@ var Events = /** @class */ (function () {
         if (typeof listener !== 'function') {
             throw new TypeError('Event listeners must be functions');
         }
-        if (!(object[eventName] instanceof Event_1["default"])) {
+        if (!(object[eventName] instanceof Event_1.default)) {
             if (typeof object[eventName] === 'function') {
                 var descriptor = getPropertyDescriptor(object, eventName);
                 if (!((_a = descriptor === null || descriptor === void 0 ? void 0 : descriptor.value) === null || _a === void 0 ? void 0 : _a.event)) {
-                    var event_1 = new Event_1["default"](object[eventName].bind(object));
+                    var event_1 = new Event_1.default(object[eventName].bind(object));
                     descriptor.value = event_1.trigger.bind(event_1);
                     descriptor.value.event = event_1;
                     Object.defineProperty(object, eventName, descriptor);
@@ -32,7 +35,7 @@ var Events = /** @class */ (function () {
     Events.removeEventListener = function (object, eventName, listener) {
         var _a;
         if (typeof listener === 'function') {
-            if (!(object[eventName] instanceof Event_1["default"])) {
+            if (!(object[eventName] instanceof Event_1.default)) {
                 var descriptor = Object.getOwnPropertyDescriptor(object, eventName);
                 if ((_a = descriptor.value) === null || _a === void 0 ? void 0 : _a.event) {
                     var event_3 = descriptor.value.event;
@@ -46,7 +49,7 @@ var Events = /** @class */ (function () {
     };
     return Events;
 }());
-exports["default"] = Events;
+exports.default = Events;
 function getPropertyDescriptor(object, property) {
     if (object) {
         var propertyDescriptor = Object.getOwnPropertyDescriptor(object, property);
