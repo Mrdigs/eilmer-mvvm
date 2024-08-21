@@ -1,10 +1,10 @@
 import { EventListener } from "../types";
-export default class Event {
+export default class Event<T> {
     private listeners;
     private defaultHandler;
-    constructor(defaultHandler?: EventListener);
-    subscribe(listener: EventListener): any;
-    unsubscribe(listener: EventListener): void;
-    trigger(...args: any[]): void;
+    constructor(defaultHandler?: EventListener<T>);
+    subscribe(listener: EventListener<T>): any;
+    unsubscribe(listener: EventListener<T>): void;
+    trigger(arg: T): void;
 }
 //# sourceMappingURL=Event.d.ts.map

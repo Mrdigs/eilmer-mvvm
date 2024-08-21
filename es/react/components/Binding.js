@@ -1,15 +1,11 @@
-import React from 'react';
-import Binder, { useBinderFor } from './Binder';
-import Converter from '../../converters/classes/Converter';
-import Command from '../../commands/classes/Command'; //import Event from '../../events/classes/Event'
+// DUE TO BE DELETED WHEN <Bind> IS FINISHED
+import React from "react";
+import Binder, { useBinderFor } from "./Binder";
+import Converter from "../../converters/classes/Converter";
+import Command from "../../commands/classes/Command"; //import Event from '../../events/classes/Event'
 //import Action from '../../actions/classes/Action'
 
-import ExpressionBinding from '../../expressions/classes/ExpressionBinding';
-/*
-
-  TODO: Rename this to Bind
-
-*/
+import ExpressionBinding from "../../expressions/classes/ExpressionBinding";
 
 function Binding({
   vm,
@@ -18,23 +14,23 @@ function Binding({
   ...props
 }) {
   if (Array.isArray(children)) {
-    throw new Error('Binding accepts only one child Component');
+    throw new Error("Binding accepts only one child Component");
   } else {
     const childProps = {};
     const binder = useBinder(vm);
-    const viewModel = binder.getViewModel(); // I really don't know what this is doing, needs checking through 
-    // and 
+    const viewModel = binder.getViewModel(); // I really don't know what this is doing, needs checking through
+    // and
 
-    if (children.type === 'input' || children.type === 'select') {
+    if (children.type === "input" || children.type === "select") {
       const propNames = Object.keys(props);
 
-      if (propNames.includes('value') && !propNames.includes('onChange')) {
+      if (propNames.includes("value") && !propNames.includes("onChange")) {
         // Ok so it's basically adding a default onChange property handler
         // I'm not sure that that is a good idea but lets run with it for now
-        // The "@value" is the binders (current) way of expressing that the 
+        // The "@value" is the binders (current) way of expressing that the
         // onChange event should update the property that the "value" attribute
-        // is listening on.... 
-        props.onChange = '@value';
+        // is listening on....
+        props.onChange = "@value";
       }
     }
 
@@ -48,7 +44,7 @@ function Binding({
         // Expression Binding
         const expression = /^#{(.*)}$/.exec(property.value)[1];
         const binding = binder.useExpression(expression);
-        console.log('EXPRESSION CONTEXT 1', binding, binding.getContext());
+        console.log("EXPRESSION CONTEXT 1", binding, binding.getContext());
         binding.getContext().componentProperty = property.name; // But I also don't want to pollute the expression binding with
         // handling specifically for this.
 
@@ -59,11 +55,11 @@ function Binding({
       } else if (property.isReference) {
         // Reference Binding
         // A Reference binding is a reference to another attribute, and done with an
-        // @ at the beginning of the value. 
+        // @ at the beginning of the value.
         const value = property.value.slice(1);
         let binding = childProps.propertyBindings[value];
 
-        if (typeof binding !== 'undefined') {
+        if (typeof binding !== "undefined") {
           const handler = binding.setValue.bind(binding);
           const eventHandler = createEventHandler(value, handler);
           childProps[property.name] = eventHandler;
@@ -73,7 +69,7 @@ function Binding({
       } else {
         const currentValue = viewModel[property.value];
 
-        if (property.isEvent || currentValue instanceof Command || typeof currentValue === 'function') {
+        if (property.isEvent || currentValue instanceof Command || typeof currentValue === "function") {
           // Command Binding
           // console.log('Binding command: ', property.name, property.value)
           const [execute, canExecute, context] = binder.useCommand(property.value, property.converter);
@@ -93,7 +89,7 @@ function Binding({
         }
       }
     });
-    console.log('CHILD PROPS:', childProps);
+    console.log("CHILD PROPS:", childProps);
     return /*#__PURE__*/React.createElement(BoundChild, childProps, children);
   }
 }
@@ -111,7 +107,7 @@ function BoundChild(props) {
     ...childProps
   } = savedProps.componentProps;
   Object.assign(childProps, savedProps.converterProps);
-  console.log('SAVED PROPS:', savedProps);
+  console.log("SAVED PROPS:", savedProps);
   React.useEffect(() => {
     setSavedProps(savedProps => ({
       componentProps: props,
@@ -121,8 +117,8 @@ function BoundChild(props) {
 
   if (propertyBindings) {
     Object.values(propertyBindings).forEach(binding => {
-      console.log('PROPERTY BINDING', binding); // TODO: ERROR HERE: I shouldn't need to put this check in because it 
-      // shouldn't be undefined, but just to get things going so I can work out 
+      console.log("PROPERTY BINDING", binding); // TODO: ERROR HERE: I shouldn't need to put this check in because it
+      // shouldn't be undefined, but just to get things going so I can work out
       // what the heck is going on here and debug the whole thing
 
       if (binding) binding.getContext().setComponentPropertiesHandler = converterProps => {
@@ -137,20 +133,20 @@ function BoundChild(props) {
 
   if (Object(children.props) === children.props) {
     for (var prop in childProps) {
-      if (typeof childProps[prop] === 'undefined') {
-        if (children.props[prop] !== 'undefined') {
+      if (typeof childProps[prop] === "undefined") {
+        if (children.props[prop] !== "undefined") {
           delete childProps[prop];
         }
       }
     }
   }
 
-  console.log('Setting the following child props:', childProps);
+  console.log("Setting the following child props:", childProps);
 
-  if (typeof children === 'function') {
+  if (typeof children === "function") {
     return children(childProps);
   } else {
-    if (typeof children.type === 'string') childProps.ref = ref;
+    if (typeof children.type === "string") childProps.ref = ref;
     return /*#__PURE__*/React.cloneElement(children, childProps);
   }
 }
@@ -178,8 +174,8 @@ class BindProperty {
 
     this.isEvent = /^on[A-Z].*$/.test(name);
     this.isExpression = /^#{.*}$/.test(value);
-    this.isReference = typeof value === 'string' && value[0] === '@';
-    this.isReference = this.isReference || this.isExpression && value.includes('@');
+    this.isReference = typeof value === "string" && value[0] === "@";
+    this.isReference = this.isReference || this.isExpression && value.includes("@");
   } // This is so that they can be sorted in a specific order to allow
   // what? I think basically so standard properties are evaluated first
   // and most importantly, onX events are evaluated last
@@ -187,7 +183,7 @@ class BindProperty {
 
   compareTo(that) {
     if (typeof this.value !== typeof that.value) {
-      return typeof this.value === 'string' ? -1 : 1;
+      return typeof this.value === "string" ? -1 : 1;
     } else if (this.isReference !== that.isReference) {
       return !this.isReference ? -1 : 1;
     } else if (this.isEvent !== that.isEvent) {

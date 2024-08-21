@@ -1,46 +1,43 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+// POSSIBLY TO BE DELETED
+import React from "react";
+import PropTypes from "prop-types";
 
-import ReactBinder from '../classes/ReactBinder'
+import ReactBinder from "../classes/ReactBinder";
 
-const BinderContext = React.createContext()
+const BinderContext = React.createContext();
 
 function Binder({ vm, children }) {
-  const binder = useBinderFor(vm)
+  const binder = useBinderFor(vm);
 
   return (
-    <BinderContext.Provider value={binder}>
-      {children}
-    </BinderContext.Provider>
-  )
+    <BinderContext.Provider value={binder}>{children}</BinderContext.Provider>
+  );
 }
 
 export function useBinderFor(vm) {
-  const oldVm = React.useRef(vm)
-  const [ binder, setBinder ] = React.useState(() => (
+  const oldVm = React.useRef(vm);
+  const [binder, setBinder] = React.useState(() =>
     vm ? new ReactBinder(vm) : null
-  ))
+  );
 
   React.useEffect(() => {
     if (oldVm.current !== vm) {
-      oldVm.current = vm
-      setBinder(() => (
-        vm ? new ReactBinder(vm) : null
-      ))
+      oldVm.current = vm;
+      setBinder(() => (vm ? new ReactBinder(vm) : null));
     }
-  }, [vm])
+  }, [vm]);
 
-  return binder
+  return binder;
 }
 
-Binder.useBinder = function() {
-  return React.useContext(BinderContext)
-}
+Binder.useBinder = function () {
+  return React.useContext(BinderContext);
+};
 
-Binder.Context = BinderContext
+Binder.Context = BinderContext;
 
 Binder.propTypes = {
-  vm: PropTypes.object.isRequired
-}
+  vm: PropTypes.object.isRequired,
+};
 
-export default Binder
+export default Binder;

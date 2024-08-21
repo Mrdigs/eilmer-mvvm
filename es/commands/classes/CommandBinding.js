@@ -14,15 +14,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __generator = (this && this.__generator) || function (thisArg, body) {
     var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
     return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
@@ -50,31 +41,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -83,43 +49,28 @@ var Command_1 = __importDefault(require("./Command"));
 var Binding_1 = __importDefault(require("../../bindings/classes/Binding"));
 var CommandBinding = /** @class */ (function (_super) {
     __extends(CommandBinding, _super);
-    function CommandBinding(viewModel, commandName, converter, subscriber) {
-        if (converter === void 0) { converter = null; }
+    function CommandBinding(viewModel, commandName, subscriber) {
         if (subscriber === void 0) { subscriber = null; }
         var _this = this;
-        var command = viewModel[commandName];
-        if (!(command instanceof Command_1.default || typeof command === "function")) {
-            throw new Error("Bound command ".concat(commandName, " should be a function or instance of Command"));
+        var commandOrFunction = viewModel[commandName];
+        if (commandOrFunction instanceof Command_1.default) {
+            _this = _super.call(this, commandOrFunction, "canExecute", null, subscriber) || this;
+            _this.command = commandOrFunction;
+        }
+        else if (typeof commandOrFunction === "function") {
+            var command = Command_1.default.from(viewModel, commandOrFunction);
+            command.canExecute = true;
+            _this = _super.call(this, command, "canExecute", null, subscriber) || this;
+            _this.command = command;
         }
         else {
-            if (command instanceof Command_1.default) {
-                _this = _super.call(this, command, "canExecute", null, subscriber) || this;
-                _this.command = command;
-                _this.myConverter = converter;
-            }
-            else {
-                _this = _super.call(this, command, "canExecute", null, subscriber) || this;
-                _this.command = Command_1.default.from(viewModel, command);
-                _this.myConverter = converter;
-            }
+            throw new Error("Bound command ".concat(commandName, " should be a function or instance of Command"));
         }
         return _this;
     }
-    CommandBinding.prototype.execute = function () {
-        var _a, _b;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        // TODO: Wait: what about canExecute? That needs sorting out....
-        if (this.myConverter) {
-            // Ah right, so this is where the issue is....
-            // command.execute.apply(command, args)
-            var returnValue = (_a = this.command).execute.apply(_a, __spreadArray([], __read(args), false));
-            return this.myConverter.convertFrom(returnValue, this.getContext());
-        }
-        else {
-            return (_b = this.command).execute.apply(_b, __spreadArray([], __read(args), false));
+    CommandBinding.prototype.execute = function (parameter) {
+        if (this.command.canExecute) {
+            this.command.execute(parameter);
         }
     };
     /**
@@ -152,31 +103,4 @@ var CommandBinding = /** @class */ (function (_super) {
     return CommandBinding;
 }(Binding_1.default));
 exports.default = CommandBinding;
-var CommandExecutor = /** @class */ (function () {
-    function CommandExecutor(command) {
-        if (command === void 0) { command = null; }
-        // ((...args: any[]) => K)
-    }
-    return CommandExecutor;
-}());
-var TestConverter = /** @class */ (function () {
-    function TestConverter() {
-    }
-    TestConverter.prototype.convertFrom = function (viewModelValue, bindingContext) {
-        throw new Error("Method not implemented.");
-    };
-    TestConverter.prototype.convertTo = function (viewValue, bindingContext) {
-        throw new Error("Method not implemented.");
-    };
-    return TestConverter;
-}());
-var vm = { aCommand: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-        return [2 /*return*/, 1];
-    }); }); } };
-var converter = new TestConverter();
-// const binding = new CommandBinding(vm, "aCommand", converter)
-var binding = new CommandBinding(vm, "aCommand");
-binding.execute();
-var executor = new CommandExecutor();
-var command = new Command_1.default();
 //# sourceMappingURL=CommandBinding.js.map

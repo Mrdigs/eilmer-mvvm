@@ -1,25 +1,24 @@
 import { EventListener } from "../types"
 
-export default class Event {
-
-  private listeners: EventListener[] = []
+export default class Event<T> {
+  private listeners: EventListener<T>[] = []
   private defaultHandler = null
 
-  constructor(defaultHandler: EventListener = null) {
+  constructor(defaultHandler: EventListener<T> = null) {
     this.defaultHandler = defaultHandler
   }
 
-  subscribe(listener: EventListener) {
+  subscribe(listener: EventListener<T>) {
     this.listeners.push(listener)
     return this.unsubscribe.bind(this, listener)
   }
 
-  unsubscribe(listener: EventListener) {
-    this.listeners = this.listeners.filter(l => l !== listener)
+  unsubscribe(listener: EventListener<T>) {
+    this.listeners = this.listeners.filter((l) => l !== listener)
   }
 
-  trigger(...args: any[]) {
-    if (this.defaultHandler) this.defaultHandler(...args)
-    this.listeners.forEach(listener => listener(...args))
+  trigger(arg: T) {
+    if (this.defaultHandler) this.defaultHandler(arg)
+    this.listeners.forEach((listener) => listener(arg))
   }
 }

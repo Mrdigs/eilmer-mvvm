@@ -1,13 +1,12 @@
-import Event from './Event'
+import Event from "./Event"
 
 export default class Events {
-
   static addEventListener(object, eventName, listener) {
-    if (typeof listener !== 'function') {
-      throw new TypeError('Event listeners must be functions')
+    if (typeof listener !== "function") {
+      throw new TypeError("Event listeners must be functions")
     }
     if (!(object[eventName] instanceof Event)) {
-      if (typeof object[eventName] === 'function') {
+      if (typeof object[eventName] === "function") {
         const descriptor = getPropertyDescriptor(object, eventName)
         if (!descriptor?.value?.event) {
           const event = new Event(object[eventName].bind(object))
@@ -26,7 +25,7 @@ export default class Events {
   }
 
   static removeEventListener(object, eventName, listener) {
-    if (typeof listener === 'function') {
+    if (typeof listener === "function") {
       if (!(object[eventName] instanceof Event)) {
         const descriptor = Object.getOwnPropertyDescriptor(object, eventName)
         if (descriptor.value?.event) {
@@ -38,7 +37,6 @@ export default class Events {
       }
     }
   }
-
 }
 
 function getPropertyDescriptor(object, property) {

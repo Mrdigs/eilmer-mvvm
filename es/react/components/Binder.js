@@ -1,6 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ReactBinder from '../classes/ReactBinder';
+// POSSIBLY TO BE DELETED
+import React from "react";
+import PropTypes from "prop-types";
+import ReactBinder from "../classes/ReactBinder";
 const BinderContext = /*#__PURE__*/React.createContext();
 
 function Binder({

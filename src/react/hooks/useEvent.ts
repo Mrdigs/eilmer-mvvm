@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import EventBinding from "../../events/classes/EventBinding";
-import { EventListener } from "../../events/types";
+import { useEffect, useMemo, useRef, useState } from "react"
+import EventBinding from "../../events/classes/EventBinding"
+import { EventListener } from "../../events/types"
 
 // Oh right I see. The way it's supposed to work is that it will
 // cause a re-render if *EITHER* no listener function is given *or*
@@ -10,62 +10,41 @@ import { EventListener } from "../../events/types";
 // very useful whereas in this case it's quite good.
 
 type BindingState<VM extends object, P extends keyof VM & string> = {
-  binding?: EventBinding<VM, P>;
-};
+  binding?: EventBinding<VM, P>
+}
 
 export default function useEvent<
   VM extends object,
   P extends keyof VM & string
->(viewModel: VM, eventName: P, listener: EventListener = null) {
-  const [state, setState] = useState<BindingState<VM, P>>({});
+>(viewModel: VM, eventName: P, listener: EventListener<any> = null) {
+  const [state, setState] = useState<BindingState<VM, P>>({})
 
   state.binding = useMemo(() => {
-    return new EventBinding(viewModel, eventName);
-  }, [viewModel, eventName]);
+    return new EventBinding(viewModel, eventName)
+  }, [viewModel, eventName])
 
   useEffect(() => {
     // The use of useEffect here ensures that the binding becomes unbound
     // when either the component unbinds, or is re-bound to another property
-    return state.binding.bind((...args: any[]) => {
+    return state.binding.bind((parameter: any) => {
       // Here on receiving the event, a re-render is not triggered unless
       // no listener function has been given *or* it returns true
-      if (typeof listener !== "function" || listener(...args)) {
-        setState((state) => ({ ...state }));
+      if (typeof listener !== "function" || listener(parameter)) {
+        setState((state) => ({ ...state }))
       }
-    });
-  }, [state.binding]);
+    })
+  }, [state.binding])
 
   // TODO: Unfortunately, the requirement to preserve the correct types
   // in the yeilded tuple is not yet implemented in TypeScript.
   // See: https://github.com/microsoft/TypeScript/issues/43150
-  return state.binding;
-
-  /*
-      const oldInstance = useRef(viewModel)
-      const [ state, setState ] = useState(() => ({
-        binding: new EventBinding(viewModel, eventName)
-      }))
-  
-      useEffect(() => {
-        if (viewModel !== oldInstance.current) {
-          oldInstance.current = viewModel
-          setState({
-            binding: new EventBinding(viewModel, eventName)
-          })
-        }
-        state.binding.bind((...args) => {
-            // What is supposed to happen here? What is going to happen 
-            // is that the listener isn't going to get called, but the 
-            // component is going to re-render. 
-
-
-          if (typeof listener !== 'function' || listener(...args)) {
-            setState(state => ({ ...state }))
-          }
-        })
-        return state.binding.unbind.bind(state.binding)
-      }, [viewModel])
-  
-      return state.binding
-      */
+  return state.binding
 }
+
+const vm = {
+  onSomething: () => {
+    return "aString"
+  },
+}
+
+useEvent(vm, "onSomething", (arg) => {})

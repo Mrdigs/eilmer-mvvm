@@ -32,8 +32,8 @@ var ReactBinder = /** @class */ (function (_super) {
         if (converter === void 0) { converter = null; }
         return (0, useBinding_1.default)(this.viewModel, propertyName, converter);
     };
-    ReactBinder.prototype.useCommand = function (commandName, converter) {
-        return (0, useCommand_1.default)(this.viewModel, commandName, converter);
+    ReactBinder.prototype.useCommand = function (commandName) {
+        return (0, useCommand_1.default)(this.viewModel, commandName);
     };
     ReactBinder.prototype.useExpression = function (expression) {
         return (0, useExpression_1.default)(this.viewModel, expression);

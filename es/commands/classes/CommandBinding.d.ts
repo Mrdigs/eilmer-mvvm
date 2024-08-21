@@ -1,12 +1,11 @@
 import Command from "./Command";
 import Binding from "../../bindings/classes/Binding";
-import IConverter from "../../converters/classes/IConverter";
 import { Listener } from "../../properties/types";
-export default class CommandBinding<T = any, K = T> extends Binding<Command<T>, "canExecute"> {
+import { CommandOf, InferCommandOrFunctionType } from "../types";
+export default class CommandBinding<VM extends object, P extends CommandOf<VM, T>, T = InferCommandOrFunctionType<VM[P]>> extends Binding<Command<T>, "canExecute"> {
     private command;
-    private myConverter;
-    constructor(viewModel: object, commandName: string, converter?: IConverter<T, K>, subscriber?: Listener<boolean>);
-    execute(...args: any[]): K;
+    constructor(viewModel: VM, commandName: P & string, subscriber?: Listener<boolean>);
+    execute(parameter: T): void;
     /**
      * Sets the value of canExecute on the command.
      */

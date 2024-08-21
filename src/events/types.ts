@@ -1,1 +1,1 @@
-export type EventListener = (...args: any[]) => boolean | void
+export type EventListener<T> = (arg: T) => boolean | void

@@ -24,11 +24,7 @@ var Command = /** @class */ (function () {
     function Command() {
         this.canExecute = true;
     }
-    Command.prototype.execute = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    Command.prototype.execute = function (parameter) {
         throw new exceptions_1.NotImplementedException();
     };
     Command.prototype.canExecuteChanged = function () {
@@ -40,12 +36,8 @@ var Command = /** @class */ (function () {
             function class_1() {
                 return _super !== null && _super.apply(this, arguments) || this;
             }
-            class_1.prototype.execute = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                return execute.apply(receiver, args);
+            class_1.prototype.execute = function (parameter) {
+                return execute.apply(receiver, parameter);
             };
             return class_1;
         }(Command)))();

@@ -26,15 +26,6 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -51,14 +42,10 @@ function useEvent(viewModel, eventName, listener) {
     (0, react_1.useEffect)(function () {
         // The use of useEffect here ensures that the binding becomes unbound
         // when either the component unbinds, or is re-bound to another property
-        return state.binding.bind(function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
+        return state.binding.bind(function (parameter) {
             // Here on receiving the event, a re-render is not triggered unless
             // no listener function has been given *or* it returns true
-            if (typeof listener !== "function" || listener.apply(void 0, __spreadArray([], __read(args), false))) {
+            if (typeof listener !== "function" || listener(parameter)) {
                 setState(function (state) { return (__assign({}, state)); });
             }
         });
@@ -67,33 +54,11 @@ function useEvent(viewModel, eventName, listener) {
     // in the yeilded tuple is not yet implemented in TypeScript.
     // See: https://github.com/microsoft/TypeScript/issues/43150
     return state.binding;
-    /*
-        const oldInstance = useRef(viewModel)
-        const [ state, setState ] = useState(() => ({
-          binding: new EventBinding(viewModel, eventName)
-        }))
-    
-        useEffect(() => {
-          if (viewModel !== oldInstance.current) {
-            oldInstance.current = viewModel
-            setState({
-              binding: new EventBinding(viewModel, eventName)
-            })
-          }
-          state.binding.bind((...args) => {
-              // What is supposed to happen here? What is going to happen
-              // is that the listener isn't going to get called, but the
-              // component is going to re-render.
-  
-  
-            if (typeof listener !== 'function' || listener(...args)) {
-              setState(state => ({ ...state }))
-            }
-          })
-          return state.binding.unbind.bind(state.binding)
-        }, [viewModel])
-    
-        return state.binding
-        */
 }
+var vm = {
+    onSomething: function () {
+        return "aString";
+    },
+};
+useEvent(vm, "onSomething", function (arg) { });
 //# sourceMappingURL=useEvent.js.map

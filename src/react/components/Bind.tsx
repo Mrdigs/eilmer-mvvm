@@ -71,12 +71,12 @@ What about Commands? The canExecute thing can be handled seperately:
     </Bind>
 
 */
-import { Binding } from "../../bindings";
-import Expression from "../../expressions/classes/Expression";
-import ExpressionBinding from "../../expressions/classes/ExpressionBinding";
-import CommandBinding from "../../commands/classes/CommandBinding";
-import ObjectVariableResolver from "../../expressions/classes/ObjectVariableResolver";
-import React, { useEffect, useMemo, useState } from "react";
+import { Binding } from "../../bindings"
+import Expression from "../../expressions/classes/Expression"
+import ExpressionBinding from "../../expressions/classes/ExpressionBinding"
+import CommandBinding from "../../commands/classes/CommandBinding"
+import ObjectVariableResolver from "../../expressions/classes/ObjectVariableResolver"
+import React, { useEffect, useMemo, useState } from "react"
 
 /*
 type Props = {
@@ -86,8 +86,8 @@ type Props = {
 
 export default function Bind({ children, ...props }) {
   const boundProps = useMemo(() => {
-    return propsToBindings(props);
-  }, getDependencies(props));
+    return propsToBindings(props)
+  }, getDependencies(props))
 
   /*
   const boundProps = {}, expressionContext = {};
@@ -128,96 +128,96 @@ export default function Bind({ children, ...props }) {
     });
   */
 
-  return <Bindings {...boundProps}>{children}</Bindings>;
+  return <Bindings {...boundProps}>{children}</Bindings>
 }
 
 function Bindings({ children, ...bindings }) {
-  const [props, setProps] = useState(() => bindingsToProps(bindings));
+  const [props, setProps] = useState(() => bindingsToProps(bindings))
 
   useEffect(() => {
     const unbinds = Object.entries(bindings).map(([property, binding]) => {
       return binding.bind((value) =>
         setProps((props) => ({ ...props, [property]: value }))
-      );
-    });
-    return () => unbinds.forEach((unbind) => unbind());
-  }, getDependencies(bindings));
+      )
+    })
+    return () => unbinds.forEach((unbind) => unbind())
+  }, getDependencies(bindings))
 
-  return React.cloneElement(children, props);
+  return React.cloneElement(children, props)
 }
 
 function getDependencies(props) {
-  return Object.entries(props).reduce((a, b) => a.concat(b), []);
+  return Object.entries(props).reduce((a, b) => a.concat(b), [])
 }
 
 function propsToBindings(props) {
-  const boundProps = {};
-  const expressionContext = {};
+  const boundProps = {}
+  const expressionContext = {}
   Object.keys(props)
     .sort()
     .forEach((propKey) => {
-      const propValue = props[propKey];
-      const propType = typeof propValue;
+      const propValue = props[propKey]
+      const propType = typeof propValue
       if (propKey.startsWith("$")) {
         // Props that start with a dollar sign just need to be made available
         // to the expression context so they can be used for evaluation
-        expressionContext[propKey] = propValue;
+        expressionContext[propKey] = propValue
       } else if (propType === "string" && propValue.startsWith("@bind(")) {
         // TODO: Check the result is valid and the whole string is correct
         // TODO: Write some tests for this with various mistakes
         const expression =
-          "[" + propValue.substring(6, propValue.lastIndexOf(")")) + "]";
-        const variableResolver = new ObjectVariableResolver(expressionContext);
-        const result = new Expression(expression).evaluate(variableResolver);
+          "[" + propValue.substring(6, propValue.lastIndexOf(")")) + "]"
+        const variableResolver = new ObjectVariableResolver(expressionContext)
+        const result = new Expression(expression).evaluate(variableResolver)
         // TODO: I need support for a converter, too
-        const binding = new Binding(result[0], result[1]);
-        const handler = binding.setValue.bind(binding);
-        const eventHandler = createEventHandler(propKey, handler);
-        boundProps[result[2]] = eventHandler;
-        boundProps[propKey] = binding;
+        const binding = new Binding(result[0], result[1])
+        const handler = binding.setValue.bind(binding)
+        const eventHandler = createEventHandler(propKey, handler)
+        boundProps[result[2]] = eventHandler
+        boundProps[propKey] = binding
       } else if (propType === "string" && propValue.startsWith("@command(")) {
         // Indicates a Command binding
         const expression =
-          "[" + propValue.substring(9, propValue.lastIndexOf(")")) + "]";
-        const variableResolver = new ObjectVariableResolver(expressionContext);
-        const result = new Expression(expression).evaluate(variableResolver);
-        const binding = new CommandBinding(result[0], result[1], result[2]);
-        const handler = binding.execute.bind(binding);
-        const executionHandler = createEventHandler(propKey, handler);
-        boundProps[propKey] = executionHandler;
+          "[" + propValue.substring(9, propValue.lastIndexOf(")")) + "]"
+        const variableResolver = new ObjectVariableResolver(expressionContext)
+        const result = new Expression(expression).evaluate(variableResolver)
+        const binding = new CommandBinding(result[0], result[1], result[2])
+        const handler = binding.execute.bind(binding)
+        const executionHandler = createEventHandler(propKey, handler)
+        boundProps[propKey] = executionHandler
       } else if (propType === "string") {
         // This is just a bog standard expression, so create a binding
         boundProps[propKey] = new ExpressionBinding(
           expressionContext,
           propValue
-        );
+        )
       } else {
-        throw new Error("Invalid <Bind> prop: " + propKey);
+        throw new Error("Invalid <Bind> prop: " + propKey)
       }
-    });
-  return boundProps;
+    })
+  return boundProps
 }
 
 // TODO: Type this properly
 function bindingsToProps(bindings) {
   // For the moment, they are all going to be property bindings
-  const props = {};
+  const props = {}
   Object.entries(bindings).forEach(([property, binding]) => {
     if (binding instanceof Binding) {
-      props[property] = binding.getValue();
+      props[property] = binding.getValue()
     } else {
-      props[property] = binding;
+      props[property] = binding
     }
-  });
-  return props;
+  })
+  return props
 }
 
 function createEventHandler(eventProperty: string, handler) {
   return (eventOrValue) => {
     if (eventOrValue?.target instanceof HTMLElement) {
-      handler(eventOrValue.target[eventProperty]);
+      handler(eventOrValue.target[eventProperty])
     } else {
-      handler(eventOrValue);
+      handler(eventOrValue)
     }
-  };
+  }
 }

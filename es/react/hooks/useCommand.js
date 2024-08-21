@@ -33,12 +33,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = useCommand;
 var react_1 = require("react");
 var CommandBinding_1 = __importDefault(require("../../commands/classes/CommandBinding"));
-function useCommand(viewModel, commandName, converter) {
-    if (converter === void 0) { converter = null; }
+function useCommand(viewModel, commandName) {
     var _a = __read((0, react_1.useState)({}), 2), state = _a[0], setState = _a[1];
     state.binding = (0, react_1.useMemo)(function () {
-        return new CommandBinding_1.default(viewModel, commandName, converter);
-    }, [viewModel, commandName, converter]);
+        return new CommandBinding_1.default(viewModel, commandName);
+    }, [viewModel, commandName]);
     (0, react_1.useEffect)(function () {
         // The use of useEffect here ensures that the binding becomes unbound
         // when either the component unbinds, or is re-bound to another property

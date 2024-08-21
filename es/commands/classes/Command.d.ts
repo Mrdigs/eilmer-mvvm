@@ -1,9 +1,10 @@
-export default class Command<T> {
+import ICommand from "./ICommand";
+export default class Command<T> implements ICommand<T> {
     canExecute: boolean;
-    execute(...args: any[]): T;
+    execute(parameter: T): void;
     canExecuteChanged(): void;
-    static from<T>(receiver: object, execute: (...args: any[]) => T): {
-        execute(...args: any[]): T;
+    static from<T>(receiver: object, execute: (parameter: T) => void): {
+        execute(parameter: T): void;
         canExecute: boolean;
         canExecuteChanged(): void;
     };

@@ -48,7 +48,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Event_1 = __importDefault(require("./Event"));
 var Events_1 = __importDefault(require("./Events"));
 var bindings_1 = require("../../bindings");
-// TODO: Basically lets NOT extend Binding, it's weird
 var EventBinding = /** @class */ (function (_super) {
     __extends(EventBinding, _super);
     // TODO: If it's a function, then it MUST BEGIN with "onX"
@@ -94,7 +93,6 @@ var EventBinding = /** @class */ (function (_super) {
         throw new Error("The value of events cannot be read");
         // TODO: This needs to be the last RETURNED VALUE when the
         // event was triggered
-        // return this.#command
     };
     EventBinding.prototype[Symbol.iterator] = function () {
         return __generator(this, function (_a) {
@@ -109,4 +107,28 @@ var EventBinding = /** @class */ (function (_super) {
     return EventBinding;
 }(bindings_1.Binding));
 exports.default = EventBinding;
+// TODO:
+/*
+  What I want to do with the generics is tie the subscriber (an EventListener)
+  to the returntype of the function, if it is a function, or the args of the Event,
+  if it is an Event.
+
+  Such that:
+
+  const vm = {
+    onSomething: new Event<string>()
+  }
+
+  const binding = new EventBinding(vm, "onSomething")
+  binding.bind((anArg) => {})
+
+  anArg is a string!
+*/
+{
+    var vm = {
+        onSomething: new Event_1.default(),
+    };
+    var binding = new EventBinding(vm, "onSomething");
+    binding.bind(function (anArg) { });
+}
 //# sourceMappingURL=EventBinding.js.map
