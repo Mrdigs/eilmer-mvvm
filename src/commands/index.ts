@@ -1,6 +1,6 @@
-import Command from './classes/Command'
-import CommandBinding from './classes/CommandBinding'
-// import { executeCommand } from './internals'
+import Command from "./classes/Command"
+import ICommand from "./classes/ICommand"
+import CommandBinding from "./classes/CommandBinding"
 
-export { Command, CommandBinding }
+export { ICommand, Command, CommandBinding }
 export default { Command, CommandBinding }

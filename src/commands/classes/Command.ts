@@ -1,22 +1,23 @@
-import Properties from "../../properties";
-import { NotImplementedException } from "../../exceptions";
+import Properties from "../../properties"
+import { NotImplementedException } from "../../exceptions"
+import ICommand from "./ICommand"
 
-export default class Command<T> {
-  canExecute: boolean = true;
+export default class Command<T> implements ICommand<T> {
+  canExecute: boolean = true
 
-  execute(...args: any[]): T {
-    throw new NotImplementedException();
+  execute(parameter: T): void {
+    throw new NotImplementedException()
   }
 
   canExecuteChanged() {
-    Properties.notifyPropertyChanged(this, "canExecute");
+    Properties.notifyPropertyChanged(this, "canExecute")
   }
 
-  static from<T>(receiver: object, execute: (...args: any[]) => T) {
+  static from<T>(receiver: object, execute: (parameter: T) => void) {
     return new (class extends Command<T> {
-      execute(...args: any[]): T {
-        return execute.apply(receiver, args);
+      execute(parameter: T): void {
+        return execute.apply(receiver, parameter)
       }
-    })();
+    })()
   }
 }

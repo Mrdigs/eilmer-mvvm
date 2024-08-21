@@ -1,51 +1,44 @@
-import Command from "./Command";
-import Binding from "../../bindings/classes/Binding";
-import { executeCommand } from "../internals";
-import IConverter from "../../converters/classes/IConverter";
-import { Listener } from "../../properties/types";
-import BindingContext from "../../bindings/classes/BindingContext";
+import Command from "./Command"
+import ICommand from "./ICommand"
+import Binding from "../../bindings/classes/Binding"
+import { Listener } from "../../properties/types"
+import {
+  CommandOf,
+  CommandOrFunction,
+  InferCommandOrFunctionType,
+} from "../types"
 
-export default class CommandBinding<T = any, K = T> extends Binding<
-  Command<T>,
-  "canExecute"
-> {
-  private command: Command<T>;
-  private myConverter: IConverter<T, K>;
+export default class CommandBinding<
+  VM extends object,
+  P extends CommandOf<VM, T>,
+  T = InferCommandOrFunctionType<VM[P]>
+> extends Binding<Command<T>, "canExecute"> {
+  private command: ICommand<T>
 
   constructor(
-    viewModel: object,
-    commandName: string,
-    converter: IConverter<T, K> = null,
+    viewModel: VM,
+    commandName: P & string,
     subscriber: Listener<boolean> = null
   ) {
-    const command = viewModel[commandName];
-    if (!(command instanceof Command || typeof command === "function")) {
+    const commandOrFunction = viewModel[commandName] as CommandOrFunction<T>
+    if (commandOrFunction instanceof Command) {
+      super(commandOrFunction, "canExecute", null, subscriber)
+      this.command = commandOrFunction as ICommand<T>
+    } else if (typeof commandOrFunction === "function") {
+      const command = Command.from(viewModel, commandOrFunction) as Command<T>
+      command.canExecute = true
+      super(command, "canExecute", null, subscriber)
+      this.command = command
+    } else {
       throw new Error(
         `Bound command ${commandName} should be a function or instance of Command`
-      );
-    } else {
-      if (command instanceof Command) {
-        super(command as Command<T>, "canExecute", null, subscriber);
-        this.command = command as Command<T>;
-        this.myConverter = converter;
-      } else {
-        super(command, "canExecute", null, subscriber);
-        type returnType = ReturnType<typeof command>;
-        this.command = Command.from<returnType>(viewModel, command);
-        this.myConverter = converter;
-      }
+      )
     }
   }
 
-  execute(...args: any[]): K {
-    // TODO: Wait: what about canExecute? That needs sorting out....
-    if (this.myConverter) {
-      // Ah right, so this is where the issue is....
-      // command.execute.apply(command, args)
-      const returnValue = this.command.execute(...args);
-      return this.myConverter.convertFrom(returnValue, this.getContext());
-    } else {
-      return this.command.execute(...args) as any;
+  execute(parameter: T) {
+    if (this.command.canExecute) {
+      this.command.execute(parameter)
     }
   }
 
@@ -53,7 +46,7 @@ export default class CommandBinding<T = any, K = T> extends Binding<
    * Sets the value of canExecute on the command.
    */
   setValue(value: boolean) {
-    super.setValue(value);
+    super.setValue(value)
   }
 
   /**
@@ -62,46 +55,11 @@ export default class CommandBinding<T = any, K = T> extends Binding<
    * @returns
    */
   getValue(): boolean {
-    return super.getValue();
+    return super.getValue()
   }
 
   *[Symbol.iterator]() {
-    yield this.execute.bind(this);
-    yield this.getValue();
+    yield this.execute.bind(this)
+    yield this.getValue()
   }
 }
-
-class CommandExecutor<T> {
-  private command: Command<T>;
-
-  constructor(command: Command<T> = null) {
-    // ((...args: any[]) => K)
-  }
-}
-
-class TestConverter implements IConverter<string, number> {
-  convertFrom(viewModelValue: string, bindingContext: BindingContext): number {
-    throw new Error("Method not implemented.");
-  }
-  convertTo(viewValue: number, bindingContext: BindingContext): string {
-    throw new Error("Method not implemented.");
-  }
-}
-
-const vm = { aCommand: async () => 1 };
-const converter = new TestConverter();
-// const binding = new CommandBinding(vm, "aCommand", converter)
-const binding = new CommandBinding<number>(vm, "aCommand");
-binding.execute();
-
-// I want to be able to decide whether I should await the result
-// if it's an async function. It's basically a question of whether
-// it returns a Promise or not.
-
-// Maybe I'm barking up the wrong tree
-
-type aCommandReturnType = ReturnType<typeof vm.aCommand>;
-const executor = new CommandExecutor<aCommandReturnType>();
-
-const command = new Command<boolean>();
-type commandReturnType = ReturnType<typeof command.execute>;
