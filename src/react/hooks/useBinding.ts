@@ -62,7 +62,3 @@ export default function useBinding<
     state.binding.getContext(),
   ]
 }
-
-// const [a, b] = useBinding({ name: "darren" }, "name");
-
-// const [length] = useBinding([1,2,3], "length")

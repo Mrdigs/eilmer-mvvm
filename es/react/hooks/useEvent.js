@@ -55,10 +55,4 @@ function useEvent(viewModel, eventName, listener) {
     // See: https://github.com/microsoft/TypeScript/issues/43150
     return state.binding;
 }
-var vm = {
-    onSomething: function () {
-        return "aString";
-    },
-};
-useEvent(vm, "onSomething", function (arg) { });
 //# sourceMappingURL=useEvent.js.map

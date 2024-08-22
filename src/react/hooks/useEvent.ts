@@ -40,11 +40,3 @@ export default function useEvent<
   // See: https://github.com/microsoft/TypeScript/issues/43150
   return state.binding
 }
-
-const vm = {
-  onSomething: () => {
-    return "aString"
-  },
-}
-
-useEvent(vm, "onSomething", (arg) => {})

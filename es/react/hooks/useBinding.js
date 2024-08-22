@@ -75,6 +75,4 @@ function useBinding(viewModel, propertyName, converter) {
         state.binding.getContext(),
     ];
 }
-// const [a, b] = useBinding({ name: "darren" }, "name");
-// const [length] = useBinding([1,2,3], "length")
 //# sourceMappingURL=useBinding.js.map
