@@ -82,6 +82,7 @@ var Binding = /** @class */ (function () {
     function Binding(viewModel, propertyName, converter, subscriber) {
         if (converter === void 0) { converter = null; }
         if (subscriber === void 0) { subscriber = null; }
+        this.converter = null;
         this.bound = false;
         if (!(viewModel && propertyName)) {
             throw new Error("viewModel and propertyName are required arguments");
