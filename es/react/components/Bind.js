@@ -198,9 +198,13 @@ function propsToBindings(props) {
             var variableResolver = new ObjectVariableResolver_1.default(expressionContext);
             var expression = new Expression_1.default(expr);
             var result = expression.evaluate(variableResolver);
-            var binding = new bindings_1.Binding(result[0], result[1], result[2]);
+            var binding = new bindings_1.Binding(result[0], result[1]);
             var handler = binding.setValue.bind(binding);
-            boundProps[result[2]] = createEventHandler(propKey, handler);
+            // TODO, actually check *all* of the results and throw an error
+            // if they are not the expected types....
+            if (result.length > 2 && typeof result[2] === "string") {
+                boundProps[result[2]] = createEventHandler(propKey, handler);
+            }
             boundProps[propKey] = binding;
             return;
         }

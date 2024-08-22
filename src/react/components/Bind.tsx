@@ -139,9 +139,13 @@ function propsToBindings(props: { [key: string]: any }) {
       const variableResolver = new ObjectVariableResolver(expressionContext)
       const expression = new Expression(expr)
       const result = expression.evaluate(variableResolver) as any[]
-      const binding = new Binding(result[0], result[1], result[2])
+      const binding = new Binding(result[0], result[1])
       const handler = binding.setValue.bind(binding)
-      boundProps[result[2]] = createEventHandler(propKey, handler)
+      // TODO, actually check *all* of the results and throw an error
+      // if they are not the expected types....
+      if (result.length > 2 && typeof result[2] === "string") {
+        boundProps[result[2]] = createEventHandler(propKey, handler)
+      }
       boundProps[propKey] = binding
       return
     }
