@@ -1,17 +1,6 @@
 /** @module bindings */
-import Binder from './classes/Binder'
-import Binding from './classes/Binding'
-import BindingContext from './classes/BindingContext'
+import Binder from "./classes/Binder"
+import Binding from "./classes/Binding"
+import BindingContext from "./classes/BindingContext"
 
-const Bindings = {
-  Binder,
-  Binding
-}
-
-export { Binder }
-
-export { Binding }
-
-export { BindingContext }
-
-export default Bindings
+export { Binder, Binding, BindingContext }

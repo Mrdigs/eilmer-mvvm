@@ -1,6 +1,2 @@
-import Properties from './properties'
-
-export default {
-  Properties,
-  NotifyPropertyChanged: Properties.NotifyPropertyChanged,
-}
+export * from "./bindings"
+export * from "./properties"

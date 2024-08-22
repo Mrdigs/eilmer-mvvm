@@ -1,6 +1,6 @@
-import { BindingContext } from "../../bindings";
-import ConverterException from "./ConverterException";
-import IConverter from "./IConverter";
+import { BindingContext } from "../../bindings"
+import ConverterException from "./ConverterException"
+import IConverter from "./IConverter"
 
 const PARTS_MAPPING = {
   literal: {
@@ -49,7 +49,7 @@ const PARTS_MAPPING = {
   dayPeriod: {
     default: ["([^ ]*)", null, null],
   },
-};
+}
 
 const DATE_STYLES = {
   full: {
@@ -73,7 +73,7 @@ const DATE_STYLES = {
     month: "2-digit",
     day: "2-digit",
   },
-};
+}
 
 const TIME_STYLES = {
   full: {
@@ -97,49 +97,49 @@ const TIME_STYLES = {
     hour: "2-digit",
     minute: "2-digit",
   },
-};
+}
 
 class DateTimeConverter implements IConverter<Date, string> {
-  private formatter: Intl.DateTimeFormat;
-  private formatParts: Intl.DateTimeFormatPart[];
-  private formatOptions: Intl.ResolvedDateTimeFormatOptions;
-  private formatDayPeriods: { am: string; pm: string };
-  private formatMonthNames: string[];
-  private formatNumbers: string[];
+  private formatter: Intl.DateTimeFormat
+  private formatParts: Intl.DateTimeFormatPart[]
+  private formatOptions: Intl.ResolvedDateTimeFormatOptions
+  private formatDayPeriods: { am: string; pm: string }
+  private formatMonthNames: string[]
+  private formatNumbers: string[]
 
   constructor(locale: string | string[], options: Intl.DateTimeFormatOptions) {
     if (options?.timeZone) {
-      throw new Error("Timezones are not supported in DateTimeConverter");
+      throw new Error("Timezones are not supported in DateTimeConverter")
     } else {
-      this.formatter = new Intl.DateTimeFormat(locale, options);
-      this.formatOptions = this.formatter.resolvedOptions();
+      this.formatter = new Intl.DateTimeFormat(locale, options)
+      this.formatOptions = this.formatter.resolvedOptions()
       if (DATE_STYLES[options?.dateStyle]) {
-        Object.assign(this.formatOptions, DATE_STYLES[options.dateStyle]);
+        Object.assign(this.formatOptions, DATE_STYLES[options.dateStyle])
       }
       if (TIME_STYLES[options?.timeStyle]) {
-        Object.assign(this.formatOptions, TIME_STYLES[options.timeStyle]);
+        Object.assign(this.formatOptions, TIME_STYLES[options.timeStyle])
       }
       if (this.formatOptions.numberingSystem !== "latn") {
-        this.formatNumbers = getNumbersForLocale(this.formatOptions.locale);
+        this.formatNumbers = getNumbersForLocale(this.formatOptions.locale)
       }
       this.formatParts = this.formatter
         .formatToParts(new Date("2001-01-01"))
         .map((part) => {
-          const mapping = PARTS_MAPPING[part.type];
+          const mapping = PARTS_MAPPING[part.type]
           if (mapping) {
-            const format = this.formatOptions[part.type] || "default";
+            const format = this.formatOptions[part.type] || "default"
             part.value = formatString(
               this.formatOptions,
               this.formatNumbers,
               mapping[format][0],
               part.value
-            );
-            return part;
+            )
+            return part
           } else {
-            throw new Error("No mapping available for " + part.type);
+            throw new Error("No mapping available for " + part.type)
           }
-        });
-      this.formatMonthNames = [];
+        })
+      this.formatMonthNames = []
       if (
         ["long", "numeric", "2-digit", "short", "narrow"].includes(
           this.formatOptions["month"]
@@ -150,125 +150,92 @@ class DateTimeConverter implements IConverter<Date, string> {
           | "numeric"
           | "2-digit"
           | "short"
-          | "narrow";
-        const formatter = new Intl.DateTimeFormat(locale, { month: format });
+          | "narrow"
+        const formatter = new Intl.DateTimeFormat(locale, { month: format })
         for (var month = 0; month < 12; month++) {
-          this.formatMonthNames.push(
-            formatter.format(new Date(2022, month, 1))
-          );
+          this.formatMonthNames.push(formatter.format(new Date(2022, month, 1)))
         }
       }
       if (this.formatOptions["hour12"]) {
         const am = this.formatter
           .formatToParts(new Date("2001-01-01 06:00:00"))
           .find((part) => {
-            return part.type === "dayPeriod";
-          });
+            return part.type === "dayPeriod"
+          })
         const pm = this.formatter
           .formatToParts(new Date("2001-01-01 18:00:00"))
           .find((part) => {
-            return part.type === "dayPeriod";
-          });
+            return part.type === "dayPeriod"
+          })
         this.formatDayPeriods = {
           am: am.value,
           pm: pm.value,
-        };
+        }
       }
     }
   }
 
   convertFrom(viewModelValue: Date, bindingContext: BindingContext) {
     try {
-      return this.formatter.format(viewModelValue);
+      return this.formatter.format(viewModelValue)
     } catch (err) {
-      throw new ConverterException(err.message);
+      throw new ConverterException(err.message)
     }
   }
 
   convertTo(viewValue: string, bindingContext: BindingContext) {
-    const date = new Date(2022, 0, 1, 0, 0, 0);
+    const date = new Date(2022, 0, 1, 0, 0, 0)
     try {
       const regex = new RegExp(
         "^" + this.formatParts.map(({ type, value }) => value).join("") + "$"
-      );
-      const parsed = regex
-        .exec(viewValue)
-        .slice(1, this.formatParts.length + 1);
+      )
+      const parsed = regex.exec(viewValue).slice(1, this.formatParts.length + 1)
       if (parsed.length === this.formatParts.length) {
-        let dayPeriodAdjustment = 0;
+        let dayPeriodAdjustment = 0
         this.formatParts.forEach((part, idx) => {
-          const mapping = PARTS_MAPPING[part.type];
+          const mapping = PARTS_MAPPING[part.type]
           if (mapping) {
-            const format = this.formatOptions[part.type] || "default";
+            const format = this.formatOptions[part.type] || "default"
             if (part.type !== "dayPeriod") {
               if (mapping[format] && mapping[format][2]) {
-                const setFunction = mapping[format][2].bind(date);
+                const setFunction = mapping[format][2].bind(date)
                 const value = parseValue(
                   this.formatOptions,
                   this.formatNumbers,
                   format,
                   parsed[idx]
-                );
+                )
                 const setValue = mapping[format][1](
                   value,
                   this.formatMonthNames
-                );
-                setFunction(setValue);
+                )
+                setFunction(setValue)
               }
             } else if (this.formatDayPeriods.pm === parsed[idx]) {
-              dayPeriodAdjustment = 12;
+              dayPeriodAdjustment = 12
             }
           }
-        });
-        date.setHours(date.getHours() + dayPeriodAdjustment);
+        })
+        date.setHours(date.getHours() + dayPeriodAdjustment)
       }
     } catch (err) {
-      throw new ConverterException(err.message);
+      throw new ConverterException(err.message)
     }
     if (this.formatter.format(date) !== viewValue) {
-      throw new ConverterException('Cannot parse date "' + viewValue + '"');
+      throw new ConverterException('Cannot parse date "' + viewValue + '"')
     }
     if (this.formatOptions["year"] === "short") {
       console.warn(
         'DateTimeConverter: Using "short" year format option is not advised for 2-way bindings'
-      );
+      )
     }
-    return date;
-  }
-}
-
-export class IsoDateConverter implements IConverter<Date, string> {
-  includeTime = false;
-
-  constructor(includeTime: boolean) {
-    this.includeTime = includeTime;
-  }
-
-  convertFrom(viewModelValue: Date, bindingContext: BindingContext) {
-    if (viewModelValue) {
-      const string = viewModelValue.toISOString();
-      return this.includeTime ? string : string.slice(0, 10);
-    } else {
-      return null;
-    }
-  }
-
-  convertTo(viewValue: string, bindingContext: BindingContext) {
-    const date = new Date(viewValue);
-    if (date.toString() === "Invalid Date") {
-      throw new ConverterException(
-        "Cannot parse date",
-        bindingContext.propertyName,
-        viewValue
-      );
-    }
-    return date;
+    return date
   }
 }
 
 function getNumbersForLocale(locale: string) {
-  const formatter = new Intl.NumberFormat(locale, { useGrouping: false });
-  return [...formatter.format(9876543210)].reverse();
+  const formatter = new Intl.NumberFormat(locale, { useGrouping: false })
+  return [...formatter.format(9876543210)].reverse()
 }
 
 function parseValue(
@@ -278,13 +245,13 @@ function parseValue(
   value: string
 ) {
   if (numbers && ["numeric", "2-digit"].includes(type)) {
-    const parsed = new Array(value.length);
+    const parsed = new Array(value.length)
     for (var i = 0; i < value.length; i++) {
-      parsed.push(numbers.indexOf(value[i]));
+      parsed.push(numbers.indexOf(value[i]))
     }
-    return parsed.join("");
+    return parsed.join("")
   }
-  return value;
+  return value
 }
 
 function formatString(
@@ -293,19 +260,16 @@ function formatString(
   string: string,
   ...args: any[]
 ) {
-  let formatted = string;
+  let formatted = string
   for (let arg in args) {
-    let value = args[arg].replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-    formatted = formatted.replace("{" + arg + "}", value);
+    let value = args[arg].replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")
+    formatted = formatted.replace("{" + arg + "}", value)
   }
   if (numbers && formatted.includes("[0-9]")) {
-    const replacement = `[${numbers.join("")}]`;
-    formatted = formatted.replace(/\[0-9\]/g, replacement);
+    const replacement = `[${numbers.join("")}]`
+    formatted = formatted.replace(/\[0-9\]/g, replacement)
   }
-  return formatted;
+  return formatted
 }
 
-export const isoDateConverter = new IsoDateConverter(false);
-export const isoDateTimeConverter = new IsoDateConverter(true);
-
-export default DateTimeConverter;
+export default DateTimeConverter

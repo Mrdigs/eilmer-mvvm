@@ -1,1 +1,0 @@
-{"version":3,"file":"ReactBindingContext.d.ts","sourceRoot":"","sources":["../../../src/react/classes/ReactBindingContext.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,gBAAgB,CAAC;AAEhD,cAAM,mBAAoB,SAAQ,cAAc;IAC9C,SAAS,MAAa;IACtB,iBAAiB,MAAa;IAI9B,6BAA6B,gBAAe;gBAEhC,SAAS,EAAE,MAAM,EAAE,YAAY,EAAE,MAAM;IAKnD,sBAAsB,CAAC,UAAU,KAAA;CAGlC;AAED,eAAe,mBAAmB,CAAC"}

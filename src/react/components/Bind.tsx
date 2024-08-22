@@ -72,9 +72,9 @@ What about Commands? The canExecute thing can be handled seperately:
 
 */
 import { Binding } from "../../bindings"
+import { CommandBinding } from "../../commands"
 import Expression from "../../expressions/classes/Expression"
 import ExpressionBinding from "../../expressions/classes/ExpressionBinding"
-import CommandBinding from "../../commands/classes/CommandBinding"
 import ObjectVariableResolver from "../../expressions/classes/ObjectVariableResolver"
 import React, { useEffect, useMemo, useState } from "react"
 

@@ -139,9 +139,9 @@ What about Commands? The canExecute thing can be handled seperately:
 
 */
 var bindings_1 = require("../../bindings");
+var commands_1 = require("../../commands");
 var Expression_1 = __importDefault(require("../../expressions/classes/Expression"));
 var ExpressionBinding_1 = __importDefault(require("../../expressions/classes/ExpressionBinding"));
-var CommandBinding_1 = __importDefault(require("../../commands/classes/CommandBinding"));
 var ObjectVariableResolver_1 = __importDefault(require("../../expressions/classes/ObjectVariableResolver"));
 var react_1 = __importStar(require("react"));
 function Bind(_a) {
@@ -215,7 +215,7 @@ function propsToBindings(props) {
             var variableResolver = new ObjectVariableResolver_1.default(expressionContext);
             var expression = new Expression_1.default(expr);
             var result = expression.evaluate(variableResolver);
-            var binding = new CommandBinding_1.default(result[0], result[1]);
+            var binding = new commands_1.CommandBinding(result[0], result[1]);
             var handler = binding.execute.bind(binding, result.slice(2));
             boundProps[propKey] = createEventHandler(propKey, handler);
             return;

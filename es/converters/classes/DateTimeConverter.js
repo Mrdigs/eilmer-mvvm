@@ -28,7 +28,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isoDateTimeConverter = exports.isoDateConverter = exports.IsoDateConverter = void 0;
 var ConverterException_1 = __importDefault(require("./ConverterException"));
 var PARTS_MAPPING = {
     literal: {
@@ -197,9 +196,7 @@ var DateTimeConverter = /** @class */ (function () {
                 var type = _a.type, value = _a.value;
                 return value;
             }).join("") + "$");
-            var parsed_1 = regex
-                .exec(viewValue)
-                .slice(1, this.formatParts.length + 1);
+            var parsed_1 = regex.exec(viewValue).slice(1, this.formatParts.length + 1);
             if (parsed_1.length === this.formatParts.length) {
                 var dayPeriodAdjustment_1 = 0;
                 this.formatParts.forEach(function (part, idx) {
@@ -235,30 +232,6 @@ var DateTimeConverter = /** @class */ (function () {
     };
     return DateTimeConverter;
 }());
-var IsoDateConverter = /** @class */ (function () {
-    function IsoDateConverter(includeTime) {
-        this.includeTime = false;
-        this.includeTime = includeTime;
-    }
-    IsoDateConverter.prototype.convertFrom = function (viewModelValue, bindingContext) {
-        if (viewModelValue) {
-            var string = viewModelValue.toISOString();
-            return this.includeTime ? string : string.slice(0, 10);
-        }
-        else {
-            return null;
-        }
-    };
-    IsoDateConverter.prototype.convertTo = function (viewValue, bindingContext) {
-        var date = new Date(viewValue);
-        if (date.toString() === "Invalid Date") {
-            throw new ConverterException_1.default("Cannot parse date", bindingContext.propertyName, viewValue);
-        }
-        return date;
-    };
-    return IsoDateConverter;
-}());
-exports.IsoDateConverter = IsoDateConverter;
 function getNumbersForLocale(locale) {
     var formatter = new Intl.NumberFormat(locale, { useGrouping: false });
     return __spreadArray([], __read(formatter.format(9876543210)), false).reverse();
@@ -289,7 +262,5 @@ function formatString(options, numbers, string) {
     }
     return formatted;
 }
-exports.isoDateConverter = new IsoDateConverter(false);
-exports.isoDateTimeConverter = new IsoDateConverter(true);
 exports.default = DateTimeConverter;
 //# sourceMappingURL=DateTimeConverter.js.map

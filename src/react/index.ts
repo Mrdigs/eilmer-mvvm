@@ -5,11 +5,4 @@ import useEvent from "./hooks/useEvent"
 import useNew from "./hooks/useNew"
 import useExpression from "./hooks/useExpression"
 
-export default {
-  Bind,
-  useNew,
-  useBinding,
-  useEvent,
-  useCommand,
-  useExpression,
-}
+export { Bind, useNew, useBinding, useEvent, useCommand, useExpression }
