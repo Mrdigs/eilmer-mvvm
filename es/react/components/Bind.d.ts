@@ -1,6 +1,7 @@
 import React from "react";
-export default function Bind({ children, ...props }: {
-    [x: string]: any;
-    children: any;
-}): React.JSX.Element;
+type BindProps = React.PropsWithChildren<{
+    [key: string]: any;
+}>;
+export default function Bind({ children, ...props }: BindProps): React.JSX.Element;
+export {};
 //# sourceMappingURL=Bind.d.ts.map

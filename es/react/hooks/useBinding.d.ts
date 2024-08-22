@@ -1,7 +1,7 @@
 import IConverter from "../../converters/classes/IConverter";
 import BindingContext from "../../bindings/classes/BindingContext";
 /**
- * Creates and manages a ReactBinding between a specified property on the
+ * Creates and manages a Binding between a specified property on the
  * supplied ViewModel and the calling component, forcing a re-render of the
  * component whenever the bound ViewModel property is modified.
  *

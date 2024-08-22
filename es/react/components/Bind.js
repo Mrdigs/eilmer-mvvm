@@ -144,54 +144,11 @@ var ExpressionBinding_1 = __importDefault(require("../../expressions/classes/Exp
 var CommandBinding_1 = __importDefault(require("../../commands/classes/CommandBinding"));
 var ObjectVariableResolver_1 = __importDefault(require("../../expressions/classes/ObjectVariableResolver"));
 var react_1 = __importStar(require("react"));
-/*
-type Props = {
-  children: JSX.Element; //  | (() => JSX.Element)
-};
-*/
 function Bind(_a) {
     var children = _a.children, props = __rest(_a, ["children"]);
     var boundProps = (0, react_1.useMemo)(function () {
         return propsToBindings(props);
     }, getDependencies(props));
-    /*
-    const boundProps = {}, expressionContext = {};
-    Object.keys(props).sort().forEach((propKey) => {
-        const propValue = props[propKey];
-        const propType = typeof propValue;
-        if (propKey.startsWith("$")) {
-          // Props that start with a dollar sign just need to be made available
-          // to the expression context so they can be used for evaluation
-          expressionContext[propKey] = propValue;
-        } else if (propType === "string" && propValue.startsWith("@bind(")) {
-          // TODO: Check the result is valid and the whole string is correct
-          // TODO: Write some tests for this with various mistakes
-          const expression = '[' + propValue.substring(6, propValue.lastIndexOf(')')) + ']'
-          const variableResolver = new ObjectVariableResolver(expressionContext)
-          const result = new Expression(expression).evaluate(variableResolver)
-          // TODO: I need support for a converter, too
-          const binding = new Binding(result[0], result[1])
-          const handler = binding.setValue.bind(binding)
-          const eventHandler = createEventHandler(propKey, handler)
-          boundProps[result[2]] = eventHandler
-          boundProps[propKey] = binding
-        } else if (propType === "string" && propValue.startsWith("@command(")) {
-          // Indicates a Command binding
-          const expression = '[' + propValue.substring(9, propValue.lastIndexOf(')')) + ']'
-          const variableResolver = new ObjectVariableResolver(expressionContext)
-          const result = new Expression(expression).evaluate(variableResolver)
-          const binding = new CommandBinding(result[0], result[1], result[2])
-          const handler = binding.execute.bind(binding)
-          const executionHandler = createEventHandler(propKey, handler)
-          boundProps[propKey] = executionHandler
-        } else if (propType === "string") {
-          // This is just a bog standard expression, so create a binding
-          boundProps[propKey] = new ExpressionBinding(expressionContext, propValue);
-        } else {
-          throw new Error("Invalid <Bind> prop: " + propKey);
-        }
-      });
-    */
     return react_1.default.createElement(Bindings, __assign({}, boundProps), children);
 }
 function Bindings(_a) {
@@ -215,54 +172,61 @@ function getDependencies(props) {
     return Object.entries(props).reduce(function (a, b) { return a.concat(b); }, []);
 }
 function propsToBindings(props) {
+    var propKeys = Object.keys(props);
     var boundProps = {};
     var expressionContext = {};
-    Object.keys(props)
-        .sort()
-        .forEach(function (propKey) {
+    propKeys.forEach(function (propKey) {
         var propValue = props[propKey];
-        var propType = typeof propValue;
+        // Props that start with a dollar sign just need to be made available
+        // to the expression context so they can be used for evaluation
         if (propKey.startsWith("$")) {
-            // Props that start with a dollar sign just need to be made available
-            // to the expression context so they can be used for evaluation
             expressionContext[propKey] = propValue;
+            return;
         }
-        else if (propType === "string" && propValue.startsWith("@bind(")) {
-            // TODO: Check the result is valid and the whole string is correct
-            // TODO: Write some tests for this with various mistakes
-            var expression = "[" + propValue.substring(6, propValue.lastIndexOf(")")) + "]";
-            var variableResolver = new ObjectVariableResolver_1.default(expressionContext);
-            var result = new Expression_1.default(expression).evaluate(variableResolver);
-            // TODO: I need support for a converter, too
-            var binding = new bindings_1.Binding(result[0], result[1]);
-            var handler = binding.setValue.bind(binding);
-            var eventHandler = createEventHandler(propKey, handler);
-            boundProps[result[2]] = eventHandler;
-            boundProps[propKey] = binding;
-        }
-        else if (propType === "string" && propValue.startsWith("@command(")) {
-            // Indicates a Command binding
-            var expression = "[" + propValue.substring(9, propValue.lastIndexOf(")")) + "]";
-            var variableResolver = new ObjectVariableResolver_1.default(expressionContext);
-            var result = new Expression_1.default(expression).evaluate(variableResolver);
-            var binding = new CommandBinding_1.default(result[0], result[1], result[2]);
-            var handler = binding.execute.bind(binding);
-            var executionHandler = createEventHandler(propKey, handler);
-            boundProps[propKey] = executionHandler;
-        }
-        else if (propType === "string") {
-            // This is just a bog standard expression, so create a binding
-            boundProps[propKey] = new ExpressionBinding_1.default(expressionContext, propValue);
-        }
-        else {
+        if (typeof propValue !== "string") {
             throw new Error("Invalid <Bind> prop: " + propKey);
         }
+        var endParens = propValue.lastIndexOf(")");
+        // Indicates a Property binding
+        if (propValue.startsWith("@bind(")) {
+            // TODO: Check the result is valid and the whole string is correct
+            // TODO: Write some tests for this with various mistakes
+            if (endParens == -1) {
+                throw new Error("@bind must have closing parenthesis");
+            }
+            var expr = "[" + propValue.substring(6, endParens) + "]";
+            var variableResolver = new ObjectVariableResolver_1.default(expressionContext);
+            var expression = new Expression_1.default(expr);
+            var result = expression.evaluate(variableResolver);
+            var binding = new bindings_1.Binding(result[0], result[1], result[2]);
+            var handler = binding.setValue.bind(binding);
+            boundProps[result[2]] = createEventHandler(propKey, handler);
+            boundProps[propKey] = binding;
+            return;
+        }
+        // Indicates a Command binding
+        if (propValue.startsWith("@command(")) {
+            // TODO: Check the result is valid and the whole string is correct
+            // TODO: Write some tests for this with various mistakes
+            if (endParens == -1) {
+                throw new Error("@command needs closing parenthesis");
+            }
+            var expr = "[" + propValue.substring(9, endParens) + "]";
+            var variableResolver = new ObjectVariableResolver_1.default(expressionContext);
+            var expression = new Expression_1.default(expr);
+            var result = expression.evaluate(variableResolver);
+            var binding = new CommandBinding_1.default(result[0], result[1]);
+            var handler = binding.execute.bind(binding, result.slice(2));
+            boundProps[propKey] = createEventHandler(propKey, handler);
+            return;
+        }
+        // This is just a bog standard expression, so create a binding
+        boundProps[propKey] = new ExpressionBinding_1.default(expressionContext, propValue);
+        return;
     });
     return boundProps;
 }
-// TODO: Type this properly
 function bindingsToProps(bindings) {
-    // For the moment, they are all going to be property bindings
     var props = {};
     Object.entries(bindings).forEach(function (_a) {
         var _b = __read(_a, 2), property = _b[0], binding = _b[1];
