@@ -33,10 +33,7 @@ function useNew(instanceClass) {
         constructorArgs[_i - 1] = arguments[_i];
     }
     return (0, react_1.useMemo)(function () {
-        var InstanceFactory = instanceClass.bind.apply(instanceClass, __spreadArray([
-            instanceClass
-        ], __read(constructorArgs), false));
-        return new InstanceFactory();
+        return new (instanceClass.bind.apply(instanceClass, __spreadArray([void 0], __read(constructorArgs), false)))();
     }, __spreadArray([instanceClass], __read(constructorArgs), false));
 }
 //# sourceMappingURL=useNew.js.map

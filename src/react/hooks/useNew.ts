@@ -1,14 +1,10 @@
 import { useMemo } from "react"
 
-export default function useNew<T>(
-  instanceClass: new (...args: any[]) => T,
-  ...constructorArgs: any[]
-): T {
+export default function useNew<T extends new (...args: any[]) => any>(
+  instanceClass: T,
+  ...constructorArgs: ConstructorParameters<T>
+): InstanceType<T> {
   return useMemo(() => {
-    const InstanceFactory = instanceClass.bind.apply(instanceClass, [
-      instanceClass,
-      ...constructorArgs,
-    ])
-    return new InstanceFactory()
+    return new instanceClass(...constructorArgs)
   }, [instanceClass, ...constructorArgs])
 }

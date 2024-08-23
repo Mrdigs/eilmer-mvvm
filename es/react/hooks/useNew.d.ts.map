@@ -1,1 +1,1 @@
-{"version":3,"file":"useNew.d.ts","sourceRoot":"","sources":["../../../src/react/hooks/useNew.ts"],"names":[],"mappings":"AAEA,MAAM,CAAC,OAAO,UAAU,MAAM,CAAC,CAAC,EAC9B,aAAa,EAAE,KAAK,GAAG,IAAI,EAAE,GAAG,EAAE,KAAK,CAAC,EACxC,GAAG,eAAe,EAAE,GAAG,EAAE,GACxB,CAAC,CAQH"}
+{"version":3,"file":"useNew.d.ts","sourceRoot":"","sources":["../../../src/react/hooks/useNew.ts"],"names":[],"mappings":"AAEA,MAAM,CAAC,OAAO,UAAU,MAAM,CAAC,CAAC,SAAS,KAAK,GAAG,IAAI,EAAE,GAAG,EAAE,KAAK,GAAG,EAClE,aAAa,EAAE,CAAC,EAChB,GAAG,eAAe,EAAE,qBAAqB,CAAC,CAAC,CAAC,GAC3C,YAAY,CAAC,CAAC,CAAC,CAIjB"}
