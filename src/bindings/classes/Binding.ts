@@ -1,9 +1,9 @@
-import { Properties } from "../../properties";
-import { Converter, ConverterException } from "../../converters";
+import { Properties } from "../../properties"
+import { Converter, ConverterException } from "../../converters"
 
-import BindingContext from "./BindingContext";
-import { Listener } from "../../properties/types";
-import IConverter from "../../converters/classes/IConverter";
+import BindingContext from "./BindingContext"
+import { Listener } from "../../properties/types"
+import IConverter from "../../converters/classes/IConverter"
 
 /**
  * Provides a binding between an object property and a listener.
@@ -31,13 +31,13 @@ import IConverter from "../../converters/classes/IConverter";
  * }, 1000)
  */
 class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
-  protected viewModel: VM;
-  private propertyName: P;
-  private converter: IConverter<VM[P], V> | null;
-  private subscriber: Listener;
-  private context: BindingContext;
+  protected viewModel: VM
+  private propertyName: P
+  private converter: IConverter<VM[P], V> | null = null
+  private subscriber: Listener
+  private context: BindingContext
 
-  protected bound = false;
+  protected bound = false
 
   /**
    * Create a new Binding. If a subscriber function is provided, then the
@@ -55,18 +55,18 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
     subscriber: Listener<VM[P]> = null
   ) {
     if (!(viewModel && propertyName)) {
-      throw new Error("viewModel and propertyName are required arguments");
+      throw new Error("viewModel and propertyName are required arguments")
     } else if (typeof propertyName !== "string") {
-      throw new TypeError("propertyName must be a string");
+      throw new TypeError("propertyName must be a string")
     } else {
-      this.context = new BindingContext(viewModel, propertyName);
+      this.context = new BindingContext(viewModel, propertyName)
       if (converter instanceof Converter) {
-        this.converter = converter;
+        this.converter = converter
       }
-      this.viewModel = viewModel;
-      this.propertyName = propertyName;
+      this.viewModel = viewModel
+      this.propertyName = propertyName
       if (subscriber) {
-        this.bind(subscriber);
+        this.bind(subscriber)
       }
     }
   }
@@ -80,11 +80,11 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
    * @ignore
    */
   getContext() {
-    return this.context;
+    return this.context
   }
 
   protected setContext(context: BindingContext) {
-    this.context = context;
+    this.context = context
   }
 
   /**
@@ -100,13 +100,13 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
    */
   bind(subscriber: Listener<VM[P]>) {
     if (!this.bound) {
-      const args = [this.viewModel, this.propertyName, subscriber];
-      Properties.addPropertyChangeListener.apply(null, args);
-      this.subscriber = subscriber;
-      this.bound = true;
-      return this.unbind.bind(this);
+      const args = [this.viewModel, this.propertyName, subscriber]
+      Properties.addPropertyChangeListener.apply(null, args)
+      this.subscriber = subscriber
+      this.bound = true
+      return this.unbind.bind(this)
     } else {
-      throw new Error("Binding is already bound to a subscriber");
+      throw new Error("Binding is already bound to a subscriber")
     }
   }
 
@@ -117,10 +117,10 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
    */
   unbind() {
     if (this.bound) {
-      const args = [this.viewModel, this.propertyName, this.subscriber];
-      Properties.removePropertyChangeListener.apply(null, args);
-      this.subscriber = null;
-      this.bound = false;
+      const args = [this.viewModel, this.propertyName, this.subscriber]
+      Properties.removePropertyChangeListener.apply(null, args)
+      this.subscriber = null
+      this.bound = false
     }
   }
 
@@ -136,21 +136,21 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
     // useState hook.
     if (this.converter) {
       try {
-        const converted = this.converter.convertTo(value, this.getContext());
+        const converted = this.converter.convertTo(value, this.getContext())
         Properties.setPropertyValue(
           this.viewModel,
           this.propertyName,
           converted
-        );
+        )
       } catch (exception) {
         if (exception instanceof ConverterException) {
-          console.warn("Unhandled", exception.toString());
+          console.warn("Unhandled", exception.toString())
         } else {
-          throw exception;
+          throw exception
         }
       }
     } else {
-      Properties.setPropertyValue(this.viewModel, this.propertyName, value);
+      Properties.setPropertyValue(this.viewModel, this.propertyName, value)
     }
   }
 
@@ -162,14 +162,11 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
    * @returns The current property value.
    */
   getValue(): V {
-    const value = Properties.getPropertyValue(
-      this.viewModel,
-      this.propertyName
-    );
+    const value = Properties.getPropertyValue(this.viewModel, this.propertyName)
     if (this.converter !== null) {
-      return this.converter.convertFrom(value, this.getContext());
+      return this.converter.convertFrom(value, this.getContext())
     }
-    return value;
+    return value
   }
 
   // TODO: Unfortunately, the requirement to preserve the correct types
@@ -179,9 +176,9 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
     const values: [V, (value: V) => void] = [
       this.getValue(),
       this.setValue.bind(this),
-    ];
-    yield* values;
+    ]
+    yield* values
   }
 }
 
-export default Binding;
+export default Binding
