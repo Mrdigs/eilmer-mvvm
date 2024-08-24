@@ -7,12 +7,12 @@ import IsoDateConverter from "./classes/IsoDateConverter"
 export const isoDateConverter = new IsoDateConverter(false)
 export const isoDateTimeConverter = new IsoDateConverter(true)
 
-export const notConverter = new Converter(
+export const notConverter = new Converter<boolean, boolean>(
   (v) => !v,
   (v) => !v
 )
 
-export const numberConverter = new Converter(
+export const numberConverter = new Converter<number, string>(
   (number) => {
     if (typeof number === "number") {
       return number.toString()
@@ -29,7 +29,7 @@ export const numberConverter = new Converter(
   }
 )
 
-export { Converter, ConverterException, DateTimeConverter }
+export { IConverter, Converter, ConverterException, DateTimeConverter }
 
 const Converters = {
   isoDateConverter,

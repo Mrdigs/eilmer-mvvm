@@ -1,22 +1,25 @@
-import IConverter from "./IConverter";
-import { BindingContext } from "../../bindings";
+import IConverter from "./IConverter"
+import { BindingContext } from "../../bindings"
 
 class Converter<VM, V> implements IConverter<VM, V> {
-  from: (vm: VM) => V;
-  to: (v: V) => VM;
+  from: (vm: VM, b: BindingContext) => V
+  to: (v: V, b: BindingContext) => VM
 
-  constructor(from: (vm: VM) => V, to: (v: V) => VM) {
-    this.from = from;
-    this.to = to;
+  constructor(
+    from: (vm: VM, b: BindingContext) => V,
+    to: (v: V, b: BindingContext) => VM
+  ) {
+    this.from = from
+    this.to = to
   }
 
-  convertFrom(viewModelValue: VM, bindingContext: BindingContext) {
-    return this.from(viewModelValue);
+  convertFrom(viewModelValue: VM, context: BindingContext) {
+    return this.from(viewModelValue, context)
   }
 
-  convertTo(viewValue: V, bindingContext: BindingContext) {
-    return this.to(viewValue);
+  convertTo(viewValue: V, context: BindingContext) {
+    return this.to(viewValue, context)
   }
 }
 
-export default Converter;
+export default Converter

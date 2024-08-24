@@ -175,7 +175,7 @@ class DateTimeConverter implements IConverter<Date, string> {
     }
   }
 
-  convertFrom(viewModelValue: Date, bindingContext: BindingContext) {
+  convertFrom(viewModelValue: Date, context: BindingContext) {
     try {
       return this.formatter.format(viewModelValue)
     } catch (err) {
@@ -183,7 +183,7 @@ class DateTimeConverter implements IConverter<Date, string> {
     }
   }
 
-  convertTo(viewValue: string, bindingContext: BindingContext) {
+  convertTo(viewValue: string, context: BindingContext) {
     const date = new Date(2022, 0, 1, 0, 0, 0)
     try {
       const regex = new RegExp(

@@ -10,19 +10,19 @@ export default interface IConverter<VM, V = VM> {
      * perform no conversion.
      *
      * @param viewModelValue - The value to convert.
-     * @param {BindingContext} bindingContext - Contextual information about the binding.
+     * @param {BindingContext} context - Contextual information about the binding.
      * @throws {ConverterException} If the value cannot be converted
      */
-    convertFrom(viewModelValue: VM, bindingContext: BindingContext): V;
+    convertFrom(viewModelValue: VM, context: BindingContext): V;
     /**
      * Performs a conversion from the View type to the ViewModel type. Unless
      * overidden either via the constructor or by a subclass, this method will
      * perform no conversion.
      *
      * @param viewValue - The value to convert.
-     * @param {BindingContext} bindingContext - Contextual information about the binding.
+     * @param {BindingContext} context - Contextual information about the binding.
      * @throws {ConverterException} If the value cannot be converted
      */
-    convertTo(viewValue: V, bindingContext: BindingContext): VM;
+    convertTo(viewValue: V, context: BindingContext): VM;
 }
 //# sourceMappingURL=IConverter.d.ts.map

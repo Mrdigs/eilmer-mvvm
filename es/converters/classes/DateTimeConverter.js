@@ -180,7 +180,7 @@ var DateTimeConverter = /** @class */ (function () {
             }
         }
     }
-    DateTimeConverter.prototype.convertFrom = function (viewModelValue, bindingContext) {
+    DateTimeConverter.prototype.convertFrom = function (viewModelValue, context) {
         try {
             return this.formatter.format(viewModelValue);
         }
@@ -188,7 +188,7 @@ var DateTimeConverter = /** @class */ (function () {
             throw new ConverterException_1.default(err.message);
         }
     };
-    DateTimeConverter.prototype.convertTo = function (viewValue, bindingContext) {
+    DateTimeConverter.prototype.convertTo = function (viewValue, context) {
         var _this = this;
         var date = new Date(2022, 0, 1, 0, 0, 0);
         try {

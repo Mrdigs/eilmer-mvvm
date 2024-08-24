@@ -8,8 +8,8 @@ declare class DateTimeConverter implements IConverter<Date, string> {
     private formatMonthNames;
     private formatNumbers;
     constructor(locale: string | string[], options: Intl.DateTimeFormatOptions);
-    convertFrom(viewModelValue: Date, bindingContext: BindingContext): string;
-    convertTo(viewValue: string, bindingContext: BindingContext): Date;
+    convertFrom(viewModelValue: Date, context: BindingContext): string;
+    convertTo(viewValue: string, context: BindingContext): Date;
 }
 export default DateTimeConverter;
 //# sourceMappingURL=DateTimeConverter.d.ts.map

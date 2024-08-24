@@ -5,11 +5,11 @@ var Converter = /** @class */ (function () {
         this.from = from;
         this.to = to;
     }
-    Converter.prototype.convertFrom = function (viewModelValue, bindingContext) {
-        return this.from(viewModelValue);
+    Converter.prototype.convertFrom = function (viewModelValue, context) {
+        return this.from(viewModelValue, context);
     };
-    Converter.prototype.convertTo = function (viewValue, bindingContext) {
-        return this.to(viewValue);
+    Converter.prototype.convertTo = function (viewValue, context) {
+        return this.to(viewValue, context);
     };
     return Converter;
 }());

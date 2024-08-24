@@ -8,7 +8,7 @@ var BindingContext = /** @class */ (function () {
      * @hideconstructor
      */
     function BindingContext(viewModel, propertyName) {
-        this.attributes = {};
+        this.attributes = new Map();
         this.viewModel = viewModel;
         this.propertyName = propertyName;
     }

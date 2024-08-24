@@ -9,7 +9,7 @@ var IsoDateConverter = /** @class */ (function () {
         this.includeTime = false;
         this.includeTime = includeTime;
     }
-    IsoDateConverter.prototype.convertFrom = function (viewModelValue, bindingContext) {
+    IsoDateConverter.prototype.convertFrom = function (viewModelValue, context) {
         if (viewModelValue) {
             var string = viewModelValue.toISOString();
             return this.includeTime ? string : string.slice(0, 10);
@@ -18,10 +18,10 @@ var IsoDateConverter = /** @class */ (function () {
             return null;
         }
     };
-    IsoDateConverter.prototype.convertTo = function (viewValue, bindingContext) {
+    IsoDateConverter.prototype.convertTo = function (viewValue, context) {
         var date = new Date(viewValue);
         if (date.toString() === "Invalid Date") {
-            throw new ConverterException_1.default("Cannot parse date", bindingContext.propertyName, viewValue);
+            throw new ConverterException_1.default("Cannot parse date", context.propertyName, viewValue);
         }
         return date;
     };

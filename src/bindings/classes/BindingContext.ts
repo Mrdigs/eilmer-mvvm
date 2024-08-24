@@ -2,25 +2,25 @@
  * Contains contextual information about a Binding.
  */
 class BindingContext {
-  readonly viewModel: object;
-  readonly propertyName: string;
-  readonly attributes = {};
+  readonly viewModel: object
+  readonly propertyName: string
+  readonly attributes = new Map()
 
   /**
    * @hideconstructor
    */
   constructor(viewModel: object, propertyName: string) {
-    this.viewModel = viewModel;
-    this.propertyName = propertyName;
+    this.viewModel = viewModel
+    this.propertyName = propertyName
   }
 
-  setAttribute(key: string, value: any) {
-    this.attributes[key] = value;
+  setAttribute(key: any, value: any) {
+    this.attributes[key] = value
   }
 
-  getAttribute(key: string) {
-    return this.attributes[key];
+  getAttribute(key: any) {
+    return this.attributes[key]
   }
 }
 
-export default BindingContext;
+export default BindingContext

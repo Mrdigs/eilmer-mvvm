@@ -9,7 +9,7 @@ class IsoDateConverter implements IConverter<Date, string> {
     this.includeTime = includeTime
   }
 
-  convertFrom(viewModelValue: Date, bindingContext: BindingContext) {
+  convertFrom(viewModelValue: Date, context: BindingContext) {
     if (viewModelValue) {
       const string = viewModelValue.toISOString()
       return this.includeTime ? string : string.slice(0, 10)
@@ -18,12 +18,12 @@ class IsoDateConverter implements IConverter<Date, string> {
     }
   }
 
-  convertTo(viewValue: string, bindingContext: BindingContext) {
+  convertTo(viewValue: string, context: BindingContext) {
     const date = new Date(viewValue)
     if (date.toString() === "Invalid Date") {
       throw new ConverterException(
         "Cannot parse date",
-        bindingContext.propertyName,
+        context.propertyName,
         viewValue
       )
     }
