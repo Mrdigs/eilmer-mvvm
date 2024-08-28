@@ -76,7 +76,7 @@ var Binding = /** @class */ (function () {
      *
      * @param {object} viewModel - The object to bind to.
      * @param {string} propertyName - The name of the property on the object.
-     * @param {Converter} converter - An optional Converter.
+     * @param {IConverter} converter - An optional Converter.
      * @param {function} subscriber - An optional listener function.
      */
     function Binding(viewModel, propertyName, converter, subscriber) {
@@ -92,9 +92,7 @@ var Binding = /** @class */ (function () {
         }
         else {
             this.context = new BindingContext_1.default(viewModel, propertyName);
-            if (converter instanceof converters_1.Converter) {
-                this.converter = converter;
-            }
+            this.converter = converter;
             this.viewModel = viewModel;
             this.propertyName = propertyName;
             if (subscriber) {

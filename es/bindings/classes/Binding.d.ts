@@ -1,6 +1,6 @@
+import { IConverter } from "../../converters";
 import BindingContext from "./BindingContext";
 import { Listener } from "../../properties/types";
-import IConverter from "../../converters/classes/IConverter";
 /**
  * Provides a binding between an object property and a listener.
  *
@@ -39,7 +39,7 @@ declare class Binding<VM extends object, P extends keyof VM & string, V = VM[P]>
      *
      * @param {object} viewModel - The object to bind to.
      * @param {string} propertyName - The name of the property on the object.
-     * @param {Converter} converter - An optional Converter.
+     * @param {IConverter} converter - An optional Converter.
      * @param {function} subscriber - An optional listener function.
      */
     constructor(viewModel: VM, propertyName: P, converter?: IConverter<VM[P], V> | null, subscriber?: Listener<VM[P]>);

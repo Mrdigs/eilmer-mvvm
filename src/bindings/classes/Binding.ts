@@ -1,9 +1,8 @@
 import { Properties } from "../../properties"
-import { Converter, ConverterException } from "../../converters"
+import { IConverter, ConverterException } from "../../converters"
 
 import BindingContext from "./BindingContext"
 import { Listener } from "../../properties/types"
-import IConverter from "../../converters/classes/IConverter"
 
 /**
  * Provides a binding between an object property and a listener.
@@ -45,7 +44,7 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
    *
    * @param {object} viewModel - The object to bind to.
    * @param {string} propertyName - The name of the property on the object.
-   * @param {Converter} converter - An optional Converter.
+   * @param {IConverter} converter - An optional Converter.
    * @param {function} subscriber - An optional listener function.
    */
   constructor(
@@ -60,9 +59,7 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
       throw new TypeError("propertyName must be a string")
     } else {
       this.context = new BindingContext(viewModel, propertyName)
-      if (converter instanceof Converter) {
-        this.converter = converter
-      }
+      this.converter = converter
       this.viewModel = viewModel
       this.propertyName = propertyName
       if (subscriber) {
