@@ -158,11 +158,17 @@ var Binding = /** @class */ (function () {
      * @param value - The value to set the property to.
      */
     Binding.prototype.setValue = function (value) {
-        // TODO: this should allow a function to be passed as per Reacts
-        // useState hook.
+        var nextValue = null;
+        if (typeof value === "function") {
+            var setFunction = value;
+            nextValue = setFunction(this.getValue());
+        }
+        else {
+            nextValue = value;
+        }
         if (this.converter) {
             try {
-                var converted = this.converter.convertTo(value, this.getContext());
+                var converted = this.converter.convertTo(nextValue, this.getContext());
                 properties_1.Properties.setPropertyValue(this.viewModel, this.propertyName, converted);
             }
             catch (exception) {
@@ -175,7 +181,7 @@ var Binding = /** @class */ (function () {
             }
         }
         else {
-            properties_1.Properties.setPropertyValue(this.viewModel, this.propertyName, value);
+            properties_1.Properties.setPropertyValue(this.viewModel, this.propertyName, nextValue);
         }
     };
     /**

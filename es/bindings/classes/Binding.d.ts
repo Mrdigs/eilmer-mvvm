@@ -78,7 +78,7 @@ declare class Binding<VM extends object, P extends keyof VM & string, V = VM[P]>
      *
      * @param value - The value to set the property to.
      */
-    setValue(value: V): void;
+    setValue(value: V | ((prevValue: V) => V)): void;
     /**
      * Retrieves the current value of the bound property. If a converter
      * has been specified, the value is converted using the converter's

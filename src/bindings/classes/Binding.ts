@@ -128,12 +128,17 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
    *
    * @param value - The value to set the property to.
    */
-  setValue(value: V) {
-    // TODO: this should allow a function to be passed as per Reacts
-    // useState hook.
+  setValue(value: V | ((prevValue: V) => V)) {
+    let nextValue: V = null
+    if (typeof value === "function") {
+      const setFunction = value as (prevValue: V) => V
+      nextValue = setFunction(this.getValue())
+    } else {
+      nextValue = value
+    }
     if (this.converter) {
       try {
-        const converted = this.converter.convertTo(value, this.getContext())
+        const converted = this.converter.convertTo(nextValue, this.getContext())
         Properties.setPropertyValue(
           this.viewModel,
           this.propertyName,
@@ -147,7 +152,7 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
         }
       }
     } else {
-      Properties.setPropertyValue(this.viewModel, this.propertyName, value)
+      Properties.setPropertyValue(this.viewModel, this.propertyName, nextValue)
     }
   }
 

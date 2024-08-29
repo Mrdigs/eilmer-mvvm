@@ -13,12 +13,18 @@ var BindingContext = /** @class */ (function () {
         this.propertyName = propertyName;
     }
     BindingContext.prototype.setAttribute = function (key, value) {
-        this.attributes[key] = value;
+        this.attributes.set(key, value);
     };
-    BindingContext.prototype.getAttribute = function (key) {
-        return this.attributes[key];
+    BindingContext.prototype.getAttribute = function (key, defaultValue) {
+        return this.attributes.get(key) || defaultValue;
     };
     return BindingContext;
 }());
+/*
+;() => {
+  const context = new BindingContext(null, "")
+  const value = context.getAttribute("test", "value")
+}
+*/
 exports.default = BindingContext;
 //# sourceMappingURL=BindingContext.js.map

@@ -1,37 +1,37 @@
-import Binding from "./Binding";
-import Converter from "../../converters/classes/Converter";
+import Binding from "./Binding"
+import Converter from "../../converters/classes/Converter"
 
 describe("Binding tests", () => {
   const viewModel = {
     name: { firstName: "John", lastName: "Doe", age: 31 },
     sex: "MALE",
-  };
+  }
   test("Gets, sets and listens for property changes", () => {
-    let notifiedValue;
-    const binding = new Binding(viewModel.name, "firstName");
-    binding.bind((value) => (notifiedValue = value));
-    expect(binding.getValue()).toBe("John");
-    binding.setValue("Jane");
-    expect(binding.getValue()).toBe("Jane");
-    expect(notifiedValue).toBe("Jane");
-    expect(viewModel.name.firstName).toBe("Jane");
-  });
+    let notifiedValue
+    const binding = new Binding(viewModel.name, "firstName")
+    binding.bind((value) => (notifiedValue = value))
+    expect(binding.getValue()).toBe("John")
+    binding.setValue("Jane")
+    expect(binding.getValue()).toBe("Jane")
+    expect(notifiedValue).toBe("Jane")
+    expect(viewModel.name.firstName).toBe("Jane")
+  })
   test("Property paths work as expected", () => {
-    const binding = new Binding(viewModel as any, "name.firstName");
-    expect(binding.getValue()).toBe("Jane");
-    binding.setValue("John");
-    expect(viewModel.name.firstName).toBe("John");
-  });
+    const binding = new Binding(viewModel as any, "name.firstName")
+    expect(binding.getValue()).toBe("Jane")
+    binding.setValue("John")
+    expect(viewModel.name.firstName).toBe("John")
+  })
   test("Converter is applied correctly", () => {
     const converter = new Converter<string, string>(
       (v) => v.toLowerCase(),
       (v) => v.toUpperCase()
-    );
-    const binding = new Binding(viewModel, "sex", converter);
-    expect(binding.getValue()).toBe("male");
-    binding.setValue("female");
-    expect(viewModel.sex).toBe("FEMALE");
-  });
+    )
+    const binding = new Binding(viewModel, "sex", converter)
+    expect(binding.getValue()).toBe("male")
+    binding.setValue("female")
+    expect(viewModel.sex).toBe("FEMALE")
+  })
   // TODO: Unfortunately doesn't work in TypeScript
   /*
   test("Binding deconstructs into value and setter function", () => {
@@ -43,13 +43,13 @@ describe("Binding tests", () => {
   });
   */
   test("Only one listener can be subscribed at once", () => {
-    const binding = new Binding(viewModel.name, "lastName");
-    const unbind = binding.bind(() => {});
-    expect(() => binding.bind(() => {})).toThrow();
-    unbind();
-    expect(() => binding.bind(() => {})).not.toThrow();
-  });
-});
+    const binding = new Binding(viewModel.name, "lastName")
+    const unbind = binding.bind(() => {})
+    expect(() => binding.bind(() => {})).toThrow()
+    unbind()
+    expect(() => binding.bind(() => {})).not.toThrow()
+  })
+})
 
 /*
 class TestConverter implements IConverter<string, number> {
