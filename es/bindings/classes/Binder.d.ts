@@ -4,7 +4,6 @@ import IConverter from "../../converters/classes/IConverter";
 declare class Binder<VM extends object> {
     protected viewModel: VM;
     constructor(viewModel: VM);
-    getViewModel(): VM;
     /**
      *
      * @return {Binding}

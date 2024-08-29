@@ -11,9 +11,11 @@ class Binder<VM extends object> {
     this.viewModel = viewModel
   }
 
+  /*
   getViewModel(): VM {
     return this.viewModel
   }
+  */
 
   /**
    *

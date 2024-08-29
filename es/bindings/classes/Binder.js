@@ -8,9 +8,11 @@ var Binder = /** @class */ (function () {
     function Binder(viewModel) {
         this.viewModel = viewModel;
     }
-    Binder.prototype.getViewModel = function () {
-        return this.viewModel;
-    };
+    /*
+    getViewModel(): VM {
+      return this.viewModel
+    }
+    */
     /**
      *
      * @return {Binding}

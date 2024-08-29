@@ -3,9 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useExpression = exports.useCommand = exports.useEvent = exports.useBinding = exports.useNew = exports.Bind = void 0;
+exports.useExpression = exports.useCommand = exports.useEvent = exports.useBinder = exports.useBinding = exports.useNew = exports.Bind = void 0;
 var Bind_1 = __importDefault(require("./components/Bind"));
 exports.Bind = Bind_1.default;
+var useBinder_1 = __importDefault(require("./hooks/useBinder"));
+exports.useBinder = useBinder_1.default;
 var useBinding_1 = __importDefault(require("./hooks/useBinding"));
 exports.useBinding = useBinding_1.default;
 var useCommand_1 = __importDefault(require("./hooks/useCommand"));
