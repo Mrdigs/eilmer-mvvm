@@ -20,11 +20,5 @@ var BindingContext = /** @class */ (function () {
     };
     return BindingContext;
 }());
-/*
-;() => {
-  const context = new BindingContext(null, "")
-  const value = context.getAttribute("test", "value")
-}
-*/
 exports.default = BindingContext;
 //# sourceMappingURL=BindingContext.js.map

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import IConverter from "../../converters/classes/IConverter"
 import { Binding } from "../../bindings"
 import BindingContext from "../../bindings/classes/BindingContext"
+import { Dispatch, SetAction } from "../../bindings/types"
 
 type BindingState<VM extends object, P extends keyof VM & string, V> = {
   binding?: Binding<VM, P, V>
@@ -42,7 +43,7 @@ export default function useBinding<
   viewModel: VM,
   propertyName: P,
   converter: IConverter<VM[P], V> | null = null
-): [V, (value: V) => void, BindingContext] {
+): [V, Dispatch<SetAction<V>>, BindingContext] {
   const [state, setState] = useState<BindingState<VM, P, V>>({})
 
   state.binding = useMemo(() => {

@@ -3,6 +3,7 @@ import { IConverter, ConverterException } from "../../converters"
 
 import BindingContext from "./BindingContext"
 import { Listener } from "../../properties/types"
+import { SetAction } from "../types"
 
 /**
  * Provides a binding between an object property and a listener.
@@ -128,7 +129,7 @@ class Binding<VM extends object, P extends keyof VM & string, V = VM[P]> {
    *
    * @param value - The value to set the property to.
    */
-  setValue(value: V | ((prevValue: V) => V)) {
+  setValue(value: SetAction<V>) {
     let nextValue: V = null
     if (typeof value === "function") {
       const setFunction = value as (prevValue: V) => V

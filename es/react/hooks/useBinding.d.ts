@@ -1,5 +1,6 @@
 import IConverter from "../../converters/classes/IConverter";
 import BindingContext from "../../bindings/classes/BindingContext";
+import { Dispatch, SetAction } from "../../bindings/types";
 /**
  * Creates and manages a Binding between a specified property on the
  * supplied ViewModel and the calling component, forcing a re-render of the
@@ -27,5 +28,5 @@ import BindingContext from "../../bindings/classes/BindingContext";
  * propertyName (of type V). The second element is a function accepting
  * a V type input which, when called, will update that same ViewModel property.
  */
-export default function useBinding<VM extends object, P extends keyof VM & string, V = VM[P]>(viewModel: VM, propertyName: P, converter?: IConverter<VM[P], V> | null): [V, (value: V) => void, BindingContext];
+export default function useBinding<VM extends object, P extends keyof VM & string, V = VM[P]>(viewModel: VM, propertyName: P, converter?: IConverter<VM[P], V> | null): [V, Dispatch<SetAction<V>>, BindingContext];
 //# sourceMappingURL=useBinding.d.ts.map
